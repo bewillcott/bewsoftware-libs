@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.bew</groupId>
+        <artifactId>BEWLibs</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>com.bew</groupId>
+    <artifactId>BEWFiles</artifactId>
+    <version>1.0.2</version>
+    <packaging>jar</packaging>
+   
+    <name>BEW Files</name>
+    <description>This library contains classes related to working with files.</description>
+    
+    <properties>
+        <major.minor.version>1.0</major.minor.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.bew</groupId>
+            <artifactId>BEWProperty</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>BEWCommon</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
+</project>
