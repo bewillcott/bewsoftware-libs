@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * BEWIniFile is a library that contains classes related to working with files.
+ * BEWFiles is a library that contains classes related to working with files.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module BEWIniFile {
+module BEWFiles {
     requires transitive org.apache.logging.log4j;
     requires transitive BEWProperty;
     requires transitive BEWCommon;
