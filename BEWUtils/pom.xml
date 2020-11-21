@@ -9,7 +9,7 @@
     </parent>
     
     <artifactId>BEWUtils</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     
     <name>BEW Utils</name>
