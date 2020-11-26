@@ -29,6 +29,6 @@ module BEWFiles {
     requires transitive BEWProperty;
     requires transitive BEWCommon;
 
-    exports com.bew.fileio;
-    exports com.bew.fileio.ini;
+    exports com.bewsoftware.fileio;
+    exports com.bewsoftware.fileio.ini;
 }

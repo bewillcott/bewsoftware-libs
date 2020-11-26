@@ -16,15 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * BEWCommon is a library that contains classes that are not of any specific type.
+ * These classes are of a general nature, and include sub-classes of {@code Exception}
+ * that are used by classes from various modules.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module BEWCommon {
-    exports com.bewsoftware.common;
-}
+package com.bewsoftware.common;

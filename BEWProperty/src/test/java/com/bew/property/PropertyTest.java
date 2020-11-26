@@ -18,6 +18,7 @@
  */
 package com.bew.property;
 
+import com.bewsoftware.property.Property;
 import java.util.Objects;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>com.bew</groupId>
+        <groupId>com.bewsoftware</groupId>
         <artifactId>BEWLibs</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
     
-    <groupId>com.bew</groupId>
+    <groupId>com.bewsoftware</groupId>
     <artifactId>BEWCommon</artifactId>        
     <version>1.0.2</version>
     <packaging>jar</packaging>

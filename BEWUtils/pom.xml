@@ -3,20 +3,39 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>com.bew</groupId>
+        <groupId>com.bewsoftware</groupId>
         <artifactId>BEWLibs</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
     
+    <groupId>com.bewsoftware</groupId>
     <artifactId>BEWUtils</artifactId>
     <version>1.0.2</version>
     <packaging>jar</packaging>
     
     <name>BEW Utils</name>
-    <description>This library contains classes whose packages are not yet large enough,
-    or important enough, to warrant their own modules.</description>
+    <description>This library contains classes whose packages are not yet large enough, or important enough, to warrant their own modules.</description>
 
     <properties>
         <major.minor.version>1.0</major.minor.version>
     </properties>
+    
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/pom.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/pom.properties</exclude>
+                </excludes>
+            </resource>        
+        </resources>
+    </build>
 </project>

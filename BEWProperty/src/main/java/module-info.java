@@ -25,5 +25,5 @@
  * @version 1.0
  */
 module BEWProperty {
-    exports com.bew.property;
+    exports com.bewsoftware.property;
 }
