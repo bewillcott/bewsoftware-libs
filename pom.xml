@@ -185,7 +185,7 @@
             </resource>
             <resource>
                 <directory>
-                    target/manual
+                    target/docs
                 </directory>
                 <excludes>
                     <exclude>
@@ -348,7 +348,7 @@
                     <!-- Sets the VM argument line used when unit tests are run. -->
                     <argLine>${surefire.args}</argLine>
                     <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                    <skipTests>${skip.unit.tests}</skipTests>
+                    <skip>${skip.unit.tests}</skip>
                 </configuration>
             </plugin>
             <plugin>
@@ -378,6 +378,22 @@
                     </bottom>
                     <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>javadoc</id>
+                        <goals>
+                            <goal>javadoc-no-fork</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                    <execution>
+                        <id>javadoc-test</id>
+                        <goals>
+                            <goal>test-javadoc-no-fork</goal>
+                        </goals>
+                        <phase></phase>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

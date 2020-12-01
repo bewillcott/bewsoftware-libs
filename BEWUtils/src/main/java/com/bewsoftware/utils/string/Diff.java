@@ -47,7 +47,7 @@ public class Diff {
      * @param orig The original text.
      * @param mod  The modified text.
      *
-     * @return
+     * @return list of modified lines.
      */
     public static List<ModifiedLine> lines(final String orig, final String mod) {
         List<ModifiedLine> mlines = new ArrayList<>();
@@ -88,7 +88,7 @@ public class Diff {
      * @return <ul>
      * <li>'0' - if Strings are equal,</li>
      * <li>'-1' - if not and {@code orig} is empty, and</li>
-     * <li>'>0' - is the index into {@code orig} that the first difference
+     * <li>'&gt;0' - is the index into {@code orig} that the first difference
      * was found.</li>
      * </ul>
      */
