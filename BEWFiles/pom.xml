@@ -5,12 +5,12 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>BEWLibs</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>BEWFiles</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
    
     <name>BEW Files</name>
@@ -24,12 +24,12 @@
         <dependency>
             <groupId>com.bewsoftware</groupId>
             <artifactId>BEWProperty</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.bewsoftware</groupId>
             <artifactId>BEWCommon</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
 </project>

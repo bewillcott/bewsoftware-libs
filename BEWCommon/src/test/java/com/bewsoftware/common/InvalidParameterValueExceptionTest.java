@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.bew.common;
+package com.bewsoftware.common;
 
 import org.junit.After;
 import org.junit.AfterClass;

@@ -31,4 +31,9 @@ module BEWUtils {
     requires transitive org.apache.logging.log4j;
     requires transitive java.sql;
 
+    exports com.bewsoftware.utils.graphics;
+    exports com.bewsoftware.utils.reflect;
+    exports com.bewsoftware.utils.regexp;
+    exports com.bewsoftware.utils.sqlite;
+    exports com.bewsoftware.utils.string;
 }

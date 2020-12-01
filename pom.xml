@@ -4,7 +4,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>BEWLibs</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
     
     <name>BEW Libraries</name>
@@ -31,7 +31,7 @@
     </developers>
     
     <properties>
-        <java.version>15</java.version>
+        <java.version>12</java.version>
         <source.encoding>UTF-8</source.encoding>
         <major.minor.version>1.0</major.minor.version>        
         <jdk.version>${java.version}</jdk.version>
@@ -434,6 +434,18 @@
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
                     <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
+                    <reportSets>
+                        <reportSet>
+                            <id>html</id>
+                            <configuration>
+                                <doctitle>My API for ${project.name} ${project.version}</doctitle>
+                                <windowtitle>My API for ${project.name} ${project.version}</windowtitle>
+                            </configuration>
+                            <reports>
+                                <report>javadoc-no-fork</report>
+                            </reports>
+                        </reportSet>
+                    </reportSets>
                 </configuration>
             </plugin>
         </plugins>

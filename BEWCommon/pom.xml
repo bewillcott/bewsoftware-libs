@@ -5,19 +5,19 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>BEWLibs</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>BEWCommon</artifactId>        
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     
     <name>BEW Common</name>
     <description>This library contains classes that are not of any specific type,
 and they are used by classes from various modules.</description>
-     
-    <properties>
+
+<properties>
         <major.minor.version>1.0</major.minor.version>
     </properties>
 </project>
