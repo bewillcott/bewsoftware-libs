@@ -239,7 +239,7 @@ public class IniFile {
             ini = new IniFile(path);
 
             // Display all employees details
-            for (IniProperty<Object> employee : ini.iniDoc.getSection("Employees"))
+            for (IniProperty<String> employee : ini.iniDoc.getSection("Employees"))
             {
                 System.out.println(
                         "Id = " + employee.key()
@@ -247,7 +247,7 @@ public class IniFile {
                         + " | Comment=" + employee.comment()
                 );
 
-                for (IniProperty<Object> empDetails : ini.iniDoc.getSection((String) employee.value()))
+                for (IniProperty<String> empDetails : ini.iniDoc.getSection(employee.value()))
                 {
                     System.out.println((empDetails.comment() != null ? "\t" + empDetails.comment() + "\n" : "")
                                        + "\t" + empDetails.key() + ": "
@@ -537,7 +537,7 @@ public class IniFile {
 
     private void storeINI(BufferedWriter bw) throws IOException {
 
-        for (MutableIniProperty<ArrayList<MutableIniProperty<Object>>> section : iniDoc.entries)
+        for (MutableIniProperty<ArrayList<MutableIniProperty<String>>> section : iniDoc.entries)
         {
             if (section.key() != null)
             {
@@ -550,7 +550,7 @@ public class IniFile {
                 }
             }
 
-            for (MutableIniProperty<Object> key : section.value())
+            for (MutableIniProperty<String> key : section.value())
             {
                 // Do we have a comment?
                 if (key.key().startsWith("#") || key.key().startsWith(";"))
@@ -558,10 +558,10 @@ public class IniFile {
                     bw.write(key.comment() + "\n");
                 } else if (key.comment() != null)
                 {
-                    bw.write(key.comment() + "\n" + join(key.key(), (String) key.value()) + "\n");
+                    bw.write(key.comment() + "\n" + join(key.key(), key.value()) + "\n");
                 } else
                 {
-                    bw.write(join(key.key(), (String) key.value()) + "\n");
+                    bw.write(join(key.key(), key.value()) + "\n");
                 }
             }
         }

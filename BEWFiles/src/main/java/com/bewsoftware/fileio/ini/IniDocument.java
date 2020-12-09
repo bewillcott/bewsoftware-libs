@@ -76,8 +76,8 @@ public class IniDocument {
     };
 
     private static final String INI_COMMENT = INI_PATTERNS[1];
-    private static final String INI_PROPERTY = INI_PATTERNS[2];
-    private static final String INI_SECTION = INI_PATTERNS[0];
+//    private static final String INI_PROPERTY = INI_PATTERNS[2];
+//    private static final String INI_SECTION = INI_PATTERNS[0];
     private static final String INI_TAIL = INI_PATTERNS[3];
     private static final String NULL_KEY_MSG = "A null key is not valid.";
 
@@ -119,7 +119,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    final ArrayList<MutableIniProperty<ArrayList<MutableIniProperty<Object>>>> entries;
+    final ArrayList<MutableIniProperty<ArrayList<MutableIniProperty<String>>>> entries;
 
     IniDocument() {
         entries = new ArrayList<>();
@@ -142,7 +142,7 @@ public class IniDocument {
 
         if (sectionIdx > -1)
         {
-            ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+            ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             return (indexOfKey(kvlist, key) > -1);
         } else
         {
@@ -232,7 +232,7 @@ public class IniDocument {
 
         if (sectionIdx > -1)
         {
-            ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+            ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             int keyIdx = indexOfKey(kvlist, key);
             return keyIdx > -1 ? kvlist.get(keyIdx).comment() : null;
         } else
@@ -399,14 +399,13 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public List<IniProperty<Object>> getSection(String section) {
+    public List<IniProperty<String>> getSection(String section) {
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
         {
-            ArrayList<IniProperty<Object>> rtnList = new ArrayList<>();
-            entries.get(sectionIdx).value().forEach(prop
-                    -> rtnList.add((IniProperty<Object>) prop));
+            ArrayList<IniProperty<String>> rtnList = new ArrayList<>();
+            entries.get(sectionIdx).value().forEach(rtnList::add);
 
             return rtnList;
         } else
@@ -506,7 +505,7 @@ public class IniDocument {
 
         if (sectionIdx > -1)
         {
-            ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+            ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             int idx = indexOfKey(kvlist, key);
 
             if (idx > -1)
@@ -539,7 +538,6 @@ public class IniDocument {
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
      *
      * @since 1.0
      */
@@ -649,7 +647,7 @@ public class IniDocument {
             sectionIdx = indexOfSection(section);
         }
 
-        ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+        ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
         int keyIdx = indexOfKey(kvlist, key);
 
         if (keyIdx == -1)
@@ -658,7 +656,7 @@ public class IniDocument {
             return null;
         } else
         {
-            MutableIniProperty<Object> kv = kvlist.get(keyIdx);
+            MutableIniProperty<String> kv = kvlist.get(keyIdx);
             String rtn = kv.comment();
             kv.comment(comment);
             return rtn;
@@ -695,11 +693,9 @@ public class IniDocument {
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     *
      * @since 1.0
      */
-    public Double setDouble(String section, String key, double value)
-            throws NumberFormatException {
+    public Double setDouble(String section, String key, double value) {
         String rtn = setString(section, key, Double.toString(value));
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -722,7 +718,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Double setDouble(String section, String key, double value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setString(section, key, Double.toString(value), comment);
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -740,8 +736,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Double setDoubleG(String key, double value)
-            throws NumberFormatException {
+    public Double setDoubleG(String key, double value) {
         String rtn = setStringG(key, Double.toString(value));
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -764,7 +759,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Double setDoubleG(String key, double value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setStringG(key, Double.toString(value), comment);
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -782,8 +777,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Float setFloat(String section, String key, float value)
-            throws NumberFormatException {
+    public Float setFloat(String section, String key, float value) {
         String rtn = setString(section, key, Float.toString(value));
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -806,7 +800,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Float setFloat(String section, String key, float value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setString(section, key, Float.toString(value), comment);
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -824,8 +818,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Float setFloatG(String key, float value)
-            throws NumberFormatException {
+    public Float setFloatG(String key, float value) {
         String rtn = setStringG(key, Float.toString(value));
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -850,7 +843,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Float setFloatG(String key, Float value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setStringG(key, Float.toString(value), comment);
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -868,8 +861,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Integer setInt(String section, String key, int value)
-            throws NumberFormatException {
+    public Integer setInt(String section, String key, int value) {
         String rtn = setString(section, key, Integer.toString(value));
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -894,7 +886,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Integer setInt(String section, String key, int value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setString(section, key, Integer.toString(value), comment);
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -912,8 +904,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Integer setIntG(String key, int value)
-            throws NumberFormatException {
+    public Integer setIntG(String key, int value) {
         String rtn = setStringG(key, Integer.toString(value));
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -938,7 +929,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Integer setIntG(String key, int value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setStringG(key, Integer.toString(value), comment);
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -956,8 +947,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Long setLong(String section, String key, long value)
-            throws NumberFormatException {
+    public Long setLong(String section, String key, long value) {
         String rtn = setString(section, key, Long.toString(value));
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -982,7 +972,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Long setLong(String section, String key, long value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setString(section, key, Long.toString(value), comment);
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -1000,8 +990,7 @@ public class IniDocument {
      *
      * @since 1.0
      */
-    public Long setLongG(String key, long value)
-            throws NumberFormatException {
+    public Long setLongG(String key, long value) {
         String rtn = setStringG(key, Long.toString(value));
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -1026,7 +1015,7 @@ public class IniDocument {
      * @since 1.0
      */
     public Long setLongG(String key, long value, String comment)
-            throws NumberFormatException, InvalidParameterValueException {
+            throws InvalidParameterValueException {
         String rtn = setStringG(key, Long.toString(value), comment);
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -1118,7 +1107,7 @@ public class IniDocument {
             sectionIdx = indexOfSection(section);
         }
 
-        ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+        ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
         int keyIdx = indexOfKey(kvlist, key);
 
         if (keyIdx
@@ -1128,8 +1117,8 @@ public class IniDocument {
             return null;
         } else
         {
-            MutableIniProperty<Object> kv = kvlist.get(keyIdx);
-            String rtn = (String) kv.value();
+            MutableIniProperty<String> kv = kvlist.get(keyIdx);
+            String rtn = kv.value();
             kv.value(value);
             kv.comment(comment);
             return rtn;
@@ -1209,10 +1198,10 @@ public class IniDocument {
 
         if (sectionIdx > -1)
         {
-            ArrayList<MutableIniProperty<Object>> kvlist = entries.get(sectionIdx).value();
+            ArrayList<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             int keyIdx = indexOfKey(kvlist, key);
 
-            return keyIdx > -1 ? (String) kvlist.get(keyIdx).value() : null;
+            return keyIdx > -1 ? kvlist.get(keyIdx).value() : null;
         }
 
         return null;
@@ -1221,7 +1210,7 @@ public class IniDocument {
     /**
      * Refer to {@link #indexOfSection(java.lang.String)
      */
-    private int indexOfKey(ArrayList<MutableIniProperty<Object>> kvlist, String key) {
+    private int indexOfKey(ArrayList<MutableIniProperty<String>> kvlist, String key) {
         for (int i = 0; i < kvlist.size(); i++)
         {
             String lkey = kvlist.get(i).key();
