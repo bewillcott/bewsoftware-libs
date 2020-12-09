@@ -85,6 +85,11 @@ public class Property<K extends Comparable<K>, V> implements
         this(property.key, property.value, property.comment);
     }
 
+    @Override
+    public String toString() {
+        return "{ key = " + key + ", value = " + value + ", comment = " + comment + " }";
+    }
+
     /**
      * Create a new instance of {@code Property} with a {@code null} comment.
      *
