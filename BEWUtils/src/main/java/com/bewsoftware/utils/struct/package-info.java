@@ -16,25 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * BEWUtils is a library that classes whose packages are not yet large enough,
- * or important enough, to warrant their own modules.
+ * These classes are basically just structs.  They are easy to use
+ * containers of one or more primitives, and possibly other classes.
+ * <p>
+ * The primary use of these classes is to pass a class as a parameter
+ * that can be used to return one or more values. They can also be
+ * used to get primitive values out of lambda expressions.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0
+ * @since 1.0.5
  * @version 1.0.5
  */
-module BEWUtils {
-    requires transitive java.desktop;
-    requires transitive org.apache.logging.log4j;
-    requires transitive java.sql;
-
-    exports com.bewsoftware.utils.graphics;
-    exports com.bewsoftware.utils.reflect;
-    exports com.bewsoftware.utils.regexp;
-    exports com.bewsoftware.utils.sqlite;
-    exports com.bewsoftware.utils.string;
-    exports com.bewsoftware.utils.struct;
-}
+package com.bewsoftware.utils.struct;

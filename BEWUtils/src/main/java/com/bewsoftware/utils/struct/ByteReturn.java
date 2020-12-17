@@ -16,25 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.bewsoftware.utils.struct;
 
 /**
- * BEWUtils is a library that classes whose packages are not yet large enough,
- * or important enough, to warrant their own modules.
+ * ByteReturn class provides a way to get a {code byte} value into
+ * and out of either a Lambda expression or a method through a parameter.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0
+ * @since 1.0.5
  * @version 1.0.5
  */
-module BEWUtils {
-    requires transitive java.desktop;
-    requires transitive org.apache.logging.log4j;
-    requires transitive java.sql;
+public class ByteReturn {
 
-    exports com.bewsoftware.utils.graphics;
-    exports com.bewsoftware.utils.reflect;
-    exports com.bewsoftware.utils.regexp;
-    exports com.bewsoftware.utils.sqlite;
-    exports com.bewsoftware.utils.string;
-    exports com.bewsoftware.utils.struct;
+    public byte val;
+
+    public ByteReturn() {
+    }
+
+    public ByteReturn(byte val) {
+        this.val = val;
+    }
+
+    @Override
+    public String toString() {
+        return "" + val;
+    }
 }
