@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.bewsoftware</groupId>
-        <artifactId>BEWLibs</artifactId>
-        <version>1.0.3</version>
+        <artifactId>bewsoftware-libs</artifactId>
+        <version>1.0.4</version>
     </parent>
 
     <groupId>com.bewsoftware</groupId>
-    <artifactId>BEWProperty</artifactId>
+    <artifactId>bewsoftware-property</artifactId>
     <version>1.0.4</version>
     <packaging>jar</packaging>
  
-    <name>BEW Property</name>
+    <name>BEWSoftware Property Library</name>
     <description>This library contains the Property class and its sub-classes.</description>
     
     <properties>

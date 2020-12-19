@@ -17,13 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * BEW Property is a library that contains the Property class and its sub-classes.
+ * This library contains the Property class and its sub-classes.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module BEWProperty {
+module bewsoftware.property {
     exports com.bewsoftware.property;
 }

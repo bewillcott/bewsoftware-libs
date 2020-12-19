@@ -18,13 +18,13 @@
  */
 
 /**
- * BEWCommon is a library that contains classes that are not of any specific type.
+ * This library contains classes that are not of any specific type.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module BEWCommon {
+module bewsoftware.common {
     exports com.bewsoftware.common;
 }

@@ -18,7 +18,7 @@
  */
 
 /**
- * BEWUtils is a library that classes whose packages are not yet large enough,
+ * This library contains classes whose packages are not yet large enough,
  * or important enough, to warrant their own modules.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
@@ -26,7 +26,7 @@
  * @since 1.0
  * @version 1.0.5
  */
-module BEWUtils {
+module bewsoftware.utils {
     requires transitive java.desktop;
     requires transitive org.apache.logging.log4j;
     requires transitive java.sql;

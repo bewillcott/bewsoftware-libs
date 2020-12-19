@@ -4,16 +4,16 @@
     
     <parent>
         <groupId>com.bewsoftware</groupId>
-        <artifactId>BEWLibs</artifactId>
-        <version>1.0.3</version>
+        <artifactId>bewsoftware-libs</artifactId>
+        <version>1.0.4</version>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
-    <artifactId>BEWUtils</artifactId>
+    <artifactId>bewsoftware-utils</artifactId>
     <version>1.0.5</version>
     <packaging>jar</packaging>
     
-    <name>BEW Utils</name>
+    <name>BEWSoftware Utilities Library</name>
     <description>This library contains classes whose packages are not yet large enough, or important enough, to warrant their own modules.</description>
 
     <properties>
