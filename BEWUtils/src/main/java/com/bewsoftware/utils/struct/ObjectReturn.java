@@ -19,22 +19,22 @@
 package com.bewsoftware.utils.struct;
 
 /**
- * LongReturn class provides a way to get a {@code long} value into
- * and out of either a Lambda expression or a method through a parameter.
+ * ObjectReturn class provides a way to get an {@code Object} instance
+ * out of either a Lambda expression or a method through a parameter.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0.5
- * @version 1.0.5
+ * @since 1.0.6
+ * @version 1.0.6
  */
-public class LongReturn {
+public class ObjectReturn {
 
-    public long val;
+    public Object val;
 
-    public LongReturn() {
+    public ObjectReturn() {
     }
 
-    public LongReturn(long val) {
+    public ObjectReturn(Object val) {
         this.val = val;
     }
 

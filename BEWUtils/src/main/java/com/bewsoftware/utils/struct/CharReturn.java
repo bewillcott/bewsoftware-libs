@@ -19,7 +19,7 @@
 package com.bewsoftware.utils.struct;
 
 /**
- * CharReturn class provides a way to get a {code char} value into
+ * CharReturn class provides a way to get a {@code char} value into
  * and out of either a Lambda expression or a method through a parameter.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>

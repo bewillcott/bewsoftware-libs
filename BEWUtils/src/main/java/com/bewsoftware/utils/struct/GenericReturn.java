@@ -19,22 +19,23 @@
 package com.bewsoftware.utils.struct;
 
 /**
- * LongReturn class provides a way to get a {@code long} value into
- * and out of either a Lambda expression or a method through a parameter.
+ * GenericReturn class provides a way to get a {@code <T>} instance
+ * out of either a Lambda expression or a method through a parameter.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+ * @param <T> Type of object.
  *
- * @since 1.0.5
- * @version 1.0.5
+ * @since 1.0
+ * @version 1.0
  */
-public class LongReturn {
+public class GenericReturn<T> {
 
-    public long val;
+    public T val;
 
-    public LongReturn() {
+    public GenericReturn() {
     }
 
-    public LongReturn(long val) {
+    public GenericReturn(T val) {
         this.val = val;
     }
 
@@ -42,4 +43,5 @@ public class LongReturn {
     public String toString() {
         return "" + val;
     }
+
 }

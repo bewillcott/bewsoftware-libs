@@ -19,7 +19,7 @@
 package com.bewsoftware.utils.struct;
 
 /**
- * StringReturn class provides a way to get a {code String} value into
+ * StringReturn class provides a way to get a {@code String} value into
  * and out of either a Lambda expression or a method through a parameter.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
