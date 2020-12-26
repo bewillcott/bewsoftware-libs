@@ -1,1 +1,11 @@
 /target/
+/BEWCommon/nbproject/
+/BEWProperty/nbproject/
+/bewsoftware-common/nbproject/
+/bewsoftware-common/target/
+/common/nbproject/
+/common/target/
+/files/target/
+/property/target/
+/property/nbproject/
+/utils/target/
