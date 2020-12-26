@@ -1,2 +1,2 @@
-# BEW Property
-This is a library that contains the Property class and its sub-classes.
+# BEWSoftware Property Library
+This library contains the Property class and its sub-classes.

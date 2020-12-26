@@ -1,10 +1,10 @@
-# BEW Libraries
+# BEWSoftware Libraries
 This is a collection of libraries that contain various utility classes used across multiple projects.
 
-- [BEWSoftware Common][c]
-- [BEWSoftware Files][f]
-- [BEWSoftware Property][p]
-- [BEWSoftware Utils][u]
+- [BEWSoftware Common Library][c]
+- [BEWSoftware Files Library][f]
+- [BEWSoftware Property Library][p]
+- [BEWSoftware Utils Library][u]
 
 ## Status
 This will be an on-going development.  The classes in the initial commit
