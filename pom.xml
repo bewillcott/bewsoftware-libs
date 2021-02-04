@@ -364,7 +364,34 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>                   
+                    </plugin>            
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <configuration>
+                            <encoding>${source.encoding}</encoding>
+                        </configuration>
+                        <executions>
+                            <execution>                        
+                                <id>Copy-Manual-to-basedir</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <outputDirectory>docs</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                target/docs/manual
+                                            </directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+  
                     <plugin>
                         <groupId>com.bewsoftware.mojo</groupId>
                         <artifactId>bewsoftware-mdj-plugin</artifactId>
@@ -386,7 +413,7 @@
                                     <goal>jar</goal>
                                 </goals>
                                 <configuration>
-                                    <jarFilename>${project.build.finalName}-manual.jar</jarFilename>
+                                    <jarFilename>${finalBaseName}-manual.jar</jarFilename>
                                     <jarSrcDir>target/docs/manual</jarSrcDir>
                                     <docRootDir>src/docs/manual</docRootDir>
                                     <verbosity/>
@@ -398,7 +425,7 @@
                                     <goal>jar</goal>
                                 </goals>
                                 <configuration>
-                                    <jarFilename>${project.build.finalName}-manual-src.jar</jarFilename>
+                                    <jarFilename>${finalBaseName}-manual-src.jar</jarFilename>
                                     <jarSrcDir>src/docs/manual</jarSrcDir>
                                     <docRootDir>src/docs/manual</docRootDir>
                                     <verbosity/>
@@ -423,10 +450,10 @@
                                     <includePluginDependencies>true</includePluginDependencies>
                                     <arguments>
                                         <argument>-r</argument>
-                                        <argument>${project.build.finalName}.zip</argument>
-                                        <argument>${project.build.finalName}.jar</argument>
-                                        <argument>${project.build.finalName}-manual.jar</argument>
-                                        <argument>${project.build.finalName}-manual-src.jar</argument>
+                                        <argument>${finalBaseName}.zip</argument>
+                                        <argument>${finalBaseName}.jar</argument>
+                                        <argument>${finalBaseName}-manual.jar</argument>
+                                        <argument>${finalBaseName}-manual-src.jar</argument>
                                         <argument>libs</argument>
                                     </arguments> 
                                 </configuration>
@@ -449,7 +476,7 @@
                                     <version>${project.artifact.version}</version>
                                     <classifier>manual</classifier>
                                     <packaging>jar</packaging>
-                                    <file>${project.build.directory}/${project.build.finalName}-manual.jar</file>
+                                    <file>${project.build.directory}/${finalBaseName}-manual.jar</file>
                                 </configuration>
                             </execution>
                             <execution>
@@ -464,7 +491,7 @@
                                     <version>${project.artifact.version}</version>
                                     <classifier>manual-src</classifier>
                                     <packaging>jar</packaging>
-                                    <file>${project.build.directory}/${project.build.finalName}-manual-src.jar</file>
+                                    <file>${project.build.directory}/${finalBaseName}-manual-src.jar</file>
                                 </configuration>
                             </execution>
                         </executions>
@@ -529,6 +556,16 @@
                     </exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>
+                    docs
+                </directory>
+                <excludes>
+                    <exclude>
+                        **/*
+                    </exclude>
+                </excludes>
+            </resource>
         </resources>
 
         <pluginManagement>
@@ -536,7 +573,7 @@
                 <plugin>
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-mdj-plugin</artifactId>
-                    <version>1.0.39-SNAPSHOT</version>
+                    <version>1.1.0</version>
                 </plugin>                
                 <plugin>                        
                     <groupId>com.bewsoftware.mojo</groupId>
@@ -764,44 +801,14 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <configuration>
-                    <linkJavadoc>true</linkJavadoc>
-                    <javadocDir>${javadoc.reporting.outputDirectory}/${project.artifactId}</javadocDir>
-                </configuration>
-            </plugin>
-                    
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <source>${javadoc.source.version}</source>
-                    <additionalOptions>-link ${javadoc.link.url.jdk}</additionalOptions>
-                    <minmemory>128m</minmemory>
-                    <maxmemory>1g</maxmemory>
-                    <bottom>
-                        Copyright © {currentYear} Bradley Willcott. All rights reserved.
-                    </bottom>
-                    <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
-                    <reportSets>
-                        <reportSet>
-                            <id>html</id>
-                            <configuration>
-                                <doctitle>My API for ${project.name} ${project.version}</doctitle>
-                                <windowtitle>My API for ${project.name} ${project.version}</windowtitle>
-                            </configuration>
-                            <reports>
-                                <report>javadoc-no-fork</report>
-                            </reports>
-                        </reportSet>
-                    </reportSets>
-                </configuration>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
