@@ -5,19 +5,18 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-libs</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-files</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
    
     <name>BEWSoftware Files Library</name>
     <description>This library contains classes related to working with files.</description>
 
     <properties>
-        <major.minor.version>1.0</major.minor.version>
     </properties>
 
     <dependencies>
@@ -30,7 +29,6 @@
             <groupId>com.bewsoftware</groupId>
             <artifactId>bewsoftware-property</artifactId>
             <version>1.0.4</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

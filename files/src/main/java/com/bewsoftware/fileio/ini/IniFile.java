@@ -19,7 +19,6 @@
 package com.bewsoftware.fileio.ini;
 
 import com.bewsoftware.common.InvalidParameterValueException;
-import com.bewsoftware.common.InvalidProgramStateException;
 import com.bewsoftware.property.IniProperty;
 import com.bewsoftware.property.MutableIniProperty;
 import java.io.BufferedReader;
@@ -368,7 +367,7 @@ public class IniFile {
             throw new FileAlreadyLoadedException();
 
         }
-        try ( BufferedReader in = Files.newBufferedReader(path))
+        try (BufferedReader in = Files.newBufferedReader(path))
         {
             fileIsLoaded = parseINI(in);
         }
@@ -389,15 +388,9 @@ public class IniFile {
     public IniFile mergeFile(Path file)
             throws IOException, IniFileFormatException {
 
-        if (fileIsLoaded)
+        try (BufferedReader in = Files.newBufferedReader(file))
         {
-            try ( BufferedReader in = Files.newBufferedReader(file))
-            {
-                parseINI(in);
-            }
-        } else
-        {
-            throw new InvalidProgramStateException("File not loaded:\n" + path);
+            fileIsLoaded = parseINI(in);
         }
 
         return this;
@@ -431,7 +424,7 @@ public class IniFile {
      * @throws IOException File i/o problem.
      */
     public IniFile saveFileAs(Path newFile) throws IOException {
-        try ( BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
+        try (BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
         {
             storeINI(out);
         }
