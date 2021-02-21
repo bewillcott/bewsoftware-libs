@@ -1,7 +1,7 @@
 /*
  * This file is part of the BEW Files Library (aka: BEWFiles).
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
  * BEWFiles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public class BEWFiles {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(String sourceDir, String destDir, String pattern, int verboseLvl, CopyOption... options) throws IOException {
+    public static void copyDirTree(final String sourceDir, final String destDir, final String pattern, final int verboseLvl, final CopyOption... options) throws IOException {
         Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
         Path destPath = (destDir != null ? of(destDir) : of(""));
 
@@ -91,7 +91,7 @@ public class BEWFiles {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(Path srcPath, Path destPath, String pattern, int verboseLvl, CopyOption... options) throws IOException {
+    public static void copyDirTree(final Path srcPath, final Path destPath, final String pattern, final int verboseLvl, CopyOption... options) throws IOException {
         // Can't be copying source onto itself.
         // No point.
         if (Objects.requireNonNull(srcPath).equals(Objects.requireNonNull(destPath)))
@@ -201,7 +201,7 @@ public class BEWFiles {
      * @throws URISyntaxException Name produces an invalid path data.
      * @throws IOException        General IO failure.
      */
-    public static Path getResource(Class<?> clazz, String name) throws URISyntaxException, IOException {
+    public static Path getResource(final Class<?> clazz, final String name) throws URISyntaxException, IOException {
         // clazz and name must NOT be null.
         if (clazz == null || name == null || name.isBlank())
         {
@@ -255,7 +255,7 @@ public class BEWFiles {
          * @param pattern The file search pattern to be used.
          * @param vlevel  The verbose level, for info/debugging.
          */
-        Finder(String pattern, int vlevel) {
+        Finder(final String pattern, final int vlevel) {
             matcher = FileSystems.getDefault()
                     .getPathMatcher("glob:" + Objects.requireNonNull(pattern));
             this.vlevel = vlevel;
@@ -266,7 +266,7 @@ public class BEWFiles {
          *
          * @param file File to check.
          */
-        private void find(Path file) {
+        private void find(final Path file) {
             Path name = Objects.requireNonNull(file).getFileName();
 
             if (name != null && matcher.matches(name))
@@ -307,7 +307,7 @@ public class BEWFiles {
          * @return {@inheritDoc }
          */
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
             find(file);
             return CONTINUE;
         }
@@ -321,7 +321,7 @@ public class BEWFiles {
          * @return {@inheritDoc }
          */
         @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+        public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) {
             return CONTINUE;
         }
 
@@ -334,7 +334,7 @@ public class BEWFiles {
          * @return {@inheritDoc }
          */
         @Override
-        public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        public FileVisitResult visitFileFailed(final Path file, final IOException exc) {
             System.err.println("visitFileFailed: " + exc);
             return CONTINUE;
         }

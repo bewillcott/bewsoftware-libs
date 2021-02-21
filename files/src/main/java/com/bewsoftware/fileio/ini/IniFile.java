@@ -30,7 +30,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -146,7 +146,7 @@ public class IniFile {
      * @throws FileNotFoundException If test files not found.
      * @since 1.0
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(final String[] args) throws FileNotFoundException {
         final URL fileUrl = IniFile.class.getResource("/Test.ini");
         final URL fileUrlOrig = IniFile.class.getResource("/Test-orig.ini");
 
@@ -308,7 +308,7 @@ public class IniFile {
      * @throws InvalidParameterValueException If path.toString().isBlank().
      * @since 1.0
      */
-    public IniFile(Path path)
+    public IniFile(final Path path)
             throws NullPointerException, InvalidParameterValueException {
         if (path == null)
         {
@@ -319,7 +319,7 @@ public class IniFile {
         } else
         {
             this.path = path;
-            iniDoc = new IniDocument();
+            iniDoc = new IniDocumentImpl();
         }
     }
 
@@ -329,7 +329,7 @@ public class IniFile {
      * @since 1.0
      */
     public IniFile() {
-        iniDoc = new IniDocument();
+        iniDoc = new IniDocumentImpl();
         path = null;
     }
 
@@ -367,7 +367,7 @@ public class IniFile {
             throw new FileAlreadyLoadedException();
 
         }
-        try (BufferedReader in = Files.newBufferedReader(path))
+        try ( BufferedReader in = Files.newBufferedReader(path))
         {
             fileIsLoaded = parseINI(in);
         }
@@ -385,10 +385,10 @@ public class IniFile {
      * @throws IniFileFormatException If the format of the supplied ini file does
      *                                not conform to the general standard.
      */
-    public IniFile mergeFile(Path file)
+    public IniFile mergeFile(final Path file)
             throws IOException, IniFileFormatException {
 
-        try (BufferedReader in = Files.newBufferedReader(file))
+        try ( BufferedReader in = Files.newBufferedReader(file))
         {
             fileIsLoaded = parseINI(in);
         }
@@ -423,8 +423,8 @@ public class IniFile {
      *
      * @throws IOException File i/o problem.
      */
-    public IniFile saveFileAs(Path newFile) throws IOException {
-        try (BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
+    public IniFile saveFileAs(final Path newFile) throws IOException {
+        try ( BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
         {
             storeINI(out);
         }
@@ -454,7 +454,7 @@ public class IniFile {
      *
      * @return
      */
-    private String join(String key, String value) {
+    private String join(final String key, final String value) {
         String separator = paddedEquals ? " = " : "=";
         return value.isEmpty()
                ? (key + separator).strip()
@@ -470,9 +470,9 @@ public class IniFile {
      * @throws IniFileFormatException If the format of the supplied ini file does
      *                                not conform to the general standard.
      */
-    private boolean parseINI(BufferedReader reader)
+    private boolean parseINI(final BufferedReader reader)
             throws IOException, IniFileFormatException {
-        Pattern p = Pattern.compile(IniDocument.INI_PATTERN);
+        Pattern p = Pattern.compile(IniDocumentImpl.INI_PATTERN);
         String line = "";
         String currentSection = null;
         String lastComment = null;
@@ -528,9 +528,9 @@ public class IniFile {
         return true;
     }
 
-    private void storeINI(BufferedWriter bw) throws IOException {
+    private void storeINI(final BufferedWriter bw) throws IOException {
 
-        for (MutableIniProperty<ArrayList<MutableIniProperty<String>>> section : iniDoc.entries)
+        for (MutableIniProperty<List<MutableIniProperty<String>>> section : iniDoc.iterable())
         {
             if (section.key() != null)
             {

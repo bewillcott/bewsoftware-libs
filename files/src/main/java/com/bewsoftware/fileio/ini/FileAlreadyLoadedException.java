@@ -1,7 +1,7 @@
 /*
  * This file is part of the BEW Files Library (aka: BEWFiles).
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
  * BEWFiles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public class FileAlreadyLoadedException extends IOException {
      *
      * @param message the detail message.
      */
-    public FileAlreadyLoadedException(String message) {
+    public FileAlreadyLoadedException(final String message) {
         super(message);
     }
 
@@ -59,7 +59,7 @@ public class FileAlreadyLoadedException extends IOException {
      *              Throwable.getCause() method). (A null value is permitted,
      *              and indicates that the cause is nonexistent or unknown.)
      */
-    public FileAlreadyLoadedException(Throwable cause) {
+    public FileAlreadyLoadedException(final Throwable cause) {
         super(cause);
     }
 
@@ -75,7 +75,7 @@ public class FileAlreadyLoadedException extends IOException {
      *                Throwable.getCause() method). (A null value is permitted,
      *                and indicates that the cause is nonexistent or unknown.)
      */
-    public FileAlreadyLoadedException(String message, Throwable cause) {
+    public FileAlreadyLoadedException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
