@@ -4,7 +4,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-libs</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <packaging>pom</packaging>
     
     <name>BEWSoftware Libraries</name>
@@ -26,7 +26,6 @@
     <properties>
         <java.version>12</java.version>
         <source.encoding>UTF-8</source.encoding>
-        <major.minor.version>1.0</major.minor.version>        
         <jdk.version>${java.version}</jdk.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -38,7 +37,7 @@
         <javadoc.reporting.outputDirectory>${project.reporting.outputDirectory}/apidocs</javadoc.reporting.outputDirectory>
         <!-- Testing properties -->
         <skip.unit.tests>true</skip.unit.tests>
-        <surefire.args></surefire.args>
+        <surefire.args/>
         <skip.version.build>false</skip.version.build>
     </properties>
 
@@ -566,6 +565,16 @@
                     </exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>
+                    src/uml
+                </directory>
+                <excludes>
+                    <exclude>
+                        **/*
+                    </exclude>
+                </excludes>
+            </resource>
         </resources>
 
         <pluginManagement>
@@ -573,12 +582,12 @@
                 <plugin>
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-mdj-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.1.2</version>
                 </plugin>                
                 <plugin>                        
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-version-plugin</artifactId>
-                    <version>1.0.0</version>                
+                    <version>1.0.1</version>                
                 </plugin>
 
                 <plugin>
@@ -702,8 +711,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
-                        <arg></arg>
-                        <arg>-Xlint</arg>
+                        <arg>-Xlint:all</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -728,7 +736,10 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
+                <artifactId>maven-site-plugin</artifactId>                
+                <configuration>
+                    <locales>en</locales>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -752,6 +763,47 @@
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
                     <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
+                    <tags>
+                        <tag>
+                            <name>apiNote</name>
+                            <placement>a</placement>
+                            <head>API Note:</head>
+                        </tag>
+                        <tag>
+                            <name>implSpec</name>
+                            <placement>a</placement>
+                            <head>Implementation Requirements:</head>
+                        </tag>
+                        <tag>
+                            <name>implNote</name>
+                            <placement>a</placement>
+                            <head>Implementation Note:</head>
+                        </tag>
+                        <tag>
+                            <name>param</name>
+                        </tag>
+                        <tag>
+                            <name>return</name>
+                        </tag>
+                        <tag>
+                            <name>throws</name>
+                        </tag>
+                        <tag>
+                            <name>since</name>
+                        </tag>
+                        <tag>
+                            <name>version</name>
+                        </tag>
+                        <tag>
+                            <name>author</name>
+                        </tag>
+                        <tag>
+                            <name>serialData</name>
+                        </tag>
+                        <tag>
+                            <name>see</name>
+                        </tag>
+                    </tags>
                 </configuration>
                 <executions>
                     <execution>
@@ -761,13 +813,13 @@
                         </goals>
                         <phase>site</phase>
                     </execution>
-                    <execution>
+                    <!--                    <execution>
                         <id>javadoc-test</id>
                         <goals>
                             <goal>test-javadoc-no-fork</goal>
                         </goals>
                         <phase></phase>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
