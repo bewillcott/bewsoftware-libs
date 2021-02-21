@@ -125,8 +125,19 @@ public class Diff {
      */
     public static class ModifiedLine {
 
+        /**
+         * Provide a String filled with spaces.
+         *
+         * @param count The number of spaces required.
+         *
+         * @return space filled String.
+         */
+        private static String fill(int count) {
+            return " ".repeat(count);
+        }
+
         /*
-         * The line number with the original text file.
+         * The line number within the original text file.
          */
         public final int linenum;
 
@@ -176,24 +187,6 @@ public class Diff {
             return "-" + strLinenum + orig + "\n"
                    + (position > -1 ? fill(slLength + position) + "^" : "") + "\n"
                    + "+" + fill(slLength) + mod;
-        }
-
-        /**
-         * Provide a String filled with spaces.
-         *
-         * @param qty The number of spaces required.
-         *
-         * @return space filled String.
-         */
-        private String fill(int qty) {
-            StringBuilder rtn = new StringBuilder();
-
-            for (int i = 0; i < qty; i++)
-            {
-                rtn.append(' ');
-            }
-
-            return rtn.toString();
         }
     }
 }

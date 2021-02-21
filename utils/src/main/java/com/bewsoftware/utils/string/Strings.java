@@ -21,7 +21,6 @@ package com.bewsoftware.utils.string;
 import java.util.Objects;
 
 /**
- * Strings class description.
  * Class contains some helper methods.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
