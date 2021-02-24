@@ -1,27 +1,20 @@
 /*
- *  File Name:    ConsoleDisplay.java
- *  Project Name: Java2AT1
+ * This file is part of the BEWSoftware Utils Library.
  *
- *  Copyright (c) 2021 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * BEWSoftware Utils is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * BEWSoftware Utils is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * ****************************************************************
- * Name: Bradley Willcott
- * ID:   M198449
- * Date: 11 Feb 2021
- * ****************************************************************
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils.io;
 
@@ -49,7 +42,7 @@ public final class ConsoleIO implements Display, Input {
      * Stores the singleton of each {@link Writer} object related to each
      * specific instance of {@link PrintWriter} associated with a {@code filename}.
      */
-    private static final List<Writer> WRITERS = new ArrayList<>();
+    private static final List<WriterInstance> WRITERS = new ArrayList<>();
 
     /**
      * Provides a version of the ConsolIO that displays nothing.
@@ -130,7 +123,7 @@ public final class ConsoleIO implements Display, Input {
     /**
      * Instantiates a fully configured "console display".
      * <p>
-     * All output goes to the system console, if any.
+     * All output goes to the system console.
      * <p>
      * For use by factory method.
      *
@@ -146,15 +139,14 @@ public final class ConsoleIO implements Display, Input {
         if (console != null)
         {
             this.out = console.writer();
-            this.linePrefix = linePrefix;
-            clear();
-            this.blank = false;
         } else
         {
-            this.out = null;
-            this.linePrefix = "";
-            this.blank = true;
+            this.out = new PrintWriter(System.out);
         }
+
+        this.linePrefix = linePrefix;
+        clear();
+        this.blank = false;
     }
 
     /**
@@ -166,8 +158,8 @@ public final class ConsoleIO implements Display, Input {
      * the file will be opened/created. If the file exists, it will be truncated.
      * If successful, a copy of all text will be appended to this file.
      * <p>
-     * If {@code withConsole} is {@code true}, then the System console, if exists,
-     * will be sent a copy of all text.
+     * If {@code withConsole} is {@code true}, then the System console will be
+     * sent a copy of all text.
      * <p>
      * For use by factory method.
      *
@@ -179,22 +171,31 @@ public final class ConsoleIO implements Display, Input {
         this.open = true;
         boolean lBlank;
 
-        console = withConsole ? System.console() : null;
-
-        if (console != null)
+        if (withConsole)
         {
-            this.out = console.writer();
+            this.console = System.console();
+
+            if (this.console != null)
+            {
+                this.out = this.console.writer();
+            } else
+            {
+                this.out = new PrintWriter(System.out);
+            }
+
             this.linePrefix = linePrefix;
             clear();
             lBlank = false;
         } else
         {
+            this.console = null;
             this.out = null;
             this.linePrefix = "";
             lBlank = true;
         }
 
-        if (filename != null && !filename.isBlank())
+        if (filename
+            != null && !filename.isBlank())
         {
             this.filename = filename;
             int idx = WRITERS.indexOf(filename);
@@ -203,7 +204,7 @@ public final class ConsoleIO implements Display, Input {
             {
                 if (idx == -1)
                 {
-                    WRITERS.add(new Writer(filename));
+                    WRITERS.add(new WriterInstance(filename));
                     idx = WRITERS.indexOf(filename);
                 }
 
@@ -329,9 +330,15 @@ public final class ConsoleIO implements Display, Input {
     public Scanner newScanner() {
         Scanner rtn = null;
 
-        if (open && console != null)
+        if (open)
         {
-            rtn = new Scanner(console.reader());
+            if (console != null)
+            {
+                rtn = new Scanner(console.reader());
+            } else
+            {
+                rtn = new Scanner(System.in);
+            }
         } else
         {
             exception = new IOException(CLOSED);
@@ -344,9 +351,23 @@ public final class ConsoleIO implements Display, Input {
     public String readLine() {
         String rtn = null;
 
-        if (open && console != null)
+        if (open)
         {
-            rtn = console.readLine();
+            if (console != null)
+            {
+                rtn = console.readLine();
+            } else
+            {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(System.in));
+                try
+                {
+                    rtn = reader.readLine();
+                } catch (IOException ex)
+                {
+                    exception = ex;
+                }
+            }
         } else
         {
             exception = new IOException(CLOSED);
@@ -359,9 +380,24 @@ public final class ConsoleIO implements Display, Input {
     public String readLine(String fmt, Object... args) {
         String rtn = null;
 
-        if (open && console != null)
+        if (open)
         {
-            rtn = console.readLine(fmt, args);
+            if (console != null)
+            {
+                rtn = console.readLine(fmt, args);
+            } else
+            {
+                print(String.format(fmt, args));
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(System.in));
+                try
+                {
+                    rtn = reader.readLine();
+                } catch (IOException ex)
+                {
+                    exception = ex;
+                }
+            }
         } else
         {
             exception = new IOException(CLOSED);
@@ -374,9 +410,16 @@ public final class ConsoleIO implements Display, Input {
     public char[] readPassword() {
         char[] rtn = null;
 
-        if (open && console != null)
+        if (open)
         {
-            rtn = console.readPassword();
+            if (console != null)
+            {
+                rtn = console.readPassword();
+            } else
+            {
+                String input = readLine();
+                rtn = input != null ? input.toCharArray() : null;
+            }
         } else
         {
             exception = new IOException(CLOSED);
@@ -389,15 +432,23 @@ public final class ConsoleIO implements Display, Input {
     public char[] readPassword(String fmt, Object... args) {
         char[] rtn = null;
 
-        if (open && console != null)
+        if (open)
         {
-            rtn = console.readPassword(fmt, args);
+            if (console != null)
+            {
+                rtn = console.readPassword(fmt, args);
+            } else
+            {
+                String input = readLine(fmt, args);
+                rtn = input != null ? input.toCharArray() : null;
+            }
         } else
         {
             exception = new IOException(CLOSED);
         }
 
         return rtn;
+
     }
 
     /**
@@ -407,7 +458,7 @@ public final class ConsoleIO implements Display, Input {
      * @since 1.0.7
      * @version 1.0.7
      */
-    private static class Writer implements Closeable {
+    private static class WriterInstance implements Closeable {
 
         /**
          * Number of references of this instance of {@link PrintWriter} that are
@@ -437,29 +488,10 @@ public final class ConsoleIO implements Display, Input {
          *                               while opening or creating the file
          *
          */
-        private Writer(final String filename) throws FileNotFoundException {
+        private WriterInstance(final String filename) throws FileNotFoundException {
             this.filename = filename;
             this.printWriter = new PrintWriter(filename);
             this.count = 1;
-        }
-
-        /**
-         * Number of references of this instance of {@link PrintWriter} that are
-         * still active.
-         *
-         * @return count
-         */
-        public int count() {
-            return count;
-        }
-
-        /**
-         * The filename associated with the {@link #printWriter}.
-         *
-         * @return filename
-         */
-        public String filename() {
-            return filename;
         }
 
         /**
@@ -481,27 +513,22 @@ public final class ConsoleIO implements Display, Input {
             }
         }
 
-        /**
-         * Decrements the usage counter.
-         *
-         * @implSpec
-         * When the counter reaches zero, then the console is closed.
-         */
-        public void removeUsage() {
-            if (isOpen())
-            {
-                --count;
-
-                if (count == 0)
-                {
-                    close();
-                }
-            }
+        @Override
+        public void close() {
+            count = 0;
+            printWriter.flush();
+            printWriter.close();
+            printWriter = null;
         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(this.filename);
+        /**
+         * Number of references of this instance of {@link PrintWriter} that are
+         * still active.
+         *
+         * @return count
+         */
+        public int count() {
+            return count;
         }
 
         @Override
@@ -521,8 +548,22 @@ public final class ConsoleIO implements Display, Input {
                 return this.filename.equals(obj);
             }
 
-            final Writer other = (Writer) obj;
+            final WriterInstance other = (WriterInstance) obj;
             return Objects.equals(this.filename, other.filename);
+        }
+
+        /**
+         * The filename associated with the {@link #printWriter}.
+         *
+         * @return filename
+         */
+        public String filename() {
+            return filename;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this.filename);
         }
 
         /**
@@ -533,12 +574,22 @@ public final class ConsoleIO implements Display, Input {
             return printWriter != null;
         }
 
-        @Override
-        public void close() {
-            count = 0;
-            printWriter.flush();
-            printWriter.close();
-            printWriter = null;
+        /**
+         * Decrements the usage counter.
+         *
+         * @implSpec
+         * When the counter reaches zero, then the console is closed.
+         */
+        public void removeUsage() {
+            if (isOpen())
+            {
+                --count;
+
+                if (count == 0)
+                {
+                    close();
+                }
+            }
         }
 
     }
