@@ -23,6 +23,30 @@
         </developer>
     </developers>
     
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007</name>
+            <comments>
+Copyright (C) 2020, 2021 Bradley Willcott
+
+BEWSoftware Utils is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+BEWSoftware Utils is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.                
+            </comments>
+            <distribution>repo</distribution>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+    
     <properties>
         <java.version>12</java.version>
         <source.encoding>UTF-8</source.encoding>
@@ -756,7 +780,9 @@
                 <configuration>
                     <docfilessubdirs>true</docfilessubdirs>
                     <source>${javadoc.source.version}</source>
-                    <additionalOptions>-link ${javadoc.link.url.jdk}</additionalOptions>
+                    <links>
+                        <link>${javadoc.link.url.jdk}</link>
+                    </links>
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
                     <bottom>
