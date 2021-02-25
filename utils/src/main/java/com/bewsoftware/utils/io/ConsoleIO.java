@@ -23,11 +23,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class implements a simple console.
+ * This class implements a console with benefits.
+ * <p>
+ * Apart from writing to and reading from the console, you can also write to
+ * a file.
  *
  * @implNote
- * Once the ConsolIO object is closed, any further calls to any of the append,
- * appendln, print, println or flush methods will cause an {@link IOException}.
+ * Once the ConsolIO object is closed, any further calls to any of the methods:
+ * append, appendln, print, println, flush, newScanner, readLine, or readPassword,
+ * will cause an {@link IOException}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -315,13 +319,6 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public Exception popException() {
-        Exception rtn = exception;
-        clearExceptions();
-        return rtn;
-    }
-
-    @Override
     public boolean isException() {
         return exception != null;
     }
@@ -344,6 +341,13 @@ public final class ConsoleIO implements Display, Input {
             exception = new IOException(CLOSED);
         }
 
+        return rtn;
+    }
+
+    @Override
+    public Exception popException() {
+        Exception rtn = exception;
+        clearExceptions();
         return rtn;
     }
 
@@ -387,7 +391,7 @@ public final class ConsoleIO implements Display, Input {
                 rtn = console.readLine(fmt, args);
             } else
             {
-                print(String.format(fmt, args));
+                println(String.format(fmt, args));
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(System.in));
                 try

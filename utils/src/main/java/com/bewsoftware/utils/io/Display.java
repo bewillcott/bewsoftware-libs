@@ -25,7 +25,7 @@ import java.io.Closeable;
  * <p>
  * By using this interface, it is possible to have multiple implementations,
  * each of which provides a different type or level of output. For instance,
- * the {@link ConsoleDisplay} class provides basic console level output.
+ * the {@link ConsoleIO} class provides console level output.
  * <p>
  * Also, by implementing most of the methods in the interface
  * (<i>default</i> and <i>static</i>), it will make it even simpler to develop
@@ -45,7 +45,6 @@ import java.io.Closeable;
  * <ul>
  * <li>{@link #appendln(java.lang.String)}</li>
  * <li>{@link #appendln(int)}</li>
- * <li>{@link #fill(java.lang.String, int)}</li>
  * </ul>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>

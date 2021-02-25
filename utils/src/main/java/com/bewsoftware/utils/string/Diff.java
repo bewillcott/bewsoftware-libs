@@ -136,7 +136,7 @@ public class Diff {
             return " ".repeat(count);
         }
 
-        /*
+        /**
          * The line number within the original text file.
          */
         public final int linenum;
@@ -145,6 +145,7 @@ public class Diff {
          * The modified line text.
          */
         public final String mod;
+
         /**
          * The original unmodified line text.
          */
