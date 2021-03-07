@@ -25,7 +25,6 @@
  * @version 1.0
  */
 module bewsoftware.files {
-    requires transitive org.apache.logging.log4j;
     requires transitive bewsoftware.property;
     requires transitive bewsoftware.common;
 

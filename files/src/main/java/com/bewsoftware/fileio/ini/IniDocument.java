@@ -35,8 +35,8 @@ import java.util.List;
 public interface IniDocument {
 
     /**
-     * Tests to see whether or not this <b>key</b> exists within this
-     * <b>section</b> in the {@link #entries} store.
+     * Test to see whether or not this <b>key</b> exists within this
+     * <b>section</b> in the internal store.
      *
      * @param section possible section
      * @param key     possible key
@@ -48,8 +48,8 @@ public interface IniDocument {
     boolean containsKey(final String section, final String key);
 
     /**
-     * Tests to see whether or not this <b>section</b> exists within the
-     * {@link #entries} store.
+     * Test to see whether or not this <b>section</b> exists within the
+     * internal store.
      *
      * @param section possible section.
      *
@@ -62,7 +62,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>boolean</b>.
      *
      * @param section      The section in which the key should reside.
@@ -80,7 +80,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>boolean</b>.
      *
      * @param key          The key whose value we are after.
@@ -96,7 +96,7 @@ public interface IniDocument {
     }
 
     /**
-     * Returns the associated {@code comment} for this {@code key} from this
+     * Get the associated {@code comment} for this {@code key} from this
      * {@code section}, if it is set.Otherwise {@code null}.
      *
      * @param section The section in which the key should reside.
@@ -107,12 +107,12 @@ public interface IniDocument {
     String getComment(final String section, final String key);
 
     /**
-     * Returns the associated {@code comment} for this {@code key} from the
-     * global section, if iOtherwise {@code null}.tde null}.
+     * Get the associated {@code comment} for this {@code key} from the
+     * global section.
      *
      * @param key The key whose comment we are after.
      *
-     * @return The comment or {@code null}.
+     * @return the comment or {@code null}
      *
      * @since 1.0
      */
@@ -121,7 +121,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>double</b>.
      *
      * @param section      The section in which the key should reside.
@@ -138,7 +138,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>double</b>.
      *
      * @param key          The key whose value we are after.
@@ -153,7 +153,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>float</b>.
      *
      * @param section      The section in which the key should reside.
@@ -170,7 +170,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>float</b>.
      *
      * @param key          The key whose value we are after.
@@ -185,7 +185,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>int</b>.
      *
      * @param section      The section in which the key should reside.
@@ -202,7 +202,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>int</b>.
      *
      * @param key          The key whose value we are after.
@@ -217,7 +217,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>long</b>.
      *
      * @param section      The section in which the key should reside.
@@ -234,7 +234,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>long</b>.
      *
      * @param key          The key whose value we are after.
@@ -249,7 +249,7 @@ public interface IniDocument {
     }
 
     /**
-     * Returns {@code section}'s list of properties.
+     * Get the {@code section}'s list of properties.
      * <p>
      * <b>Changes:</b>
      * <dl>
@@ -267,7 +267,7 @@ public interface IniDocument {
     List<IniProperty<String>> getSection(final String section);
 
     /**
-     * Use to create an empty section with no comment.
+     * Create an empty section with no comment.
      *
      * @param section New section.
      *
@@ -278,7 +278,7 @@ public interface IniDocument {
     }
 
     /**
-     * Gets the {@code comment} for this {@code section}.
+     * Get the {@code comment} for this {@code section}.
      * <p>
      * Will also return {@code null} if there is no section by that name.
      *
@@ -298,7 +298,7 @@ public interface IniDocument {
     List<String> getSections();
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> in the form of a
+     * Get the <i>value</i> of the <i>key</i> in the form of a
      * <b>String</b>.
      *
      * @param section      The section in which the key should reside.
@@ -315,7 +315,7 @@ public interface IniDocument {
     }
 
     /**
-     * Obtain the <i>value</i> of the <i>key</i> from the global section, in the
+     * Get the <i>value</i> of the <i>key</i> from the global section, in the
      * form of a <b>String</b>.
      *
      * @param key          The key whose value we are after.
@@ -330,7 +330,7 @@ public interface IniDocument {
     }
 
     /**
-     * Returns the value to which the specified section/key is mapped, or
+     * Get the value to which the specified section/key is mapped, or
      * {@code null} if this map contains no mapping for the section/key.
      * <p>
      * More formally, if this map contains a section with a mapping from a key
@@ -350,7 +350,7 @@ public interface IniDocument {
     String getValue(final String section, final String key);
 
     /**
-     * Refer to {@link #indexOfSection(java.lang.String)
+     * Refer to {@link #indexOfSection(java.lang.String)}
      *
      * @param kvlist List to look in.
      * @param key    Key to look for.
@@ -411,7 +411,7 @@ public interface IniDocument {
     void removeSection(final String section);
 
     /**
-     * Used to set a property with a value of type: <i>boolean</i>.
+     * Set a property with a value of type: <i>boolean</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -428,7 +428,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>boolean</i>.
+     * Set a property with a value of type: <i>boolean</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -450,7 +450,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>boolean</i>, in the
+     * Set a property with a value of type: <i>boolean</i>, in the
      * global section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -468,7 +468,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>boolean</i>, in the
+     * Set a property with a value of type: <i>boolean</i>, in the
      * global section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -530,7 +530,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>double</i>.
+     * Set a property with a value of type: <i>double</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -547,7 +547,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>double</i>.
+     * Set a property with a value of type: <i>double</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -570,7 +570,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>double</i>, in the global
+     * Set a property with a value of type: <i>double</i>, in the global
      * section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -588,7 +588,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>double</i>, in the global
+     * Set a property with a value of type: <i>double</i>, in the global
      * section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -611,7 +611,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>float</i>.
+     * Set a property with a value of type: <i>float</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -629,7 +629,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>float</i>.
+     * Set a property with a value of type: <i>float</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -652,7 +652,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>float</i>, in the global
+     * Set a property with a value of type: <i>float</i>, in the global
      * section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -670,7 +670,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>Float</i>, in the global
+     * Set a property with a value of type: <i>Float</i>, in the global
      * section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -695,7 +695,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>int</i>.
+     * Set a property with a value of type: <i>int</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -713,7 +713,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>int</i>.
+     * Set a property with a value of type: <i>int</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -738,7 +738,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>int</i>, in the global
+     * Set a property with a value of type: <i>int</i>, in the global
      * section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -756,7 +756,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>int</i>, in the global
+     * Set a property with a value of type: <i>int</i>, in the global
      * section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -781,7 +781,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>long</i>.
+     * Set a property with a value of type: <i>long</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -799,7 +799,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>long</i>.
+     * Set a property with a value of type: <i>long</i>.
      *
      * @param section The ini section to set the key/value pair into to.
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -824,7 +824,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>long</i>, in the global
+     * Set a property with a value of type: <i>long</i>, in the global
      * section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -842,7 +842,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>long</i>, in the global
+     * Set a property with a value of type: <i>long</i>, in the global
      * section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -867,7 +867,7 @@ public interface IniDocument {
     }
 
     /**
-     * Use to create an empty section with a comment.
+     * Create an empty section with a comment.
      *
      * @param section New section.
      * @param comment New comment.
@@ -877,7 +877,7 @@ public interface IniDocument {
     void setSection(final String section, final String comment);
 
     /**
-     * Used to set a property with a value of type: <i>String</i>.
+     * Set a property with a value of type: <i>String</i>.
      *
      * @param section The ini section to store the key/value pair into. Use
      *                {@code null} to access the <b>global section</b>.
@@ -906,7 +906,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>String</i>.
+     * Set a property with a value of type: <i>String</i>.
      *
      * @param section The ini section to store the key/value pair into. Use
      *                {@code null} to access the <b>global section</b>.
@@ -925,7 +925,7 @@ public interface IniDocument {
     String setString(final String section, final String key, final String value, final String comment) throws InvalidParameterValueException;
 
     /**
-     * Used to set a property with a value of type: <i>String</i>.The key is
+     * Set a property with a value of type: <i>String</i>.The key is
      * stored in the global section.
      *
      * @param key   The key label. <b>Must not be {@code null}.</b>
@@ -942,7 +942,7 @@ public interface IniDocument {
     }
 
     /**
-     * Used to set a property with a value of type: <i>String</i>.The key is
+     * Set a property with a value of type: <i>String</i>.The key is
      * stored in the global section.
      *
      * @param key     The key label. <b>Must not be {@code null}.</b>
@@ -964,7 +964,7 @@ public interface IniDocument {
     }
 
     /**
-     * Checks the validity of the {@code comment}.
+     * Check the validity of the {@code comment}.
      *
      * @param comment To be checked.
      *

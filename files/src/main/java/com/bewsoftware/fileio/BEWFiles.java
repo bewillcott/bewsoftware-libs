@@ -27,8 +27,6 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.Files.copy;
@@ -47,10 +45,6 @@ import static java.nio.file.Path.of;
  * @version 1.0
  */
 public class BEWFiles {
-
-    // Define a static logger variable so that it references the
-    // Logger instance named "BEWFiles".
-    private static final Logger logger = LogManager.getLogger(BEWFiles.class);
 
     /**
      * Recursively copies the directories and files of the {@code sourceDir} to the {@code destDir}.
