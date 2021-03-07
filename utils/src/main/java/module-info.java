@@ -27,7 +27,6 @@
  */
 module bewsoftware.utils {
     requires transitive java.desktop;
-    requires transitive org.apache.logging.log4j;
     requires transitive java.sql;
 
     exports com.bewsoftware.utils.graphics;

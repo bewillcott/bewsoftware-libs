@@ -1,27 +1,28 @@
 /*
- * This file is part of the BEWSoftware Utils Library.
+ *  File Name:    Strings.java
+ *  Project Name: bewsoftware-utils
  *
- * Copyright (C) 2020, 2021 Bradley Willcott
+ *  Copyright (c) 2021 Bradley Willcott
  *
- * BEWSoftware Utils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * BEWSoftware Utils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils.string;
 
 import java.util.Objects;
 
 /**
- * Class contains some helper methods.
+ * This class contains some helper methods.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -53,14 +54,21 @@ public class Strings {
      * @return the formatted text
      */
     public static String centreFill(final String text, final int width) {
-        String rtn = text;
+        String rtn = "";
         int length = text.length();
 
+        // Process only if necessary
         if (length < width)
         {
-            int fill = (width - length) / 2;
-            int tail = width - fill - length;
-            rtn = " ".repeat(fill) + text + " ".repeat(tail);
+            StringBuilder sb = new StringBuilder();
+            int preLen = (width - text.length()) / 2;
+            int postLen = width - text.length() - preLen;
+            sb.append(" ".repeat(preLen)).append(text).append(" ".repeat(postLen));
+            rtn = sb.toString();
+
+        } else
+        {
+            rtn = text;
         }
 
         return rtn;

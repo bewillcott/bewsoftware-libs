@@ -6,6 +6,10 @@ The configuration is intended to be shared among all the users of project and
 therefore it is assumed to be part of version control checkout.
 Without this configuration present, some functionality in the IDE may be limited or fail altogether.
 -->
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>appendln</word>
+        <word>println</word>
+    </spellchecker-wordlist>
     <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
         <!--
 Properties that influence various parts of the IDE, especially code formatting and the like. 
@@ -13,7 +17,6 @@ You can copy and paste the single properties, into the pom.xml file and the IDE 
 That way multiple projects can share the same settings (useful for formatting rules for example).
 Any value defined here will override the pom.xml file value but is only applicable to the current project.
 -->
-        <netbeans.hint.licensePath>${project.basedir}/licenseheader.txt</netbeans.hint.licensePath>
         <netbeans.hint.jdkPlatform>JDK_12</netbeans.hint.jdkPlatform>
         <de-funfried-netbeans-plugins-externalcodeformatter.enableIndentationSettings>true</de-funfried-netbeans-plugins-externalcodeformatter.enableIndentationSettings>
         <de-funfried-netbeans-plugins-externalcodeformatter.overrideTabSizeValue>4</de-funfried-netbeans-plugins-externalcodeformatter.overrideTabSizeValue>
@@ -24,9 +27,6 @@ Any value defined here will override the pom.xml file value but is only applicab
         <de-funfried-netbeans-plugins-externalcodeformatter.enabledFormatter_2e_JAVA>netbeans-formatter</de-funfried-netbeans-plugins-externalcodeformatter.enabledFormatter_2e_JAVA>
         <de-funfried-netbeans-plugins-externalcodeformatter.showNotifications>true</de-funfried-netbeans-plugins-externalcodeformatter.showNotifications>
         <de-funfried-netbeans-plugins-externalcodeformatter.useProjectSettings>true</de-funfried-netbeans-plugins-externalcodeformatter.useProjectSettings>
+        <netbeans.hint.license>gpl30_for_Generic</netbeans.hint.license>
     </properties>
-    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-        <word>appendln</word>
-        <word>println</word>
-    </spellchecker-wordlist>
 </project-shared-configuration>

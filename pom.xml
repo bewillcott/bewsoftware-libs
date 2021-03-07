@@ -4,7 +4,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-libs</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>pom</packaging>
     
     <name>BEWSoftware Libraries</name>
@@ -65,17 +65,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <skip.version.build>false</skip.version.build>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
-        </dependency>   
+    <dependencies>   
 
         <!-- Testing Dependencies -->
         <dependency>
@@ -790,6 +780,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </bottom>
                     <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
                     <tags>
+                        <tag>
+                            <name>Note</name>
+                            <placement>a</placement>
+                            <head>Note:</head>
+                        </tag>
                         <tag>
                             <name>apiNote</name>
                             <placement>a</placement>
