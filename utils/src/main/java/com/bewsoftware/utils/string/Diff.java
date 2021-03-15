@@ -1,14 +1,14 @@
 /*
- * This file is part of the BEW Utils Library (aka: BEWUtils).
+ * This file is part of the BEWSoftware Utils Library.
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
- * BEWUtils is free software: you can redistribute it and/or modify
+ * BEWSoftware Utils is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * BEWUtils is distributed in the hope that it will be useful,
+ * BEWSoftware Utils is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -125,8 +125,19 @@ public class Diff {
      */
     public static class ModifiedLine {
 
-        /*
-         * The line number with the original text file.
+        /**
+         * Provide a String filled with spaces.
+         *
+         * @param count The number of spaces required.
+         *
+         * @return space filled String.
+         */
+        private static String fill(int count) {
+            return " ".repeat(count);
+        }
+
+        /**
+         * The line number within the original text file.
          */
         public final int linenum;
 
@@ -134,6 +145,7 @@ public class Diff {
          * The modified line text.
          */
         public final String mod;
+
         /**
          * The original unmodified line text.
          */
@@ -176,24 +188,6 @@ public class Diff {
             return "-" + strLinenum + orig + "\n"
                    + (position > -1 ? fill(slLength + position) + "^" : "") + "\n"
                    + "+" + fill(slLength) + mod;
-        }
-
-        /**
-         * Provide a String filled with spaces.
-         *
-         * @param qty The number of spaces required.
-         *
-         * @return space filled String.
-         */
-        private String fill(int qty) {
-            StringBuilder rtn = new StringBuilder();
-
-            for (int i = 0; i < qty; i++)
-            {
-                rtn.append(' ');
-            }
-
-            return rtn.toString();
         }
     }
 }

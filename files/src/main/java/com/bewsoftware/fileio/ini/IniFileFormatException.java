@@ -1,7 +1,7 @@
 /*
  * This file is part of the BEW Files Library (aka: BEWFiles).
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
  * BEWFiles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ public class IniFileFormatException extends Exception {
      * @param filepath Path to the <u>ini</u> file.
      * @param msg      the detail message.
      */
-    public IniFileFormatException(String filepath, String msg) {
+    public IniFileFormatException(final String filepath, final String msg) {
         super(msg);
         this.filepath = filepath;
     }

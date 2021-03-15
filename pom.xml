@@ -4,7 +4,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-libs</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.7</version>
     <packaging>pom</packaging>
     
     <name>BEWSoftware Libraries</name>
@@ -23,10 +23,33 @@
         </developer>
     </developers>
     
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007</name>
+            <comments>
+Copyright (C) 2020, 2021 Bradley Willcott
+
+BEWSoftware Utils is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+BEWSoftware Utils is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.                
+            </comments>
+            <distribution>repo</distribution>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+    
     <properties>
         <java.version>12</java.version>
         <source.encoding>UTF-8</source.encoding>
-        <major.minor.version>1.0</major.minor.version>        
         <jdk.version>${java.version}</jdk.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -38,21 +61,11 @@
         <javadoc.reporting.outputDirectory>${project.reporting.outputDirectory}/apidocs</javadoc.reporting.outputDirectory>
         <!-- Testing properties -->
         <skip.unit.tests>true</skip.unit.tests>
-        <surefire.args></surefire.args>
+        <surefire.args/>
         <skip.version.build>false</skip.version.build>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
-        </dependency>   
+    <dependencies>   
 
         <!-- Testing Dependencies -->
         <dependency>
@@ -566,6 +579,16 @@
                     </exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>
+                    src/uml
+                </directory>
+                <excludes>
+                    <exclude>
+                        **/*
+                    </exclude>
+                </excludes>
+            </resource>
         </resources>
 
         <pluginManagement>
@@ -573,12 +596,12 @@
                 <plugin>
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-mdj-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.1.3</version>
                 </plugin>                
                 <plugin>                        
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-version-plugin</artifactId>
-                    <version>1.0.0</version>                
+                    <version>1.0.2</version>                
                 </plugin>
 
                 <plugin>
@@ -702,8 +725,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
-                        <arg></arg>
-                        <arg>-Xlint</arg>
+                        <arg>-Xlint:all</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -728,7 +750,10 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
+                <artifactId>maven-site-plugin</artifactId>                
+                <configuration>
+                    <locales>en</locales>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -745,13 +770,61 @@
                 <configuration>
                     <docfilessubdirs>true</docfilessubdirs>
                     <source>${javadoc.source.version}</source>
-                    <additionalOptions>-link ${javadoc.link.url.jdk}</additionalOptions>
+                    <links>
+                        <link>${javadoc.link.url.jdk}</link>
+                    </links>
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
                     <bottom>
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
                     <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
+                    <tags>
+                        <tag>
+                            <name>Note</name>
+                            <placement>a</placement>
+                            <head>Note:</head>
+                        </tag>
+                        <tag>
+                            <name>apiNote</name>
+                            <placement>a</placement>
+                            <head>API Note:</head>
+                        </tag>
+                        <tag>
+                            <name>implSpec</name>
+                            <placement>a</placement>
+                            <head>Implementation Requirements:</head>
+                        </tag>
+                        <tag>
+                            <name>implNote</name>
+                            <placement>a</placement>
+                            <head>Implementation Note:</head>
+                        </tag>
+                        <tag>
+                            <name>param</name>
+                        </tag>
+                        <tag>
+                            <name>return</name>
+                        </tag>
+                        <tag>
+                            <name>throws</name>
+                        </tag>
+                        <tag>
+                            <name>since</name>
+                        </tag>
+                        <tag>
+                            <name>version</name>
+                        </tag>
+                        <tag>
+                            <name>author</name>
+                        </tag>
+                        <tag>
+                            <name>serialData</name>
+                        </tag>
+                        <tag>
+                            <name>see</name>
+                        </tag>
+                    </tags>
                 </configuration>
                 <executions>
                     <execution>
@@ -761,13 +834,13 @@
                         </goals>
                         <phase>site</phase>
                     </execution>
-                    <execution>
+                    <!--                    <execution>
                         <id>javadoc-test</id>
                         <goals>
                             <goal>test-javadoc-no-fork</goal>
                         </goals>
                         <phase></phase>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
             <plugin>

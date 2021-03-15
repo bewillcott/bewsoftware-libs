@@ -1,28 +1,28 @@
 /*
- * This file is part of the BEW Utils Library (aka: BEWUtils).
+ *  File Name:    Strings.java
+ *  Project Name: bewsoftware-utils
  *
- * Copyright (C) 2020 Bradley Willcott
+ *  Copyright (c) 2021 Bradley Willcott
  *
- * BEWUtils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * BEWUtils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils.string;
 
 import java.util.Objects;
 
 /**
- * Strings class description.
- * Class contains some helper methods.
+ * This class contains some helper methods.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -32,9 +32,97 @@ import java.util.Objects;
 public class Strings {
 
     /**
-     * This class is not meant to be instantiated.
+     * Centre fills the {@code number} within a text string of {@code width}
+     * length.
+     *
+     * @param number to wrap
+     * @param width  of required text
+     *
+     * @return the formatted text
      */
-    private Strings() {
+    public static String centreFill(final int number, final int width) {
+        return centreFill(Integer.toString(number), width);
+    }
+
+    /**
+     * Formats the {@code text} to be centred within a text string of {@code width}
+     * length.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     *
+     * @return the formatted text
+     */
+    public static String centreFill(final String text, final int width) {
+        String rtn = "";
+        int length = text.length();
+
+        // Process only if necessary
+        if (length < width)
+        {
+            StringBuilder sb = new StringBuilder();
+            int preLen = (width - text.length()) / 2;
+            int postLen = width - text.length() - preLen;
+            sb.append(" ".repeat(preLen)).append(text).append(" ".repeat(postLen));
+            rtn = sb.toString();
+
+        } else
+        {
+            rtn = text;
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Fills out a new String with the <i>text</i> repeated <i>count</i> times.
+     *
+     * @implNote
+     * Uses {@code text.repeat(count)} to fill out String.
+     *
+     * @param text  to repeat
+     * @param count number of repeats
+     *
+     * @return new String
+     *
+     * @see java.lang.String#repeat(int)
+     */
+    public static String fill(final String text, final int count) {
+        return text.repeat(count);
+    }
+
+    /**
+     * Formats the {@code number} to be left justified within a text string of
+     * {@code width} length.
+     *
+     * @param number to wrap
+     * @param width  of required text
+     *
+     * @return the formatted text
+     */
+    public static String leftFill(final int number, final int width) {
+        return leftFill(Integer.toString(number), width);
+    }
+
+    /**
+     * Formats the {@code text} to be left justified within a text string of
+     * {@code width} length.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     *
+     * @return the formatted text
+     */
+    public static String leftFill(final String text, final int width) {
+        String rtn = text;
+        int length = text.length();
+
+        if (length < width)
+        {
+            rtn = text + " ".repeat(width - length);
+        }
+
+        return rtn;
     }
 
     /**
@@ -138,4 +226,11 @@ public class Strings {
 
         return str;
     }
+
+    /**
+     * This class is not meant to be instantiated.
+     */
+    private Strings() {
+    }
+
 }

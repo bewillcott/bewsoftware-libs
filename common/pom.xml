@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-libs</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.7</version>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
@@ -15,9 +15,8 @@
     
     <name>BEWSoftware Common Library</name>
     <description>This library contains classes that are not of any specific type,
-and they are used by classes from various modules.</description>
+        and they are used by classes from various modules.</description>
 
-<properties>
-        <major.minor.version>1.0</major.minor.version>
+    <properties>
     </properties>
 </project>

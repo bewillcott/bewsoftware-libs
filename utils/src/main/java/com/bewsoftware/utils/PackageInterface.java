@@ -1,14 +1,14 @@
 /*
- * This file is part of the BEW Utils Library (aka: BEWUtils).
+ * This file is part of the BEWSoftware Utils Library.
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
- * BEWUtils is free software: you can redistribute it and/or modify
+ * BEWSoftware Utils is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * BEWUtils is distributed in the hope that it will be useful,
+ * BEWSoftware Utils is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -37,16 +37,15 @@ public interface PackageInterface {
     String getImplementationTitle();
 
     /**
-     * Returns the vendor that implemented this package, {@code null}
-     * is returned if it is not known.
-     *
      * @return the vendor that implemented this package, {@code null}
      *         is returned if it is not known.
      */
     String getImplementationVendor();
 
     /**
-     * Return the version of this implementation. It consists of any string
+     * Return the version of this implementation.
+     * <p>
+     * It consists of any string
      * assigned by the vendor of this implementation and does
      * not have any particular syntax specified or expected by the Java
      * runtime. It may be compared for equality with other
@@ -83,23 +82,19 @@ public interface PackageInterface {
     String getSpecificationVendor();
 
     /**
-     * <p>
      * Returns the version number of the specification
      * that this package implements.
-     * </p>
      * <p>
      * This version string must be a sequence of non-negative decimal
      * integers separated by "."'s and may have leading zeros.
      * When version strings are compared the most significant
      * numbers are compared.
-     * </p>
      * <p>
      * Specification version numbers use a syntax that consists of non-negative
      * decimal integers separated by periods ".", for example "2.0" or
      * "1.2.3.4.5.6.7". This allows an extensible number to be used to represent
      * major, minor, micro, etc. versions. The version specification is described
      * by the following formal grammar:
-     * </p>
      * <blockquote>
      * <dl>
      * <dt><i>SpecificationVersion:</i>
@@ -124,32 +119,26 @@ public interface PackageInterface {
     String getSpecificationVersion();
 
     /**
-     * Return the hash code computed from the package name.
-     *
      * @return the hash code computed from the package name.
      */
     @Override
     int hashCode();
 
     /**
-     * <p>
      * Compare this package's specification version with a
      * desired version. It returns true if
      * this packages specification version number is greater than or equal
      * to the desired version number.
-     * </p>
      * <p>
      * Version numbers are compared by sequentially comparing corresponding
      * components of the desired and specification strings.
      * Each component is converted as a decimal integer and the values
      * compared.
-     * </p>
      * <p>
      * If the specification value is greater than the desired
      * value true is returned. If the value is less false is returned.
      * If the values are equal the period is skipped and the next pair of
      * components is compared.
-     * </p>
      *
      * @param desired the version string of the desired version.
      *
@@ -162,16 +151,11 @@ public interface PackageInterface {
     boolean isCompatibleWith(String desired) throws NumberFormatException;
 
     /**
-     * Returns true if this package is sealed.
-     *
      * @return true if the package is sealed, false otherwise
      */
     boolean isSealed();
 
     /**
-     * Returns true if this package is sealed with respect to the specified
-     * code source {@code url}.
-     *
      * @param url the code source URL
      *
      * @return true if this package is sealed with respect to the given {@code url}
@@ -179,14 +163,11 @@ public interface PackageInterface {
     boolean isSealed(URL url);
 
     /**
-     * <p>
      * Returns the string representation of this Package.
-     * </p>
      * <p>
      * Its value is the string "package " and the package name.
      * If the package title is defined it is appended.
      * If the package version is defined it is appended.
-     * </p>
      *
      * @return the string representation of the package.
      */

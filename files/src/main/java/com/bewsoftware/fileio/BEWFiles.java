@@ -1,7 +1,7 @@
 /*
  * This file is part of the BEW Files Library (aka: BEWFiles).
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2021 Bradley Willcott
  *
  * BEWFiles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.getLastModifiedTime;
@@ -47,10 +43,6 @@ import static java.nio.file.Path.of;
  * @version 1.0
  */
 public class BEWFiles {
-
-    // Define a static logger variable so that it references the
-    // Logger instance named "BEWFiles".
-    private static final Logger logger = LogManager.getLogger(BEWFiles.class);
 
     /**
      * Recursively copies the directories and files of the {@code sourceDir} to the {@code destDir}.
@@ -69,7 +61,7 @@ public class BEWFiles {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(String sourceDir, String destDir, String pattern, int verboseLvl, CopyOption... options) throws IOException {
+    public static void copyDirTree(final String sourceDir, final String destDir, final String pattern, final int verboseLvl, final CopyOption... options) throws IOException {
         Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
         Path destPath = (destDir != null ? of(destDir) : of(""));
 
@@ -91,7 +83,7 @@ public class BEWFiles {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(Path srcPath, Path destPath, String pattern, int verboseLvl, CopyOption... options) throws IOException {
+    public static void copyDirTree(final Path srcPath, final Path destPath, final String pattern, final int verboseLvl, CopyOption... options) throws IOException {
         // Can't be copying source onto itself.
         // No point.
         if (Objects.requireNonNull(srcPath).equals(Objects.requireNonNull(destPath)))
@@ -201,7 +193,7 @@ public class BEWFiles {
      * @throws URISyntaxException Name produces an invalid path data.
      * @throws IOException        General IO failure.
      */
-    public static Path getResource(Class<?> clazz, String name) throws URISyntaxException, IOException {
+    public static Path getResource(final Class<?> clazz, final String name) throws URISyntaxException, IOException {
         // clazz and name must NOT be null.
         if (clazz == null || name == null || name.isBlank())
         {
@@ -236,108 +228,4 @@ public class BEWFiles {
      */
     private BEWFiles() {
     }
-
-    /**
-     * This class is used by the
-     * {@linkplain #copyDirTree(Path, Path, String, int, CopyOption...) copyDirTree}
-     * method.
-     */
-    public static class Finder extends SimpleFileVisitor<Path> {
-
-        private final int vlevel;
-        private final PathMatcher matcher;
-        private int numMatches = 0;
-        private final SortedSet<Path> filenames = new TreeSet<>();
-
-        /**
-         * Creates a new instance of the {@code Finder} class.
-         *
-         * @param pattern The file search pattern to be used.
-         * @param vlevel  The verbose level, for info/debugging.
-         */
-        Finder(String pattern, int vlevel) {
-            matcher = FileSystems.getDefault()
-                    .getPathMatcher("glob:" + Objects.requireNonNull(pattern));
-            this.vlevel = vlevel;
-        }
-
-        /**
-         * Compares the glob pattern against the file name.
-         *
-         * @param file File to check.
-         */
-        private void find(Path file) {
-            Path name = Objects.requireNonNull(file).getFileName();
-
-            if (name != null && matcher.matches(name))
-            {
-                numMatches++;
-
-                if (vlevel >= 2)
-                {
-                    // Printout verbose info.
-                    System.err.println(file);
-                }
-
-                filenames.add(file);
-            }
-        }
-
-        /**
-         * Prints the total number of matches to standard out.
-         */
-        SortedSet<Path> done() {
-            if (vlevel >= 1)
-            {
-                // Printout verbose info.
-                System.err.println("Matched: " + numMatches);
-            }
-
-            return filenames;
-        }
-
-        /**
-         * {@inheritDoc }
-         * <p>
-         * Calls a pattern matching method on each file.
-         *
-         * @param file  {@inheritDoc }
-         * @param attrs {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-            find(file);
-            return CONTINUE;
-        }
-
-        /**
-         * {@inheritDoc }
-         *
-         * @param dir   {@inheritDoc }
-         * @param attrs {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-            return CONTINUE;
-        }
-
-        /**
-         * {@inheritDoc }
-         *
-         * @param file {@inheritDoc }
-         * @param exc  {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult visitFileFailed(Path file, IOException exc) {
-            System.err.println("visitFileFailed: " + exc);
-            return CONTINUE;
-        }
-    }
-
 }
