@@ -22,13 +22,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.getLastModifiedTime;
@@ -230,108 +228,4 @@ public class BEWFiles {
      */
     private BEWFiles() {
     }
-
-    /**
-     * This class is used by the
-     * {@linkplain #copyDirTree(Path, Path, String, int, CopyOption...) copyDirTree}
-     * method.
-     */
-    public static class Finder extends SimpleFileVisitor<Path> {
-
-        private final int vlevel;
-        private final PathMatcher matcher;
-        private int numMatches = 0;
-        private final SortedSet<Path> filenames = new TreeSet<>();
-
-        /**
-         * Creates a new instance of the {@code Finder} class.
-         *
-         * @param pattern The file search pattern to be used.
-         * @param vlevel  The verbose level, for info/debugging.
-         */
-        Finder(final String pattern, final int vlevel) {
-            matcher = FileSystems.getDefault()
-                    .getPathMatcher("glob:" + Objects.requireNonNull(pattern));
-            this.vlevel = vlevel;
-        }
-
-        /**
-         * Compares the glob pattern against the file name.
-         *
-         * @param file File to check.
-         */
-        private void find(final Path file) {
-            Path name = Objects.requireNonNull(file).getFileName();
-
-            if (name != null && matcher.matches(name))
-            {
-                numMatches++;
-
-                if (vlevel >= 2)
-                {
-                    // Printout verbose info.
-                    System.err.println(file);
-                }
-
-                filenames.add(file);
-            }
-        }
-
-        /**
-         * Prints the total number of matches to standard out.
-         */
-        SortedSet<Path> done() {
-            if (vlevel >= 1)
-            {
-                // Printout verbose info.
-                System.err.println("Matched: " + numMatches);
-            }
-
-            return filenames;
-        }
-
-        /**
-         * {@inheritDoc }
-         * <p>
-         * Calls a pattern matching method on each file.
-         *
-         * @param file  {@inheritDoc }
-         * @param attrs {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
-            find(file);
-            return CONTINUE;
-        }
-
-        /**
-         * {@inheritDoc }
-         *
-         * @param dir   {@inheritDoc }
-         * @param attrs {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) {
-            return CONTINUE;
-        }
-
-        /**
-         * {@inheritDoc }
-         *
-         * @param file {@inheritDoc }
-         * @param exc  {@inheritDoc }
-         *
-         * @return {@inheritDoc }
-         */
-        @Override
-        public FileVisitResult visitFileFailed(final Path file, final IOException exc) {
-            System.err.println("visitFileFailed: " + exc);
-            return CONTINUE;
-        }
-    }
-
 }

@@ -10,7 +10,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-files</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>jar</packaging>
    
     <name>BEWSoftware Files Library</name>
