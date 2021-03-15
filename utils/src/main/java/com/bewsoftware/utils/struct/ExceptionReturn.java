@@ -22,11 +22,14 @@ package com.bewsoftware.utils.struct;
  * ExceptionReturn class provides a way to get an {@code Exception} instance
  * out of either a Lambda expression or a method through a parameter.
  *
+ * @deprecated Replaced with {@link Ref Ref&lt;T&gt;}.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
  * @version 1.0.6
  */
+@Deprecated
 public class ExceptionReturn {
 
     public Exception val;

@@ -22,12 +22,15 @@ package com.bewsoftware.utils.struct;
  * GenericReturn class provides a way to get a {@code <T>} instance
  * out of either a Lambda expression or a method through a parameter.
  *
+ * @deprecated Replaced with {@link Ref Ref&lt;T&gt;}.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> Type of object.
  *
  * @since 1.0
  * @version 1.0
  */
+@Deprecated
 public class GenericReturn<T> {
 
     public T val;

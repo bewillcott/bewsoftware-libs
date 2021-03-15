@@ -22,11 +22,14 @@ package com.bewsoftware.utils.struct;
  * CharReturn class provides a way to get a {@code char} value into
  * and out of either a Lambda expression or a method through a parameter.
  *
+ * @deprecated Replaced with {@link Ref Ref&lt;T&gt;}.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.5
  * @version 1.0.5
  */
+@Deprecated
 public class CharReturn {
 
     public char val;

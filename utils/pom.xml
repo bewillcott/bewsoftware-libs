@@ -10,7 +10,7 @@
     
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-utils</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <packaging>jar</packaging>
     
     <name>BEWSoftware Utilities Library</name>
