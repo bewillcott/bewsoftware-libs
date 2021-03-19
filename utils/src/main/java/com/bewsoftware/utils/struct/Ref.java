@@ -22,6 +22,23 @@ package com.bewsoftware.utils.struct;
 /**
  * This class provides a way to get a value of type &lt;T&gt; into
  * and out of either a Lambda expression or a method through a parameter.
+ * <p>
+ * <b>Example:</b>
+ * <pre><code>
+ * ...
+ *     Ref&lt;Integer&gt; iRtn = new Ref&lt;&gt;();
+ *
+ *     if(add(2, 3, iRtn)){
+ *         System.out.println("2 + 3 = " + iRtn.val);
+ *     }
+ * ...
+ *
+ * public boolean add(final int a, final int b, final Ref&lt;Integer&gt; iRtn){
+ *     iRtn.val = a + b;
+ *
+ *     return iRtn.val &gt; 0;  // just something to use up return
+ * }
+ * </code></pre>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
