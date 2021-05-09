@@ -1,5 +1,5 @@
 /*
- * This file is part of the BEW Common Library (aka: BEWCommon).
+ * This file is part of the BEWSoftware Common Library (aka: BEWCommon).
  *
  * Copyright (C) 2020 Bradley Willcott
  *
