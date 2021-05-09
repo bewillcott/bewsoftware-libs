@@ -1,25 +1,29 @@
 /*
- * This file is part of the BEWSoftware Utils Library.
+ *  File Name:    ConsoleIO.java
+ *  Project Name: bewsoftware-utils
  *
- * Copyright (C) 2020, 2021 Bradley Willcott
+ *  Copyright (c) 2021 Bradley Willcott
  *
- * BEWSoftware Utils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * BEWSoftware Utils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils.io;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -69,7 +73,7 @@ public final class ConsoleIO implements Display, Input {
     }
 
     /**
-     * Provides a version of the ConsoleIO that outputs to both the console and
+     * Provides a version of the ConsoleIO1 that outputs to both the console and
      * the designated file.
      *
      * @param linePrefix text to prepend to each line
@@ -84,7 +88,7 @@ public final class ConsoleIO implements Display, Input {
     }
 
     /**
-     * Provides a version of the ConsoleIO that outputs only to the designated file.
+     * Provides a version of the ConsoleIO1 that outputs only to the designated file.
      *
      * @param linePrefix text to prepend to each line
      * @param filename   the file to output to
@@ -595,6 +599,5 @@ public final class ConsoleIO implements Display, Input {
                 }
             }
         }
-
     }
 }
