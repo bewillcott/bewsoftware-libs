@@ -18,13 +18,9 @@
  */
 package com.bewsoftware.property;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test the {@link Property} class.
@@ -48,24 +44,12 @@ public class PropertyTest {
     public PropertyTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() {
         prop1 = new Property<>(1, one, comment1);
         prop2 = new Property<>(2, two, comment2);
         prop3 = new Property<>(1, one, comment1);
         prop4 = new Property<>(2, two, comment2);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -74,13 +58,13 @@ public class PropertyTest {
     @Test
     public void testConstructors() {
         Property<Integer, String> propA = new Property<>(prop3);
-        assertNotNull("propA != null", propA);
-        assertEquals("propA == prop1", prop1, propA);
+        assertNotNull(propA, "propA != null");
+        assertEquals(prop1, propA, "propA == prop1");
 
         Property<Integer, String> propB = new Property<>(1, one);
         assertEquals(propA, propB);
-        assertNotEquals("propA.comment() != propB.comment()", propA.comment(), propB.comment());
-        assertNull("propB.comment() == null", propB.comment());
+        assertNotEquals(propA.comment(), propB.comment(), "propA.comment() != propB.comment()");
+        assertNull(propB.comment(), "propB.comment() == null");
     }
 
     /**
@@ -88,10 +72,10 @@ public class PropertyTest {
      */
     @Test
     public void testComment() {
-        assertEquals("prop1", comment1, prop1.comment());
-        assertEquals("prop2", comment2, prop2.comment());
-        assertNotEquals("prop1", comment2, prop1.comment());
-        assertNotEquals("prop2", comment1, prop2.comment());
+        assertEquals(comment1, prop1.comment(), "prop1");
+        assertEquals(comment2, prop2.comment(), "prop2");
+        assertNotEquals(comment2, prop1.comment(), "prop1");
+        assertNotEquals(comment1, prop2.comment(), "prop2");
     }
 
     /**
@@ -99,11 +83,11 @@ public class PropertyTest {
      */
     @Test
     public void testCompareTo() {
-        assertTrue("compareTo: prop1 < prop2", prop1.compareTo(prop2) == -1);
-        assertTrue("compareTo: prop1 == prop3", prop1.compareTo(prop3) == 0);
+        assertTrue(prop1.compareTo(prop2) == -1, "compareTo: prop1 < prop2");
+        assertTrue(prop1.compareTo(prop3) == 0, "compareTo: prop1 == prop3");
 
-        assertTrue("compareTo: prop2 < prop1", prop2.compareTo(prop1) == 1);
-        assertTrue("compareTo: prop2 == prop4", prop2.compareTo(prop4) == 0);
+        assertTrue(prop2.compareTo(prop1) == 1, "compareTo: prop2 < prop1");
+        assertTrue(prop2.compareTo(prop4) == 0, "compareTo: prop2 == prop4");
     }
 
     /**
@@ -111,10 +95,10 @@ public class PropertyTest {
      */
     @Test
     public void testEquals() {
-        assertTrue("equals: prop1 == prop3", prop1.equals(prop3));
-        assertTrue("equals: prop2 == prop4", prop2.equals(prop4));
-        assertFalse("equals: prop1 != prop4", prop1.equals(prop4));
-        assertFalse("equals: prop2 != prop3", prop2.equals(prop3));
+        assertTrue(prop1.equals(prop3), "equals: prop1 == prop3");
+        assertTrue(prop2.equals(prop4), "equals: prop2 == prop4");
+        assertFalse(prop1.equals(prop4), "equals: prop1 != prop4");
+        assertFalse(prop2.equals(prop3), "equals: prop2 != prop3");
     }
 
     /**
@@ -122,10 +106,10 @@ public class PropertyTest {
      */
     @Test
     public void testHashCode() {
-        assertTrue("hashCode: prop1 == prop3", prop1.hashCode() == prop3.hashCode());
-        assertTrue("hashCode: prop2 == prop4", prop2.hashCode() == prop4.hashCode());
-        assertFalse("hashCode: prop1 != prop4", prop1.hashCode() == prop4.hashCode());
-        assertFalse("hashCode: prop2 != prop3", prop2.hashCode() == prop3.hashCode());
+        assertTrue(prop1.hashCode() == prop3.hashCode(), "hashCode: prop1 == prop3");
+        assertTrue(prop2.hashCode() == prop4.hashCode(), "hashCode: prop2 == prop4");
+        assertFalse(prop1.hashCode() == prop4.hashCode(), "hashCode: prop1 != prop4");
+        assertFalse(prop2.hashCode() == prop3.hashCode(), "hashCode: prop2 != prop3");
     }
 
     /**
@@ -133,10 +117,10 @@ public class PropertyTest {
      */
     @Test
     public void testKey() {
-        assertEquals("prop1", 1L, (long) prop1.key());
-        assertEquals("prop2", 2L, (long) prop2.key());
-        assertNotEquals("prop1", 2L, (long) prop1.key());
-        assertNotEquals("prop2", 1L, (long) prop2.key());
+        assertEquals(1L, (long) prop1.key(), "prop1");
+        assertEquals(2L, (long) prop2.key(), "prop2");
+        assertNotEquals(2L, (long) prop1.key(), "prop1");
+        assertNotEquals(1L, (long) prop2.key(), "prop2");
     }
 
     /**
@@ -144,10 +128,10 @@ public class PropertyTest {
      */
     @Test
     public void testValue() {
-        assertEquals("prop1", one, prop1.value());
-        assertEquals("prop2", two, prop2.value());
-        assertNotEquals("prop1", two, prop1.value());
-        assertNotEquals("prop2", one, prop2.value());
+        assertEquals(one, prop1.value(), "prop1");
+        assertEquals(two, prop2.value(), "prop2");
+        assertNotEquals(two, prop1.value(), "prop1");
+        assertNotEquals(one, prop2.value(), "prop2");
     }
 
 }

@@ -44,21 +44,36 @@ package com.bewsoftware.utils.struct;
  * @param <T> type of Object
  *
  * @since 1.0.8
- * @version 1.0.8
+ * @version 1.0.9
  */
-public final class Ref<T> {
+public final class Ref<T>
+{
 
+    /**
+     * The object being held.
+     */
     public T val;
 
-    public Ref() {
+    /**
+     * Default constructor.
+     */
+    public Ref()
+    {
     }
 
-    public Ref(T val) {
+    /**
+     * The initiating constructor.
+     *
+     * @param val the object to be held
+     */
+    public Ref(T val)
+    {
         this.val = val;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "" + val;
     }
 }

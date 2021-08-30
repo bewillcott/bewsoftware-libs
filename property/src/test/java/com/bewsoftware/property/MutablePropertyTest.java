@@ -18,13 +18,9 @@
  */
 package com.bewsoftware.property;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -35,22 +31,6 @@ public class MutablePropertyTest {
     public MutablePropertyTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of comment method, of class MutableProperty.
      */
@@ -58,13 +38,13 @@ public class MutablePropertyTest {
     public void testComment() {
         MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
         assertNotNull(prop1);
-        assertEquals("prop1.key().equals(12)", 12L, (long) prop1.key());
-        assertEquals("prop1.value().equals(\"twelve\")", "twelve", prop1.value());
+        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
+        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
         assertNull(prop1.comment());
 
         prop1.comment("Now it has something");
-        assertEquals("prop1.comment().equals(\"Now it has something\")",
-                     "Now it has something", prop1.comment());
+        assertEquals("Now it has something", prop1.comment(),
+                "prop1.comment().equals(\"Now it has something\")");
     }
 
     /**
@@ -74,12 +54,12 @@ public class MutablePropertyTest {
     public void testValue() {
         MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
         assertNotNull(prop1);
-        assertEquals("prop1.key().equals(12)", 12L, (long) prop1.key());
-        assertEquals("prop1.value().equals(\"twelve\")", "twelve", prop1.value());
+        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
+        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
 
         prop1.value("Now it has changed");
-        assertEquals("prop1.value().equals(\"Now it has changed\")",
-                     "Now it has changed", prop1.value());
+        assertEquals("Now it has changed", prop1.value(),
+                "prop1.value().equals(\"Now it has changed\")");
     }
 
     /**
@@ -89,23 +69,23 @@ public class MutablePropertyTest {
     public void testConstructors() {
         MutableProperty<String, Integer> propA = new MutableProperty<>("one", 1);
         assertNotNull(propA);
-        assertEquals("propA.key().equals(\"one\")", "one", propA.key());
-        assertEquals("propA.value().equals(1)", 1L, (long) propA.value());
+        assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
+        assertEquals(1L, (long) propA.value(), "propA.value().equals(1)");
         assertNull(propA.comment());
 
         MutableProperty<String, Integer> propB = new MutableProperty<>("two", 2, "This is a two");
         assertNotNull(propB);
-        assertEquals("propB.key().equals(\"two\")", "two", propB.key());
-        assertEquals("propB.value().equals(1)", 2L, (long) propB.value());
+        assertEquals("two", propB.key(), "propB.key().equals(\"two\")");
+        assertEquals(2L, (long) propB.value(), "propB.value().equals(1)");
         assertNotNull(propB.comment());
-        assertEquals("propB.comment().equals(\"This is a two\")", "This is a two", propB.comment());
+        assertEquals("This is a two", propB.comment(), "propB.comment().equals(\"This is a two\")");
 
         MutableProperty<String, Integer> propC = new MutableProperty<>(propB);
         assertNotNull(propC);
-        assertEquals("propC.key().equals(\"two\")", "two", propC.key());
-        assertEquals("propC.value().equals(1)", 2L, (long) propC.value());
+        assertEquals("two", propC.key(), "propC.key().equals(\"two\")");
+        assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
         assertNotNull(propC.comment());
-        assertEquals("propC.comment().equals(\"This is a two\")", "This is a two", propC.comment());
+        assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
     }
 
 }

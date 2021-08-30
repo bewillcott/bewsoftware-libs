@@ -4,8 +4,9 @@
     
     <parent>
         <groupId>com.bewsoftware</groupId>
-        <artifactId>bewsoftware-libs</artifactId>
-        <version>1.0.7</version>
+        <artifactId>bewsoftware-pom</artifactId>
+        <version>1.0.10</version>
+        <relativePath>../pom/pom.xml</relativePath>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
@@ -15,9 +16,6 @@
    
     <name>BEWSoftware Files Library</name>
     <description>This library contains classes related to working with files.</description>
-
-    <properties>
-    </properties>
 
     <dependencies>
         <dependency>

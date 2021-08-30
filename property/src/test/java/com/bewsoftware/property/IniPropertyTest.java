@@ -18,63 +18,46 @@
  */
 package com.bewsoftware.property;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  */
-public class IniPropertyTest {
+public class IniPropertyTest
+{
 
-    public IniPropertyTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    public IniPropertyTest()
+    {
     }
 
     /**
      * Test of constructors, of class IniProperty.
      */
     @Test
-    public void testConstructors() {
+    public void testConstructors()
+    {
         IniProperty<Integer> propA = new IniProperty<>("one", 1);
         assertNotNull(propA);
-        assertEquals("propA.key().equals(\"one\")", "one", propA.key());
-        assertEquals("propA.value().equals(1)", 1L, (long) propA.value());
+        assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
+        assertEquals(1L, (long) propA.value(), "propA.value().equals(1)");
         assertNull(propA.comment());
 
         IniProperty<Integer> propB = new IniProperty<>("two", 2, "This is a two");
         assertNotNull(propB);
-        assertEquals("propB.key().equals(\"two\")", "two", propB.key());
-        assertEquals("propB.value().equals(1)", 2L, (long) propB.value());
+        assertEquals("two", propB.key(), "propB.key().equals(\"two\")");
+        assertEquals(2L, (long) propB.value(), "propB.value().equals(2)");
         assertNotNull(propB.comment());
-        assertEquals("propB.comment().equals(\"This is a two\")", "This is a two", propB.comment());
+        assertEquals("This is a two", propB.comment(), "propB.comment().equals(\"This is a two\")");
 
         IniProperty<Integer> propC = new IniProperty<>(propB);
         assertNotNull(propC);
-        assertEquals("propC.key().equals(\"two\")", "two", propC.key());
-        assertEquals("propC.value().equals(1)", 2L, (long) propC.value());
+        assertEquals("two", propC.key(), "propC.key().equals(\"two\")");
+        assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
         assertNotNull(propC.comment());
-        assertEquals("propC.comment().equals(\"This is a two\")", "This is a two", propC.comment());
+        assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
     }
 
 }

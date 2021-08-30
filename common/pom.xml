@@ -4,8 +4,9 @@
     
     <parent>
         <groupId>com.bewsoftware</groupId>
-        <artifactId>bewsoftware-libs</artifactId>
-        <version>1.0.7</version>
+        <artifactId>bewsoftware-pom</artifactId>
+        <version>1.0.10</version>
+        <relativePath>../pom/pom.xml</relativePath>
     </parent>
     
     <groupId>com.bewsoftware</groupId>
@@ -17,6 +18,4 @@
     <description>This library contains classes that are not of any specific type,
         and they are used by classes from various modules.</description>
 
-    <properties>
-    </properties>
 </project>
