@@ -1,6 +1,6 @@
 /*
  *  File Name:    AvlTree.java
- *  Project Name: Java3AT2-Two
+ *  Project Name: bewsoftware-utils
  *
  *  Copyright (c) 2021 Bradley Willcott
  *
@@ -30,8 +30,8 @@ import java.util.*;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <E> type of item stored in this tree.
  *
- * @since 1.0
- * @version 1.0
+ * @since 1.0.9
+ * @version 1.0.9
  */
 public class AvlTree<E extends Comparable<E>> implements Set<E>
 {
