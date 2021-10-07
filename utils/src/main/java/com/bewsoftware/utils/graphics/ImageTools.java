@@ -39,8 +39,8 @@ import javax.swing.ImageIcon;
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0.20
- * @version 1.0.20
+ * @since 1.0.0
+ * @version 1.0.0
  */
 public class ImageTools {
 

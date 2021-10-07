@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Domain classes used to relation to Graphics, images, icons, etc.
+ * Domain classes used in relation to Graphics, images, icons, etc.
  * <p>
  * These classes contain tools for the manipulation of images, etc.
  * </p>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0.20
- * @version 1.0.20
+ * @since 1.0.0
+ * @version 1.0.0
  */
 package com.bewsoftware.utils.graphics;
