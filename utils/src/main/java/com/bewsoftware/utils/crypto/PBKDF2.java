@@ -36,7 +36,7 @@ import javax.crypto.spec.SecretKeySpec;
  * PBKDF2 salted password hashing with HMAC and SHA512.
  * <p>
  * Source:
- * <a href="https://github.com/defuse/password-hashing/blob/master/PasswordStorage.java"">
+ * <a href="https://github.com/defuse/password-hashing/blob/master/PasswordStorage.java">
  * https://github.com/defuse/password-hashing/blob/master/PasswordStorage.java</a>
  * <p>
  * Downloaded: 07/10/2021.

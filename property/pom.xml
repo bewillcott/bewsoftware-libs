@@ -4,18 +4,18 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-pom</artifactId>
-        <version>1.0.10</version>
+        <version>1.0.12</version>
         <relativePath>../pom/pom.xml</relativePath>
     </parent>
 
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-property</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
- 
+
     <name>BEWSoftware Property Library</name>
     <description>This library contains the Property class and its sub-classes.</description>
-    
+
     <properties>
         <major.minor.version>1.0</major.minor.version>
     </properties>

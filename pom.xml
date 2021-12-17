@@ -4,7 +4,7 @@
 
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-libs</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.12</version>
     <packaging>pom</packaging>
 
     <name>BEWSoftware Libraries</name>
@@ -48,7 +48,7 @@
     </licenses>
 
     <properties>
-        <java.version>12</java.version>
+        <java.version>17</java.version>
         <source.encoding>UTF-8</source.encoding>
         <source.encoding>UTF-8</source.encoding>
         <javadoc.source.version>${java.version}</javadoc.source.version>
@@ -96,20 +96,20 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.8.1</version>
+                <version>5.8.2</version>
                 <scope>test</scope>
                 <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>5.8.1</version>
+                <version>5.8.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.8.1</version>
+                <version>5.8.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -199,7 +199,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -215,7 +215,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-scm-plugin</artifactId>
-                    <version>1.11.2</version>
+                    <version>1.12.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
