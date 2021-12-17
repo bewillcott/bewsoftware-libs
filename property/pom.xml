@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-pom</artifactId>
@@ -10,13 +11,8 @@
 
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-property</artifactId>
-    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>BEWSoftware Property Library</name>
     <description>This library contains the Property class and its sub-classes.</description>
-
-    <properties>
-        <major.minor.version>1.0</major.minor.version>
-    </properties>
 </project>

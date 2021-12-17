@@ -10,11 +10,14 @@
 
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-pom</artifactId>
-    <version>1.0.12</version>
     <packaging>pom</packaging>
 
     <name>BEWSoftware POM</name>
     <description>This is the parent pom for all of the sub-projects.</description>
+
+    <properties>
+        <skip.version.build>true</skip.version.build>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -310,9 +313,6 @@
 
         <profile>
             <id>release-profile</id>
-            <properties>
-                <skip.version.build>true</skip.version.build>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -545,22 +545,6 @@
 
 
         <plugins>
-            <plugin>
-                <groupId>com.bewsoftware.mojo</groupId>
-                <artifactId>bewsoftware-version-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>Build</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skip.version.build}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
