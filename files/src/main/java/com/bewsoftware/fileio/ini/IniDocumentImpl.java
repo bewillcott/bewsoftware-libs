@@ -49,9 +49,10 @@ import java.util.regex.Pattern;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0.20
+ * @version 1.0.12
  */
-public class IniDocumentImpl implements IniDocument {
+public class IniDocumentImpl implements IniDocument
+{
 
     /**
      * Regex pattern for validating a comment.
@@ -76,10 +77,21 @@ public class IniDocumentImpl implements IniDocument {
     };
 
     private static final String INI_COMMENT = INI_PATTERNS[1];
+
     private static final String INI_PROPERTY = INI_PATTERNS[2];
+
     private static final String INI_SECTION = INI_PATTERNS[0];
+
     private static final String INI_TAIL = INI_PATTERNS[3];
+
     private static final String NULL_KEY_MSG = "A null key is not valid.";
+
+    /**
+     * This is the hierarchical storage structure for the properties.
+     *
+     * @since 1.0
+     */
+    private final List<MutableIniProperty<List<MutableIniProperty<String>>>> entries;
 
     // Initialise final fields.
     static
@@ -89,32 +101,27 @@ public class IniDocumentImpl implements IniDocument {
     }
 
     /**
-     * This is the hierarchical storage structure for the properties.
-     *
-     * @since 1.0
-     */
-    private final List<MutableIniProperty<List<MutableIniProperty<String>>>> entries;
-
-    /**
      * Can only be instantiated by another class in this package.
      */
-    IniDocumentImpl() {
+    IniDocumentImpl()
+    {
         entries = new ArrayList<>();
         entries.add(new MutableIniProperty<>(null, new ArrayList<>()));
     }
 
     @Override
-    public boolean containsKey(final String section, final String key) {
+    public boolean containsKey(final String section, final String key)
+    {
+        boolean rtn = false;
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
         {
             List<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
-            return (indexOfKey(kvlist, key) > -1);
-        } else
-        {
-            return false;
+            rtn = (indexOfKey(kvlist, key) > -1);
         }
+
+        return rtn;
     }
 
     /**
@@ -122,18 +129,19 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public String getComment(final String section, final String key) {
+    public String getComment(final String section, final String key)
+    {
+        String rtn = null;
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
         {
             List<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             int keyIdx = indexOfKey(kvlist, key);
-            return keyIdx > -1 ? kvlist.get(keyIdx).comment() : null;
-        } else
-        {
-            return null;
+            rtn = keyIdx > -1 ? kvlist.get(keyIdx).comment() : null;
         }
+
+        return rtn;
     }
 
     /**
@@ -142,30 +150,30 @@ public class IniDocumentImpl implements IniDocument {
      * <b>Changes:</b>
      * <dl>
      * <dt>v1.0.6</dt>
-     * <dd>Return changed from {@link ArrayList ArrayList&lt;&gt;} to {@link List List&lt;&gt;}</dd>
+     * <dd>Return changed from {@link ArrayList ArrayList&lt;&gt;} to
+     * {@link List List&lt;&gt;}</dd>
      * </dl>
      * XXX
      *
      * @param section Name of the section.
      *
-     * @return List of properties.
+     * @return List of properties, {@code null} if section doesn't exist.
      *
      * @since 1.0
      */
     @Override
-    public List<IniProperty<String>> getSection(final String section) {
+    public List<IniProperty<String>> getSection(final String section)
+    {
+        List<IniProperty<String>> rtnList = null;
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
         {
-            List<IniProperty<String>> rtnList = new ArrayList<>();
+            rtnList = new ArrayList<>();
             entries.get(sectionIdx).value().forEach(rtnList::add);
-
-            return rtnList;
-        } else
-        {
-            return null;
         }
+
+        return rtnList;
     }
 
     /**
@@ -180,16 +188,10 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public String getSectionComment(final String section) {
+    public String getSectionComment(final String section)
+    {
         int sectionIdx = indexOfSection(section);
-
-        if (sectionIdx > -1)
-        {
-            return entries.get(sectionIdx).comment();
-        } else
-        {
-            return null;
-        }
+        return sectionIdx > -1 ? entries.get(sectionIdx).comment() : null;
     }
 
     /**
@@ -198,11 +200,10 @@ public class IniDocumentImpl implements IniDocument {
      * @return list of all sections.
      */
     @Override
-    public List<String> getSections() {
+    public List<String> getSections()
+    {
         List<String> rtnList = new ArrayList<>();
-
         entries.forEach(section -> rtnList.add(section.key()));
-
         return rtnList;
     }
 
@@ -225,25 +226,29 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public String getValue(final String section, final String key) {
+    public String getValue(final String section, final String key)
+    {
+        String rtn = null;
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
         {
             List<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
             int keyIdx = indexOfKey(kvlist, key);
-
-            return keyIdx > -1 ? kvlist.get(keyIdx).value() : null;
+            rtn = keyIdx > -1 ? kvlist.get(keyIdx).value() : null;
         }
 
-        return null;
+        return rtn;
     }
 
     /**
-     * This method replaces the method: {@link ArrayList#indexOf(java.lang.Object) }.
+     * This method replaces the method: {@link ArrayList#indexOf(java.lang.Object)
+     * }.
      * <p>
-     * The reason being, {@code indexOf} puts the parameter on the left side of the
-     * {@code equals()} call. I have developed the {@link MutableIniProperty} class to test
+     * The reason being, {@code indexOf} puts the parameter on the left side of
+     * the
+     * {@code equals()} call. I have developed the {@link MutableIniProperty}
+     * class to test
      * equality against a String:
      * <pre><code>
      *
@@ -259,24 +264,28 @@ public class IniDocumentImpl implements IniDocument {
      * @return its index.
      */
     @Override
-    public int indexOfSection(final String section) {
+    public int indexOfSection(final String section)
+    {
+        int rtn = 0;
+
         if (section != null)
         {
-            for (int i = 1; i < entries.size(); i++)
+            rtn = -1;
+
+            for (int i = 1; i < entries.size() && rtn == -1; i++)
             {
                 if (entries.get(i).key().equals(section))
                 {
-                    return i;
+                    rtn = i;
                 }
             }
-
-            return -1;
         }
 
-        return 0;
+        return rtn;
     }
 
-    public Iterable<MutableIniProperty<List<MutableIniProperty<String>>>> iterable() {
+    public Iterable<MutableIniProperty<List<MutableIniProperty<String>>>> iterable()
+    {
         return entries;
     }
 
@@ -288,7 +297,8 @@ public class IniDocumentImpl implements IniDocument {
      * @param key     The key to remove.
      */
     @Override
-    public void removeKey(final String section, final String key) {
+    public void removeKey(final String section, final String key)
+    {
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > -1)
@@ -309,7 +319,8 @@ public class IniDocumentImpl implements IniDocument {
      * @param section Section to remove.
      */
     @Override
-    public void removeSection(final String section) {
+    public void removeSection(final String section)
+    {
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx > 0)
@@ -337,8 +348,9 @@ public class IniDocumentImpl implements IniDocument {
      */
     @Override
     public String setComment(final String section, final String key, final String comment)
-            throws InvalidParameterValueException {
-
+            throws InvalidParameterValueException
+    {
+        String rtn = null;
         Objects.requireNonNull(key, NULL_KEY_MSG);
 
         if (!validateComment(comment))
@@ -351,7 +363,7 @@ public class IniDocumentImpl implements IniDocument {
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx
-            == -1)
+                == -1)
         {
             entries.add(new MutableIniProperty<>(section, new ArrayList<>()));
             sectionIdx = indexOfSection(section);
@@ -363,14 +375,15 @@ public class IniDocumentImpl implements IniDocument {
         if (keyIdx == -1)
         {
             kvlist.add(new MutableIniProperty<>(key, null, comment));
-            return null;
         } else
         {
             MutableIniProperty<String> kv = kvlist.get(keyIdx);
-            String rtn = kv.comment();
+            rtn = kv.comment();
             kv.comment(comment);
-            return rtn;
         }
+
+        return rtn;
+
     }
 
     /**
@@ -382,7 +395,8 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public void setSection(final String section, final String comment) {
+    public void setSection(final String section, final String comment)
+    {
         int sectionIdx = indexOfSection(section);
 
         if (sectionIdx == -1)
@@ -412,9 +426,10 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public String setString(final String section, final String key, final String value, final String comment)
-            throws InvalidParameterValueException {
-
+    public String setString(final String section, final String key, final String value,
+            final String comment) throws InvalidParameterValueException
+    {
+        String rtn = null;
         Objects.requireNonNull(key, NULL_KEY_MSG);
 
         if (!validateComment(comment))
@@ -426,8 +441,7 @@ public class IniDocumentImpl implements IniDocument {
 
         int sectionIdx = indexOfSection(section);
 
-        if (sectionIdx
-            == -1)
+        if (sectionIdx == -1)
         {
             entries.add(new MutableIniProperty<>(section, new ArrayList<>()));
             sectionIdx = indexOfSection(section);
@@ -436,23 +450,24 @@ public class IniDocumentImpl implements IniDocument {
         List<MutableIniProperty<String>> kvlist = entries.get(sectionIdx).value();
         int keyIdx = indexOfKey(kvlist, key);
 
-        if (keyIdx
-            == -1)
+        if (keyIdx == -1)
         {
             kvlist.add(new MutableIniProperty<>(key, value, comment));
-            return null;
         } else
         {
             MutableIniProperty<String> kv = kvlist.get(keyIdx);
-            String rtn = kv.value();
+            rtn = kv.value();
             kv.value(value);
             kv.comment(comment);
-            return rtn;
         }
+
+        return rtn;
+
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
 
         sb.append(IniDocument.class
@@ -473,19 +488,21 @@ public class IniDocumentImpl implements IniDocument {
      * @since 1.0
      */
     @Override
-    public boolean validateComment(final String comment) {
+    public boolean validateComment(final String comment)
+    {
+        boolean rtn = false;
+
         if (comment == null)
         {
-            return true;
-        } else if (comment.isEmpty())
-        {
-            return false;
-        } else
+            rtn = true;
+        } else if (!comment.isEmpty())
         {
             Pattern p = Pattern.compile(COMMENT_PATTERN);
             Matcher m = p.matcher(comment);
             m.find();
-            return (m.group("Comment") != null);
+            rtn = (m.group("Comment") != null);
         }
+
+        return rtn;
     }
 }

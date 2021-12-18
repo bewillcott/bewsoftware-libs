@@ -27,7 +27,8 @@ package com.bewsoftware.fileio.ini;
  * @since 1.0
  * @version 1.0.5
  */
-public class IniFileFormatException extends Exception {
+public class IniFileFormatException extends Exception
+{
 
     private static final long serialVersionUID = -1526284495445937980L;
 
@@ -42,13 +43,15 @@ public class IniFileFormatException extends Exception {
      * @param filepath Path to the <u>ini</u> file.
      * @param msg      the detail message.
      */
-    public IniFileFormatException(final String filepath, final String msg) {
+    public IniFileFormatException(final String filepath, final String msg)
+    {
         super(msg);
         this.filepath = filepath;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StackTraceElement[] stElements = getStackTrace();
         StringBuilder sb = new StringBuilder();
 
@@ -58,6 +61,6 @@ public class IniFileFormatException extends Exception {
         }
 
         return IniFileFormatException.class.getName() + "\n\nMessage:  " + getMessage()
-               + "\n\nIni File: " + filepath + "\n\nStack Trace:\n" + sb.toString();
+                + "\n\nIni File: " + filepath + "\n\nStack Trace:\n" + sb.toString();
     }
 }

@@ -25,14 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * NewInterface class description.
- *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 1.0.12
  */
-public interface IniDocument {
+public interface IniDocument
+{
 
     /**
      * Test to see whether or not this <b>key</b> exists within this
@@ -57,7 +56,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default boolean containsSection(final String section) {
+    default boolean containsSection(final String section)
+    {
         return indexOfSection(section) > -1;
     }
 
@@ -74,7 +74,8 @@ public interface IniDocument {
      * @throws NullPointerException if the specified key is {@code null}.
      * @since 1.0
      */
-    default boolean getBoolean(final String section, final String key, final boolean defaultvalue) {
+    default boolean getBoolean(final String section, final String key, final boolean defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? Boolean.parseBoolean(rtn) : defaultvalue;
     }
@@ -91,7 +92,8 @@ public interface IniDocument {
      * @throws NullPointerException if the specified section is {@code null}.
      * @since 1.0
      */
-    default boolean getBooleanG(final String key, final boolean defaultvalue) {
+    default boolean getBooleanG(final String key, final boolean defaultvalue)
+    {
         return getBoolean(null, key, defaultvalue);
     }
 
@@ -116,7 +118,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default String getCommentG(final String key) {
+    default String getCommentG(final String key)
+    {
         return getComment(null, key);
     }
 
@@ -132,7 +135,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default double getDouble(final String section, final String key, final double defaultvalue) {
+    default double getDouble(final String section, final String key, final double defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? Double.parseDouble(rtn) : defaultvalue;
     }
@@ -148,7 +152,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default double getDoubleG(final String key, final double defaultvalue) {
+    default double getDoubleG(final String key, final double defaultvalue)
+    {
         return getDouble(null, key, defaultvalue);
     }
 
@@ -164,7 +169,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default float getFloat(final String section, final String key, final float defaultvalue) {
+    default float getFloat(final String section, final String key, final float defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? Float.parseFloat(rtn) : defaultvalue;
     }
@@ -180,7 +186,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default float getFloatG(final String key, final float defaultvalue) {
+    default float getFloatG(final String key, final float defaultvalue)
+    {
         return getFloat(null, key, defaultvalue);
     }
 
@@ -196,7 +203,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default int getInt(final String section, final String key, final int defaultvalue) {
+    default int getInt(final String section, final String key, final int defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? Integer.parseInt(rtn) : defaultvalue;
     }
@@ -212,7 +220,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default int getIntG(final String key, final int defaultvalue) {
+    default int getIntG(final String key, final int defaultvalue)
+    {
         return getInt(null, key, defaultvalue);
     }
 
@@ -228,7 +237,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default long getLong(final String section, final String key, final long defaultvalue) {
+    default long getLong(final String section, final String key, final long defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? Long.parseLong(rtn) : defaultvalue;
     }
@@ -244,7 +254,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default long getLongG(final String key, final long defaultvalue) {
+    default long getLongG(final String key, final long defaultvalue)
+    {
         return getLong(null, key, defaultvalue);
     }
 
@@ -254,7 +265,8 @@ public interface IniDocument {
      * <b>Changes:</b>
      * <dl>
      * <dt>v1.0.6</dt>
-     * <dd>Return changed from {@link ArrayList ArrayList&lt;&gt;} to {@link List List&lt;&gt;}</dd>
+     * <dd>Return changed from {@link ArrayList ArrayList&lt;&gt;} to
+     * {@link List List&lt;&gt;}</dd>
      * </dl>
      * XXX
      *
@@ -273,7 +285,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default void setSection(final String section) {
+    default void setSection(final String section)
+    {
         setSection(section, null);
     }
 
@@ -309,7 +322,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default String getString(final String section, final String key, final String defaultvalue) {
+    default String getString(final String section, final String key, final String defaultvalue)
+    {
         String rtn = getValue(section, key);
         return rtn != null ? rtn : defaultvalue;
     }
@@ -325,7 +339,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default String getStringG(final String key, final String defaultvalue) {
+    default String getStringG(final String key, final String defaultvalue)
+    {
         return getString(null, key, defaultvalue);
     }
 
@@ -357,7 +372,8 @@ public interface IniDocument {
      *
      * @return index of 'key', or '-1' if not found.
      */
-    default int indexOfKey(final List<MutableIniProperty<String>> kvlist, final String key) {
+    default int indexOfKey(final List<MutableIniProperty<String>> kvlist, final String key)
+    {
         for (int i = 0; i < kvlist.size(); i++)
         {
             String lkey = kvlist.get(i).key();
@@ -372,10 +388,13 @@ public interface IniDocument {
     }
 
     /**
-     * This method replaces the method: {@link ArrayList#indexOf(java.lang.Object) }.
+     * This method replaces the method: {@link ArrayList#indexOf(java.lang.Object)
+     * }.
      * <p>
-     * The reason being, {@code indexOf} puts the parameter on the left side of the
-     * {@code equals()} call. I have developed the {@link MutableIniProperty} class to test
+     * The reason being, {@code indexOf} puts the parameter on the left side of
+     * the
+     * {@code equals()} call. I have developed the {@link MutableIniProperty}
+     * class to test
      * equality against a String:
      * <pre><code>
      *
@@ -422,7 +441,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Boolean setBoolean(final String section, final String key, final boolean value) {
+    default Boolean setBoolean(final String section, final String key, final boolean value)
+    {
         String rtn = setString(section, key, Boolean.toString(value));
         return rtn != null ? Boolean.parseBoolean(rtn) : null;
     }
@@ -443,8 +463,9 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    default Boolean setBoolean(final String section, final String key, final boolean value, final String comment)
-            throws InvalidParameterValueException {
+    default Boolean setBoolean(final String section, final String key, final boolean value,
+            final String comment) throws InvalidParameterValueException
+    {
         String rtn = setString(section, key, Boolean.toString(value), comment);
         return rtn != null ? Boolean.parseBoolean(rtn) : null;
     }
@@ -462,7 +483,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Boolean setBooleanG(final String key, final boolean value) {
+    default Boolean setBooleanG(final String key, final boolean value)
+    {
         String rtn = setStringG(key, Boolean.toString(value));
         return rtn != null ? Boolean.parseBoolean(rtn) : null;
     }
@@ -485,7 +507,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default Boolean setBooleanG(final String key, final boolean value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         String rtn = setStringG(key, Boolean.toString(value), comment);
         return rtn != null ? Boolean.parseBoolean(rtn) : null;
     }
@@ -507,7 +530,8 @@ public interface IniDocument {
      * @throws NullPointerException           If {@code key} is {@code null}.
      * @since 1.0
      */
-    String setComment(final String section, final String key, final String comment) throws InvalidParameterValueException;
+    String setComment(final String section, final String key, final String comment)
+            throws InvalidParameterValueException;
 
     /**
      * Set the {@code comment} for this {@code key} in the global section.
@@ -525,7 +549,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default String setCommentG(final String key, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         return setComment(null, key, comment);
     }
 
@@ -541,7 +566,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Double setDouble(final String section, final String key, final double value) {
+    default Double setDouble(final String section, final String key, final double value)
+    {
         String rtn = setString(section, key, Double.toString(value));
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -563,8 +589,9 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    default Double setDouble(final String section, final String key, final double value, final String comment)
-            throws InvalidParameterValueException {
+    default Double setDouble(final String section, final String key, final double value,
+            final String comment) throws InvalidParameterValueException
+    {
         String rtn = setString(section, key, Double.toString(value), comment);
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -582,7 +609,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Double setDoubleG(final String key, final double value) {
+    default Double setDoubleG(final String key, final double value)
+    {
         String rtn = setStringG(key, Double.toString(value));
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -605,7 +633,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default Double setDoubleG(final String key, final double value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         String rtn = setStringG(key, Double.toString(value), comment);
         return rtn != null ? Double.parseDouble(rtn) : null;
     }
@@ -623,7 +652,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Float setFloat(final String section, final String key, final float value) {
+    default Float setFloat(final String section, final String key, final float value)
+    {
         String rtn = setString(section, key, Float.toString(value));
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -645,8 +675,9 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    default Float setFloat(final String section, final String key, final float value, final String comment)
-            throws InvalidParameterValueException {
+    default Float setFloat(final String section, final String key, final float value,
+            final String comment) throws InvalidParameterValueException
+    {
         String rtn = setString(section, key, Float.toString(value), comment);
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -664,7 +695,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Float setFloatG(final String key, final float value) {
+    default Float setFloatG(final String key, final float value)
+    {
         String rtn = setStringG(key, Float.toString(value));
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -689,7 +721,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default Float setFloatG(final String key, final Float value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         String rtn = setStringG(key, Float.toString(value), comment);
         return rtn != null ? Float.parseFloat(rtn) : null;
     }
@@ -707,7 +740,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Integer setInt(final String section, final String key, final int value) {
+    default Integer setInt(final String section, final String key, final int value)
+    {
         String rtn = setString(section, key, Integer.toString(value));
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -731,8 +765,9 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    default Integer setInt(final String section, final String key, final int value, final String comment)
-            throws InvalidParameterValueException {
+    default Integer setInt(final String section, final String key, final int value,
+            final String comment) throws InvalidParameterValueException
+    {
         String rtn = setString(section, key, Integer.toString(value), comment);
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -750,7 +785,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Integer setIntG(final String key, final int value) {
+    default Integer setIntG(final String key, final int value)
+    {
         String rtn = setStringG(key, Integer.toString(value));
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -775,7 +811,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default Integer setIntG(final String key, final int value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         String rtn = setStringG(key, Integer.toString(value), comment);
         return rtn != null ? Integer.parseInt(rtn) : null;
     }
@@ -793,7 +830,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Long setLong(final String section, final String key, final long value) {
+    default Long setLong(final String section, final String key, final long value)
+    {
         String rtn = setString(section, key, Long.toString(value));
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -817,8 +855,9 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    default Long setLong(final String section, final String key, final long value, final String comment)
-            throws InvalidParameterValueException {
+    default Long setLong(final String section, final String key, final long value,
+            final String comment) throws InvalidParameterValueException
+    {
         String rtn = setString(section, key, Long.toString(value), comment);
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -836,7 +875,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default Long setLongG(final String key, final long value) {
+    default Long setLongG(final String key, final long value)
+    {
         String rtn = setStringG(key, Long.toString(value));
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -861,7 +901,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default Long setLongG(final String key, final long value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         String rtn = setStringG(key, Long.toString(value), comment);
         return rtn != null ? Long.parseLong(rtn) : null;
     }
@@ -891,7 +932,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default String setString(final String section, final String key, final String value) {
+    default String setString(final String section, final String key, final String value)
+    {
         String rtn = null;
 
         try
@@ -922,7 +964,8 @@ public interface IniDocument {
      *                                        comment.
      * @since 1.0
      */
-    String setString(final String section, final String key, final String value, final String comment) throws InvalidParameterValueException;
+    String setString(final String section, final String key, final String value,
+            final String comment) throws InvalidParameterValueException;
 
     /**
      * Set a property with a value of type: <i>String</i>.The key is
@@ -937,7 +980,8 @@ public interface IniDocument {
      *
      * @since 1.0
      */
-    default String setStringG(final String key, final String value) {
+    default String setStringG(final String key, final String value)
+    {
         return setString(null, key, value);
     }
 
@@ -959,7 +1003,8 @@ public interface IniDocument {
      * @since 1.0
      */
     default String setStringG(final String key, final String value, final String comment)
-            throws InvalidParameterValueException {
+            throws InvalidParameterValueException
+    {
         return setString(null, key, value, comment);
     }
 

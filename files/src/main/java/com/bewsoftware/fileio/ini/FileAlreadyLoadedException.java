@@ -28,14 +28,16 @@ import java.io.IOException;
  * @since 1.0
  * @version 1.0
  */
-public class FileAlreadyLoadedException extends IOException {
+public class FileAlreadyLoadedException extends IOException
+{
 
     private static final long serialVersionUID = 2345633335946985039L;
 
     /**
      * Constructs a new exception without a detail message.
      */
-    public FileAlreadyLoadedException() {
+    public FileAlreadyLoadedException()
+    {
         super();
     }
 
@@ -44,7 +46,8 @@ public class FileAlreadyLoadedException extends IOException {
      *
      * @param message the detail message.
      */
-    public FileAlreadyLoadedException(final String message) {
+    public FileAlreadyLoadedException(final String message)
+    {
         super(message);
     }
 
@@ -59,7 +62,8 @@ public class FileAlreadyLoadedException extends IOException {
      *              Throwable.getCause() method). (A null value is permitted,
      *              and indicates that the cause is nonexistent or unknown.)
      */
-    public FileAlreadyLoadedException(final Throwable cause) {
+    public FileAlreadyLoadedException(final Throwable cause)
+    {
         super(cause);
     }
 
@@ -75,7 +79,8 @@ public class FileAlreadyLoadedException extends IOException {
      *                Throwable.getCause() method). (A null value is permitted,
      *                and indicates that the cause is nonexistent or unknown.)
      */
-    public FileAlreadyLoadedException(final String message, final Throwable cause) {
+    public FileAlreadyLoadedException(final String message, final Throwable cause)
+    {
         super(message, cause);
     }
 

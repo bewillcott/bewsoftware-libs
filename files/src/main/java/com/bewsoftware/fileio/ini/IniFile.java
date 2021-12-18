@@ -134,9 +134,82 @@ import static java.nio.file.StandardOpenOption.WRITE;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0.20
+ * @version 1.0.12
  */
-public class IniFile {
+public class IniFile
+{
+
+    /**
+     * The document contains all the properties:<br>
+     * <ul>
+     * <li>loaded from the file</li>
+     * <li>added in memory</li>
+     * <li>modified in memory</li>
+     * </ul>
+     *
+     * @since 1.0
+     */
+    public final IniDocument iniDoc;
+
+    /**
+     * This setting is referred to at the time of saving the data to file.<p>
+     * If {@code true}, then " = " will be used to separate the key/value data:
+     * "key = value".<br>
+     * If {@code false}, then "=" will be used to separate the key/value data:
+     * "key=value"
+     * .<p>
+     * The default is {@code false}.
+     *
+     * @since 1.0
+     */
+    public boolean paddedEquals = false;
+
+    /**
+     * The path to the <u>ini</u> file.
+     *
+     * @since 1.0
+     */
+    public final Path path;
+
+    private boolean fileIsLoaded;
+
+    /**
+     * This constructor uses the <b>Path</b> object passed in the <i>path</i>
+     * parameter.
+     *
+     * @param path The <b>Path</b> object to use.
+     *
+     * @throws NullPointerException           If the path parameter is
+     *                                        {@code null}.
+     * @throws InvalidParameterValueException If path.toString().isBlank().
+     * @since 1.0
+     */
+    public IniFile(final Path path)
+            throws NullPointerException, InvalidParameterValueException
+    {
+        if (path == null)
+        {
+            throw new NullPointerException("path is null");
+        } else if (path.toString().isBlank())
+        {
+            throw new InvalidParameterValueException("path is blank");
+        } else
+        {
+            this.path = path;
+            iniDoc = new IniDocumentImpl();
+        }
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @since 1.0
+     */
+    public IniFile()
+    {
+        iniDoc = new IniDocumentImpl();
+        path = null;
+    }
 
     /**
      * To be used for testing purposes <i>only</i>.
@@ -146,7 +219,8 @@ public class IniFile {
      * @throws FileNotFoundException If test files not found.
      * @since 1.0
      */
-    public static void main(final String[] args) throws FileNotFoundException {
+    public static void main(final String[] args) throws FileNotFoundException
+    {
         final URL fileUrl = IniFile.class.getResource("/Test.ini");
         final URL fileUrlOrig = IniFile.class.getResource("/Test-orig.ini");
 
@@ -249,15 +323,15 @@ public class IniFile {
                 for (IniProperty<String> empDetails : ini.iniDoc.getSection(employee.value()))
                 {
                     System.out.println((empDetails.comment() != null ? "\t" + empDetails.comment() + "\n" : "")
-                                       + "\t" + empDetails.key() + ": "
-                                       + empDetails.value()
+                            + "\t" + empDetails.key() + ": "
+                            + empDetails.value()
                     );
                 }
                 System.out.println();
             }
 
         } catch (NullPointerException | IOException
-                 | IniFileFormatException | InvalidParameterValueException ex)
+                | IniFileFormatException | InvalidParameterValueException ex)
         {
             System.err.println(IniFile.class.getName() + ".main():\n" + ex);
             exit(1);
@@ -265,80 +339,12 @@ public class IniFile {
     }
 
     /**
-     * The document contains all the properties:<br>
-     * <ul>
-     * <li>loaded from the file</li>
-     * <li>added in memory</li>
-     * <li>modified in memory</li>
-     * </ul>
-     *
-     * @since 1.0
-     */
-    public final IniDocument iniDoc;
-
-    /**
-     * This setting is referred to at the time of saving the data to file.<p>
-     * If {@code true}, then " = " will be used to separate the key/value data:
-     * "key = value".<br>
-     * If {@code false}, then "=" will be used to separate the key/value data:
-     * "key=value"
-     * .<p>
-     * The default is {@code false}.
-     *
-     * @since 1.0
-     */
-    public boolean paddedEquals = false;
-
-    /**
-     * The path to the <u>ini</u> file.
-     *
-     * @since 1.0
-     */
-    public final Path path;
-
-    private boolean fileIsLoaded;
-
-    /**
-     * This constructor uses the <b>Path</b> object passed in the <i>path</i>
-     * parameter.
-     *
-     * @param path The <b>Path</b> object to use.
-     *
-     * @throws NullPointerException           If the path parameter is {@code null}.
-     * @throws InvalidParameterValueException If path.toString().isBlank().
-     * @since 1.0
-     */
-    public IniFile(final Path path)
-            throws NullPointerException, InvalidParameterValueException {
-        if (path == null)
-        {
-            throw new NullPointerException("path is null");
-        } else if (path.toString().isBlank())
-        {
-            throw new InvalidParameterValueException("path is blank");
-        } else
-        {
-            this.path = path;
-            iniDoc = new IniDocumentImpl();
-        }
-    }
-
-    /**
-     * Default constructor.
-     *
-     * @since 1.0
-     */
-    public IniFile() {
-        iniDoc = new IniDocumentImpl();
-        path = null;
-    }
-
-    /**
      * @return <i>true</i> if the file has been loaded, <i>false</i> otherwise.
      *
      * @since 1.0
      */
-    public boolean isLoaded() {
+    public boolean isLoaded()
+    {
         return fileIsLoaded;
     }
 
@@ -360,14 +366,15 @@ public class IniFile {
      */
     public IniFile loadFile()
             throws FileAlreadyLoadedException, IniFileFormatException,
-                   InvalidParameterValueException, IOException {
+            InvalidParameterValueException, IOException
+    {
 
         if (fileIsLoaded)
         {
             throw new FileAlreadyLoadedException();
-
         }
-        try ( BufferedReader in = Files.newBufferedReader(path))
+
+        try (BufferedReader in = Files.newBufferedReader(path))
         {
             fileIsLoaded = parseINI(in);
         }
@@ -382,13 +389,14 @@ public class IniFile {
      * @return this instance for chaining.
      *
      * @throws IOException            if an I/O error occurs opening the file.
-     * @throws IniFileFormatException If the format of the supplied ini file does
+     * @throws IniFileFormatException If the format of the supplied ini file
+     *                                does
      *                                not conform to the general standard.
      */
     public IniFile mergeFile(final Path file)
-            throws IOException, IniFileFormatException {
-
-        try ( BufferedReader in = Files.newBufferedReader(file))
+            throws IOException, IniFileFormatException
+    {
+        try (BufferedReader in = Files.newBufferedReader(file))
         {
             fileIsLoaded = parseINI(in);
         }
@@ -399,7 +407,8 @@ public class IniFile {
     /**
      * Saves the list of properties to the previously designated file.
      * <p>
-     * This can be either the file referenced in the <b>Path</b> object passed to the
+     * This can be either the file referenced in the <b>Path</b> object passed
+     * to the
      * class constructor {@link #IniFile(Path)}.
      * </p>
      *
@@ -408,9 +417,9 @@ public class IniFile {
      * @throws IOException File i/o problem.
      * @since 1.0
      */
-    public IniFile saveFile() throws IOException {
+    public IniFile saveFile() throws IOException
+    {
         saveFileAs(path);
-
         return this;
     }
 
@@ -423,8 +432,9 @@ public class IniFile {
      *
      * @throws IOException File i/o problem.
      */
-    public IniFile saveFileAs(final Path newFile) throws IOException {
-        try ( BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
+    public IniFile saveFileAs(final Path newFile) throws IOException
+    {
+        try (BufferedWriter out = Files.newBufferedWriter(newFile, CREATE, TRUNCATE_EXISTING, WRITE))
         {
             storeINI(out);
         }
@@ -436,7 +446,8 @@ public class IniFile {
      * {@inheritDoc}
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("IniFile{\n_path=").append(path);
         sb.append(",\n\nentries=");
@@ -454,11 +465,12 @@ public class IniFile {
      *
      * @return
      */
-    private String join(final String key, final String value) {
+    private String join(final String key, final String value)
+    {
         String separator = paddedEquals ? " = " : "=";
         return value.isEmpty()
-               ? (key + separator).strip()
-               : key + separator + value;
+                ? (key + separator).strip()
+                : key + separator + value;
     }
 
     /**
@@ -467,13 +479,15 @@ public class IniFile {
      * @param reader The ini file to be parsed.
      *
      * @throws IOException            If an I/O error occurs.
-     * @throws IniFileFormatException If the format of the supplied ini file does
+     * @throws IniFileFormatException If the format of the supplied ini file
+     *                                does
      *                                not conform to the general standard.
      */
     private boolean parseINI(final BufferedReader reader)
-            throws IOException, IniFileFormatException {
+            throws IOException, IniFileFormatException
+    {
         Pattern p = Pattern.compile(IniDocumentImpl.INI_PATTERN);
-        String line = "";
+        String line;
         String currentSection = null;
         String lastComment = null;
         int lineNumber = 0;
@@ -503,23 +517,23 @@ public class IniFile {
                 if (lastComment != null)
                 {
                     iniDoc.setComment(currentSection,
-                                      lastComment.substring(0, 1) + (lineNumber - 1),
-                                      lastComment);
+                            lastComment.substring(0, 1) + (lineNumber - 1),
+                            lastComment);
                 }
 
                 lastComment = comment;
             } else if (!tail.isEmpty())
             {
                 throw new IniFileFormatException(path.toString(),
-                                                 "Unknown entry (line# " + lineNumber + "): "
-                                                 + tail);
+                        "Unknown entry (line# " + lineNumber + "): "
+                        + tail);
             } else
             {
                 if (lastComment != null)
                 {
                     iniDoc.setComment(currentSection,
-                                      lastComment.substring(0, 1) + (lineNumber - 1),
-                                      lastComment);
+                            lastComment.substring(0, 1) + (lineNumber - 1),
+                            lastComment);
                     lastComment = null;
                 }
             }
@@ -528,7 +542,8 @@ public class IniFile {
         return true;
     }
 
-    private void storeINI(final BufferedWriter bw) throws IOException {
+    private void storeINI(final BufferedWriter bw) throws IOException
+    {
 
         for (MutableIniProperty<List<MutableIniProperty<String>>> section : iniDoc.iterable())
         {
