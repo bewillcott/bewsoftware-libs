@@ -196,7 +196,7 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
      */
     public boolean delete(E target)
     {
-        Ref<Boolean> rtn = new Ref<>(false);
+        Ref<Boolean> rtn = Ref.val(false);
 
         if (target != null)
         {
@@ -427,7 +427,7 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
     public Object[] toArray()
     {
         Object[] rtn = new Object[count];
-        Ref<Integer> index = new Ref<>(0);
+        Ref<Integer> index = Ref.val(0);
 
         fillArray(root, rtn, index);
 
@@ -445,7 +445,7 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
                     a.getClass().getComponentType(), count);
         }
 
-        Ref<Integer> index = new Ref<>(0);
+        Ref<Integer> index = Ref.val(0);
         fillArray(root, a, index);
 
         if (a.length > count)
@@ -766,7 +766,7 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
      */
     private boolean internalAdd(E item)
     {
-        Ref<Boolean> rtn = new Ref<>(false);
+        Ref<Boolean> rtn = Ref.val(false);
 
         Node<E> newItem = new Node<>(Objects.requireNonNull(item, NO_NULLS));
 
@@ -908,7 +908,7 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
      */
     protected void reIndex()
     {
-        Ref<Integer> index = new Ref<>(-1);
+        Ref<Integer> index = Ref.val(-1);
 
         if (count > 0 && indexIsDirty())
         {

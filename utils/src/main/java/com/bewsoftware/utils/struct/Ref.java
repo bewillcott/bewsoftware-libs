@@ -56,7 +56,11 @@ public final class Ref<T>
 
     /**
      * Default constructor.
+     *
+     * @deprecated Replace {@code new Ref<>() } with
+     * {@link #val() Ref.val()}.
      */
+    @Deprecated
     public Ref()
     {
     }
@@ -65,10 +69,26 @@ public final class Ref<T>
      * The initiating constructor.
      *
      * @param val the object to be held
+     *
+     * @deprecated Replace {@code new Ref<>(val) } with
+     * {@link #val(java.lang.Object) Ref.val(val)}.
      */
+    @Deprecated
     public Ref(T val)
     {
         this.val = val;
+    }
+
+    /**
+     * Alternative to using the 'new' directive to instantiate the class.
+     *
+     * @param <T> type of Object
+     *
+     * @return a new instance of the Ref class.
+     */
+    public static <T> Ref<T> val()
+    {
+        return new Ref<>();
     }
 
     /**
@@ -82,7 +102,9 @@ public final class Ref<T>
      */
     public static <T> Ref<T> val(T val)
     {
-        return new Ref<>(val);
+        Ref<T> rtn = new Ref<>();
+        rtn.val = val;
+        return rtn;
     }
 
     @Override
