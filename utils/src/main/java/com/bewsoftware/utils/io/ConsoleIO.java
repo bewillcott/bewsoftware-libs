@@ -20,10 +20,7 @@
 package com.bewsoftware.utils.io;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +31,8 @@ import java.util.stream.Collectors;
  *
  * @implNote
  * Once the ConsolIO object is closed, any further calls to any of the methods:
- * append, appendln, print, println, flush, newScanner, readLine, or readPassword,
+ * append, appendln, print, println, flush, newScanner, readLine, or
+ * readPassword,
  * will cause an {@link IOException}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
@@ -42,73 +40,36 @@ import java.util.stream.Collectors;
  * @since 1.0.7
  * @version 1.0.7
  */
-public final class ConsoleIO implements Display, Input {
+public final class ConsoleIO implements Display, Input
+{
 
     private static final String CLOSED = "ConsoleIO is closed.";
 
     /**
      * Stores the singleton of each {@link Writer} object related to each
-     * specific instance of {@link PrintWriter} associated with a {@code filename}.
+     * specific instance of {@link PrintWriter} associated with a
+     * {@code filename}.
      */
     private static final List<WriterInstance> WRITERS = new ArrayList<>();
 
-    /**
-     * Provides a version of the ConsolIO that displays nothing.
-     *
-     * @return new blank Display
-     */
-    public static Display blankDisplay() {
-        return new ConsoleIO();
-    }
-
-    /**
-     * Provides a fully configured console display.
-     *
-     * @param linePrefix text to prepend to each line
-     *
-     * @return new Display
-     */
-    public static Display consoleDisplay(final String linePrefix) {
-        return new ConsoleIO(linePrefix);
-    }
-
-    /**
-     * Provides a version of the ConsoleIO1 that outputs to both the console and
-     * the designated file.
-     *
-     * @param linePrefix text to prepend to each line
-     * @param filename   the file to output to
-     *
-     * @return new Display
-     */
-    public static Display consoleFileDisplay(final String linePrefix,
-                                             final String filename) {
-
-        return new ConsoleIO(linePrefix, filename, true);
-    }
-
-    /**
-     * Provides a version of the ConsoleIO1 that outputs only to the designated file.
-     *
-     * @param linePrefix text to prepend to each line
-     * @param filename   the file to output to
-     *
-     * @return new Display
-     */
-    public static Display fileDisplay(final String linePrefix,
-                                      final String filename) {
-
-        return new ConsoleIO(linePrefix, filename, false);
-    }
-
     private final boolean blank;
+
     private final Console console;
+
     private Exception exception;
+
     private PrintWriter file;
+
     private final String filename;
+
+    private Formatter formatter;
+
     private final String linePrefix;
+
     private boolean open;
+
     private PrintWriter out;
+
     private StringBuilder sb;
 
     /**
@@ -118,7 +79,8 @@ public final class ConsoleIO implements Display, Input {
      * <p>
      * For use by factory method.
      */
-    private ConsoleIO() {
+    private ConsoleIO()
+    {
         this.file = null;
         this.out = null;
         this.linePrefix = "";
@@ -137,7 +99,8 @@ public final class ConsoleIO implements Display, Input {
      *
      * @param linePrefix text to prepend to each line
      */
-    private ConsoleIO(final String linePrefix) {
+    private ConsoleIO(final String linePrefix)
+    {
         this.open = true;
         this.file = null;
         this.filename = null;
@@ -163,7 +126,8 @@ public final class ConsoleIO implements Display, Input {
      *
      * @implSpec
      * If {@code filename} is not {@code null} and not {@code isBlank()}, then
-     * the file will be opened/created. If the file exists, it will be truncated.
+     * the file will be opened/created. If the file exists, it will be
+     * truncated.
      * If successful, a copy of all text will be appended to this file.
      * <p>
      * If {@code withConsole} is {@code true}, then the System console will be
@@ -175,7 +139,8 @@ public final class ConsoleIO implements Display, Input {
      * @param filename    the file to output to
      * @param withConsole whether or not to output to the console, if any
      */
-    private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole) {
+    private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole)
+    {
         this.open = true;
         boolean lBlank;
 
@@ -202,8 +167,7 @@ public final class ConsoleIO implements Display, Input {
             lBlank = true;
         }
 
-        if (filename
-            != null && !filename.isBlank())
+        if (filename != null && !filename.isBlank())
         {
             this.filename = filename;
             int idx = WRITERS.indexOf(filename);
@@ -231,8 +195,63 @@ public final class ConsoleIO implements Display, Input {
         this.blank = lBlank;
     }
 
+    /**
+     * Provides a version of the ConsolIO that displays nothing.
+     *
+     * @return new blank Display
+     */
+    public static Display blankDisplay()
+    {
+        return new ConsoleIO();
+    }
+
+    /**
+     * Provides a fully configured console display.
+     *
+     * @param linePrefix text to prepend to each line
+     *
+     * @return new Display
+     */
+    public static Display consoleDisplay(final String linePrefix)
+    {
+        return new ConsoleIO(linePrefix);
+    }
+
+    /**
+     * Provides a version of the ConsoleIO that outputs to both the console and
+     * the designated file.
+     *
+     * @param linePrefix text to prepend to each line
+     * @param filename   the file to output to
+     *
+     * @return new Display
+     */
+    public static Display consoleFileDisplay(final String linePrefix,
+            final String filename)
+    {
+
+        return new ConsoleIO(linePrefix, filename, true);
+    }
+
+    /**
+     * Provides a version of the ConsoleIO that outputs only to the designated
+     * file.
+     *
+     * @param linePrefix text to prepend to each line
+     * @param filename   the file to output to
+     *
+     * @return new Display
+     */
+    public static Display fileDisplay(final String linePrefix,
+            final String filename)
+    {
+
+        return new ConsoleIO(linePrefix, filename, false);
+    }
+
     @Override
-    public Display append(final String text) {
+    public Display append(final String text)
+    {
         if (open)
         {
             if (!blank)
@@ -248,12 +267,14 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         if (open)
         {
             if (!blank)
             {
                 sb = new StringBuilder();
+                formatter = new Formatter(sb);
             }
         } else
         {
@@ -262,12 +283,14 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public void clearExceptions() {
+    public void clearExceptions()
+    {
         exception = null;
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         flush();
 
         if (out != null)
@@ -286,7 +309,8 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public void flush() {
+    public void flush()
+    {
         if (open)
         {
             if (out != null || file != null)
@@ -322,13 +346,34 @@ public final class ConsoleIO implements Display, Input {
         }
     }
 
+    /**
+     * @param format This implementation uses
+     *               {@link Formatter#format(java.lang.String, java.lang.Object...)
+     *               Formatter.format(String format, Object... args)}
+     *               as the work-horse.
+     *
+     * @see java.util.Formatter - Format String Syntax
+     */
     @Override
-    public boolean isException() {
+    public Display format(String format, Object... args)
+    {
+        formatter.format(
+                Locale.getDefault(Locale.Category.FORMAT),
+                format, args
+        );
+
+        return this;
+    }
+
+    @Override
+    public boolean isException()
+    {
         return exception != null;
     }
 
     @Override
-    public Scanner newScanner() {
+    public Scanner newScanner()
+    {
         Scanner rtn = null;
 
         if (open)
@@ -349,14 +394,16 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public Exception popException() {
+    public Exception popException()
+    {
         Exception rtn = exception;
         clearExceptions();
         return rtn;
     }
 
     @Override
-    public String readLine() {
+    public String readLine()
+    {
         String rtn = null;
 
         if (open)
@@ -385,7 +432,8 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public String readLine(String fmt, Object... args) {
+    public String readLine(String fmt, Object... args)
+    {
         String rtn = null;
 
         if (open)
@@ -415,7 +463,8 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public char[] readPassword() {
+    public char[] readPassword()
+    {
         char[] rtn = null;
 
         if (open)
@@ -437,7 +486,8 @@ public final class ConsoleIO implements Display, Input {
     }
 
     @Override
-    public char[] readPassword(String fmt, Object... args) {
+    public char[] readPassword(String fmt, Object... args)
+    {
         char[] rtn = null;
 
         if (open)
@@ -466,7 +516,8 @@ public final class ConsoleIO implements Display, Input {
      * @since 1.0.7
      * @version 1.0.7
      */
-    private static class WriterInstance implements Closeable {
+    private static class WriterInstance implements Closeable
+    {
 
         /**
          * Number of references of this instance of {@link PrintWriter} that are
@@ -496,7 +547,8 @@ public final class ConsoleIO implements Display, Input {
          *                               while opening or creating the file
          *
          */
-        private WriterInstance(final String filename) throws FileNotFoundException {
+        private WriterInstance(final String filename) throws FileNotFoundException
+        {
             this.filename = filename;
             this.printWriter = new PrintWriter(filename);
             this.count = 1;
@@ -510,7 +562,8 @@ public final class ConsoleIO implements Display, Input {
          *
          * @throws IOException if any
          */
-        public PrintWriter addUsage() throws IOException {
+        public PrintWriter addUsage() throws IOException
+        {
             if (isOpen())
             {
                 count++;
@@ -522,7 +575,8 @@ public final class ConsoleIO implements Display, Input {
         }
 
         @Override
-        public void close() {
+        public void close()
+        {
             count = 0;
             printWriter.flush();
             printWriter.close();
@@ -535,12 +589,14 @@ public final class ConsoleIO implements Display, Input {
          *
          * @return count
          */
-        public int count() {
+        public int count()
+        {
             return count;
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(Object obj)
+        {
             if (this == obj)
             {
                 return true;
@@ -565,12 +621,14 @@ public final class ConsoleIO implements Display, Input {
          *
          * @return filename
          */
-        public String filename() {
+        public String filename()
+        {
             return filename;
         }
 
         @Override
-        public int hashCode() {
+        public int hashCode()
+        {
             return Objects.hashCode(this.filename);
         }
 
@@ -578,7 +636,8 @@ public final class ConsoleIO implements Display, Input {
          *
          * @return {@code true} if open, {@code false} otherwise.
          */
-        public boolean isOpen() {
+        public boolean isOpen()
+        {
             return printWriter != null;
         }
 
@@ -588,7 +647,8 @@ public final class ConsoleIO implements Display, Input {
          * @implSpec
          * When the counter reaches zero, then the console is closed.
          */
-        public void removeUsage() {
+        public void removeUsage()
+        {
             if (isOpen())
             {
                 --count;

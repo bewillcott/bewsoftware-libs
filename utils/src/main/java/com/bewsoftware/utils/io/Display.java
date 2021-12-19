@@ -34,11 +34,14 @@ import java.io.Closeable;
  *
  * @implNote
  * The ideas for the various methods, and even some of the implementation code
- * for the <i>default</i> methods was derived from the {@link java.io.PrintStream}
+ * for the <i>default</i> methods was derived from the
+ * {@link java.io.PrintStream}
  * and {@link java.lang.StringBuilder} classes from JDK 15.
  * <p>
- * The reason for this, was to make it as close as possible to being a minimalist
- * drop-in replacement for {@link java.lang.System#out}. Further more, by including
+ * The reason for this, was to make it as close as possible to being a
+ * minimalist
+ * drop-in replacement for {@link java.lang.System#out}. Further more, by
+ * including
  * methods from both classes, I believe it makes this class even more useful.
  * <p>
  * In addition to the methods derived from the above mentioned classes,
@@ -53,16 +56,16 @@ import java.io.Closeable;
  * @since 1.0.7
  * @version 1.0.7
  */
-public interface Display extends Closeable, Exceptions {
+public interface Display extends Closeable, Exceptions
+{
 
     /**
-     * Adds the text to the internal buffer, much like with {@code StringBuilder}.
+     * Adds the text to the internal buffer, much like with
+     * {@code StringBuilder}.
      *
      * @param text to be added
      *
-     * @return this object for chaining purposes
-     *
-     * @see java.lang.StringBuilder#append(java.lang.String)
+     * @return this Display for chaining purposes
      */
     public Display append(final String text);
 
@@ -77,6 +80,18 @@ public interface Display extends Closeable, Exceptions {
     public void flush();
 
     /**
+     * Adds a formatted string to internal buffer using the specified
+     * format string and arguments.
+     *
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes
+     */
+    public Display format(String format, Object... args);
+
+    /**
      * Adds the text equivalent of the value to the internal buffer.
      *
      * @implNote
@@ -84,11 +99,12 @@ public interface Display extends Closeable, Exceptions {
      *
      * @param value to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #append(java.lang.String)
      */
-    default Display append(final boolean value) {
+    default Display append(final boolean value)
+    {
         return append(value ? "true" : "false");
     }
 
@@ -100,11 +116,12 @@ public interface Display extends Closeable, Exceptions {
      *
      * @param number to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #append(java.lang.String)
      */
-    default Display append(final int number) {
+    default Display append(final int number)
+    {
         return append(Integer.toString(number));
     }
 
@@ -112,26 +129,29 @@ public interface Display extends Closeable, Exceptions {
      * Adds the obj to the internal buffer.
      *
      * @implNote
-     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to String.
+     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
+     * String.
      *
      * @param obj to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #append(java.lang.String)
      */
-    default Display append(final Object obj) {
+    default Display append(final Object obj)
+    {
         return append(obj != null ? obj.toString() : "null");
     }
 
     /**
      * Add the System line separator to the internal buffer.
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #append(java.lang.String)
      */
-    default Display appendln() {
+    default Display appendln()
+    {
         return append(System.lineSeparator());
     }
 
@@ -143,58 +163,66 @@ public interface Display extends Closeable, Exceptions {
      *
      * @param value to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #appendln(java.lang.String)
      */
-    default Display appendln(final boolean value) {
+    default Display appendln(final boolean value)
+    {
         return appendln(value ? "true" : "false");
     }
 
     /**
-     * Adds the number to the internal buffer, followed by the System line separator.
+     * Adds the number to the internal buffer, followed by the System line
+     * separator.
      *
      * @implNote
      * Uses {@code Integer.toString(number)} to convert int to String.
      *
      * @param number to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #appendln(java.lang.String)
      * @see java.lang.System#lineSeparator()
      */
-    default Display appendln(final int number) {
+    default Display appendln(final int number)
+    {
         return appendln(Integer.toString(number));
     }
 
     /**
-     * Adds the obj to the internal buffer, followed by the System line separator.
+     * Adds the obj to the internal buffer, followed by the System line
+     * separator.
      *
      * @implNote
-     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to String.
+     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
+     * String.
      *
      * @param obj to print
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #appendln(java.lang.String)
      */
-    default Display appendln(final Object obj) {
+    default Display appendln(final Object obj)
+    {
         return appendln(obj != null ? obj.toString() : "null");
     }
 
     /**
-     * Adds the text to the internal buffer, followed by the System line separator.
+     * Adds the text to the internal buffer, followed by the System line
+     * separator.
      *
      * @param text to be added
      *
-     * @return this object for chaining purposes
+     * @return this Display for chaining purposes
      *
      * @see #append(java.lang.String)
      * @see #appendln()
      */
-    default Display appendln(final String text) {
+    default Display appendln(final String text)
+    {
         return append(text).appendln();
     }
 
@@ -208,7 +236,8 @@ public interface Display extends Closeable, Exceptions {
      *
      * @see #print(java.lang.String)
      */
-    default void print(final boolean value) {
+    default void print(final boolean value)
+    {
         print(value ? "true" : "false");
     }
 
@@ -222,7 +251,8 @@ public interface Display extends Closeable, Exceptions {
      *
      * @see #print(java.lang.String)
      */
-    default void print(final int number) {
+    default void print(final int number)
+    {
         print(Integer.toString(number));
     }
 
@@ -230,13 +260,15 @@ public interface Display extends Closeable, Exceptions {
      * Prints the object to the Display.
      *
      * @implNote
-     * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object to String.
+     * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
+     * to String.
      *
      * @param obj to print
      *
      * @see #print(java.lang.String)
      */
-    default void print(final Object obj) {
+    default void print(final Object obj)
+    {
         print(obj != null ? obj.toString() : "null");
     }
 
@@ -248,14 +280,16 @@ public interface Display extends Closeable, Exceptions {
      * @see #append(java.lang.String)
      * @see #flush()
      */
-    default void print(final String text) {
+    default void print(final String text)
+    {
         append(text).flush();
     }
 
     /**
      * Prints a line terminator to the Display.
      */
-    default void println() {
+    default void println()
+    {
         appendln().flush();
     }
 
@@ -269,7 +303,8 @@ public interface Display extends Closeable, Exceptions {
      *
      * @see #println(java.lang.String)
      */
-    default void println(final boolean value) {
+    default void println(final boolean value)
+    {
         println(value ? "true" : "false");
     }
 
@@ -283,7 +318,8 @@ public interface Display extends Closeable, Exceptions {
      *
      * @see #println(java.lang.String)
      */
-    default void println(final int number) {
+    default void println(final int number)
+    {
         println(Integer.toString(number));
     }
 
@@ -291,13 +327,15 @@ public interface Display extends Closeable, Exceptions {
      * Prints the object to the LCD Display.
      *
      * @implNote
-     * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object to String.
+     * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
+     * to String.
      *
      * @param obj to print
      *
      * @see #println(java.lang.String)
      */
-    default void println(final Object obj) {
+    default void println(final Object obj)
+    {
         println(obj != null ? obj.toString() : "null");
     }
 
@@ -309,7 +347,8 @@ public interface Display extends Closeable, Exceptions {
      * @see #appendln(java.lang.String)
      * @see #flush()
      */
-    default void println(final String text) {
+    default void println(final String text)
+    {
         appendln(text).flush();
     }
 }
