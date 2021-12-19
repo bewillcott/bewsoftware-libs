@@ -71,6 +71,20 @@ public final class Ref<T>
         this.val = val;
     }
 
+    /**
+     * Alternative to using the 'new' directive to instantiate the class.
+     *
+     * @param <T> type of Object
+     * @param val the object to be held
+     *
+     * @return a new instance of the Ref class, initialized with the 'val'
+     *         object.
+     */
+    public static <T> Ref<T> val(T val)
+    {
+        return new Ref<>(val);
+    }
+
     @Override
     public String toString()
     {
