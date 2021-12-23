@@ -82,14 +82,14 @@ public interface Display extends Closeable, Exceptions
     public void debugLevel(int level);
 
     /**
-     * Display the following text if the {@linkplain #debugLevel(int) }
+     * Display all following text if the {@linkplain #debugLevel(int) }
      * is greater than or equal to the {@code level}.
      *
      * @param level The debug level at which to display the following text.
      *
      * @return this Display for chaining purposes
      */
-    public Display displayLevel(int level);
+    public Display level(int level);
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).

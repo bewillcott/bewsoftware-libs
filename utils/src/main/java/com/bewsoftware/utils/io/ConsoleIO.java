@@ -321,13 +321,6 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    public Display displayLevel(int level)
-    {
-        displayLevel = level;
-        return this;
-    }
-
-    @Override
     public void flush()
     {
         if (open)
@@ -391,6 +384,13 @@ public final class ConsoleIO implements Display, Input
     public boolean isException()
     {
         return exception != null;
+    }
+
+    @Override
+    public Display level(int level)
+    {
+        displayLevel = level;
+        return this;
     }
 
     @Override
