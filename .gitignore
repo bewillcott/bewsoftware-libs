@@ -1,8 +1,4 @@
 /target/
-/BEWCommon/nbproject/
-/BEWProperty/nbproject/
-/bewsoftware-common/nbproject/
-/bewsoftware-common/target/
 /common/nbproject/
 /common/target/
 /files/target/
@@ -11,4 +7,5 @@
 /utils/target/
 /utils/nbproject/
 /pom/target/
-/WebProgPHP-Six/nbproject/private/
+/optional/target/
+/optional/nbproject/

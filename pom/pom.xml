@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-libs</artifactId>
-        <version>1.0.12</version>
+        <version>1.2.0</version>
     </parent>
 
     <groupId>com.bewsoftware</groupId>
@@ -501,6 +501,16 @@
 
     <build>
         <resources>
+            <resource>
+                <directory>
+                    src/test/resources
+                </directory>
+                <excludes>
+                    <exclude>
+                        **/*
+                    </exclude>
+                </excludes>
+            </resource>
             <resource>
                 <directory>
                     src/docs

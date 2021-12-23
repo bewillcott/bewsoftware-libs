@@ -5,11 +5,10 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-pom</artifactId>
-        <version>1.0.12</version>
+        <version>1.2.0</version>
         <relativePath>../pom/pom.xml</relativePath>
     </parent>
 
-    <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-utils</artifactId>
     <packaging>jar</packaging>
 
