@@ -19,6 +19,7 @@
  */
 package com.bewsoftware.fileio;
 
+import com.bewsoftware.utils.io.Display;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -36,25 +37,30 @@ import static java.nio.file.FileVisitResult.CONTINUE;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 1.0.7
+ * @version 2.0.1
  */
-public class Finder extends SimpleFileVisitor<Path> {
+public class Finder extends SimpleFileVisitor<Path>
+{
 
-    private final int vlevel;
     private final PathMatcher matcher;
+
     private int numMatches = 0;
+
     private final SortedSet<Path> filenames = new TreeSet<>();
+
+    private final Display display;
 
     /**
      * Creates a new instance of the {@code Finder} class.
      *
+     * @param display
      * @param pattern The file search pattern to be used.
-     * @param vlevel  The verbose level, for info/debugging.
      */
-    public Finder(final String pattern, final int vlevel) {
+    public Finder(final Display display, final String pattern)
+    {
+        this.display = display;
         matcher = FileSystems.getDefault()
                 .getPathMatcher("glob:" + Objects.requireNonNull(pattern));
-        this.vlevel = vlevel;
     }
 
     /**
@@ -62,19 +68,14 @@ public class Finder extends SimpleFileVisitor<Path> {
      *
      * @param file File to check.
      */
-    private void find(final Path file) {
+    private void find(final Path file)
+    {
         Path name = Objects.requireNonNull(file).getFileName();
 
         if (name != null && matcher.matches(name))
         {
             numMatches++;
-
-            if (vlevel >= 2)
-            {
-                // Printout verbose info.
-                System.err.println(file);
-            }
-
+            display.level(2).println(file);
             filenames.add(file);
         }
     }
@@ -84,13 +85,9 @@ public class Finder extends SimpleFileVisitor<Path> {
      *
      * @return the sorted list of filename
      */
-    public SortedSet<Path> done() {
-        if (vlevel >= 1)
-        {
-            // Printout verbose info.
-            System.err.println("Matched: " + numMatches);
-        }
-
+    public SortedSet<Path> done()
+    {
+        display.level(1).println("Matched: " + numMatches);
         return filenames;
     }
 
@@ -105,7 +102,8 @@ public class Finder extends SimpleFileVisitor<Path> {
      * @return {@inheritDoc }
      */
     @Override
-    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+    {
         find(file);
         return CONTINUE;
     }
@@ -119,7 +117,8 @@ public class Finder extends SimpleFileVisitor<Path> {
      * @return {@inheritDoc }
      */
     @Override
-    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) {
+    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs)
+    {
         return CONTINUE;
     }
 
@@ -132,8 +131,9 @@ public class Finder extends SimpleFileVisitor<Path> {
      * @return {@inheritDoc }
      */
     @Override
-    public FileVisitResult visitFileFailed(final Path file, final IOException exc) {
-        System.err.println("visitFileFailed: " + exc);
+    public FileVisitResult visitFileFailed(final Path file, final IOException exc)
+    {
+        display.level(1).println("visitFileFailed: " + exc);
         return CONTINUE;
     }
 

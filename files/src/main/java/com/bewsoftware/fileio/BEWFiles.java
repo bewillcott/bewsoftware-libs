@@ -19,20 +19,20 @@
  */
 package com.bewsoftware.fileio;
 
+import com.bewsoftware.utils.io.Display;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
+import java.nio.file.CopyOption;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.getLastModifiedTime;
-import static java.nio.file.Files.notExists;
-import static java.nio.file.Files.walkFileTree;
+import static java.nio.file.Files.*;
 import static java.nio.file.Path.of;
 
 /**
@@ -41,12 +41,20 @@ import static java.nio.file.Path.of;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 2.0.1
  */
-public class BEWFiles {
+public class BEWFiles
+{
+    /**
+     * This class in not meant to be instantiated.
+     */
+    private BEWFiles()
+    {
+    }
 
     /**
-     * Recursively copies the directories and files of the {@code sourceDir} to the {@code destDir}.
+     * Recursively copies the directories and files of the {@code sourceDir} to
+     * the {@code destDir}.
      * <p>
      * Example:
      * <pre><code>
@@ -54,37 +62,54 @@ public class BEWFiles {
      *     BEWFiles.copyDirTree("src", "target/src", "*.{html,css}", 2, COPY_ATTRIBUTES, REPLACE_EXISTING);
      * }</code></pre>
      *
-     * @param sourceDir  Source Directory.
-     * @param destDir    Destination Directory.
-     * @param pattern    Regex pattern to find files.
-     * @param verboseLvl Verbose level.
-     * @param options    List of objects that configure how to copy or move a file.
+     * @param display   Used to display output.
+     * @param sourceDir Source Directory.
+     * @param destDir   Destination Directory.
+     * @param pattern   Regex pattern to find files.
+     * @param options   List of objects that configure how to copy or move a
+     *                  file.
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(final String sourceDir, final String destDir, final String pattern, final int verboseLvl, final CopyOption... options) throws IOException {
+    public static void copyDirTree(
+            final Display display,
+            final String sourceDir,
+            final String destDir,
+            final String pattern,
+            final CopyOption... options
+    ) throws IOException
+    {
         Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
         Path destPath = (destDir != null ? of(destDir) : of(""));
 
-        copyDirTree(srcPath, destPath, pattern, verboseLvl, options);
+        copyDirTree(display, srcPath, destPath, pattern, options);
     }
 
     /**
-     * Recursively copies the directories and files of the {@code srcPath} to the {@code destPath}.
+     * Recursively copies the directories and files of the {@code srcPath} to
+     * the {@code destPath}.
      * <p>
      * This method would most likely only be called by the
      * {@linkplain #copyDirTree(String, String, String, int, CopyOption...)}
      * method.
      *
-     * @param srcPath    Source Path.
-     * @param destPath   Destination Path.
-     * @param pattern    File search pattern.
-     * @param verboseLvl Verbose level.
-     * @param options    List of objects that configure how to copy or move a file.
+     * @param display  Used to display output.
+     * @param srcPath  Source Path.
+     * @param destPath Destination Path.
+     * @param pattern  File search pattern.
+     * @param options  List of objects that configure how to copy or move a
+     *                 file.
      *
      * @throws IOException If an I/O error occurs.
      */
-    public static void copyDirTree(final Path srcPath, final Path destPath, final String pattern, final int verboseLvl, CopyOption... options) throws IOException {
+    public static void copyDirTree(
+            final Display display,
+            final Path srcPath,
+            final Path destPath,
+            final String pattern,
+            CopyOption... options
+    ) throws IOException
+    {
         // Can't be copying source onto itself.
         // No point.
         if (Objects.requireNonNull(srcPath).equals(Objects.requireNonNull(destPath)))
@@ -93,42 +118,72 @@ public class BEWFiles {
         }
 
         // Initialise and prepare finder...
-        Finder finder = new Finder(pattern != null ? pattern : "*", verboseLvl);
+        Finder finder = new Finder(display, pattern != null ? pattern : "*");
 
         // This is to let 'finder' collect relevant information.
         walkFileTree(srcPath, finder);
 
         // Process list of files/directories found...
-        SortedSet<Path> inpList = finder.done();
-        List<Path[]> outList = new ArrayList<>(inpList.size());
+        SortedSet<Path> inList = finder.done();
+        List<FileData> outList = new ArrayList<>(inList.size());
         Set<Path> dirList = new TreeSet<>();
-        Pattern p1 = Pattern.compile("^(?<filename>.*)$");
-        Pattern p2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
 
-        for (Path inPath : inpList)
+        processInList(srcPath, inList, destPath, outList, dirList, display);
+
+        display.level(2).appendln("Creating directories ...");
+
+        for (Path dir : dirList)
         {
-            Matcher m;
+            display.append("    ").appendln(dir);
+            createDirectories(dir);
+        }
+
+        display.flush();
+        display.level(2).appendln("Copying files ...");
+
+        for (FileData fileData : outList)
+        {
+            display.appendln(fileData.sourcePath)
+                    .append("    ")
+                    .appendln(fileData.destinationPath);
+
+            copy(fileData.sourcePath, fileData.destinationPath, options);
+        }
+
+        display.flush();
+    }
+
+    private static void processInList(
+            final Path srcPath,
+            SortedSet<Path> inList,
+            final Path destPath,
+            List<FileData> outList,
+            Set<Path> dirList,
+            final Display display
+    ) throws IOException
+    {
+        Pattern pattern1 = Pattern.compile("^(?<filename>.*)$");
+        Pattern pattern2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
+
+        for (Path inPath : inList)
+        {
+            Matcher matcher;
 
             if (srcPath.toString().isEmpty())
             {
-                m = p1.matcher(inPath.toString());
+                matcher = pattern1.matcher(inPath.toString());
             } else
             {
-                m = p2.matcher(inPath.toString());
+                matcher = pattern2.matcher(inPath.toString());
             }
 
-            if (m.find())
+            if (matcher.find())
             {
-                Path outPath = of(destPath.toString(), m.group("filename"));
+                Path outPath = of(destPath.toString(), matcher.group("filename"));
 
                 if (notExists(outPath) || getLastModifiedTime(inPath).compareTo(getLastModifiedTime(outPath)) > 0)
                 {
-                    Path[] files = new Path[2];
-
-                    files[0] = inPath;
-                    files[1] = outPath;
-                    outList.add(files);
-
+                    outList.add(new FileData(inPath, outPath));
                     Path parent = outPath.getParent();
 
                     if (notExists(parent))
@@ -136,51 +191,10 @@ public class BEWFiles {
                         dirList.add(parent);
                     }
 
-                    if (verboseLvl >= 2)
-                    {
-                        System.err.println(outPath);
-                    }
+                    display.level(2).println(outPath);
                 }
             }
         }
-
-        if (verboseLvl >= 2)
-        {
-            // Printout verbose info.
-            System.err.println("Creating directories ...");
-
-            for (Path dir : dirList)
-            {
-                System.err.println("    " + dir);
-                createDirectories(dir);
-            }
-        } else
-        {
-            for (Path dir : dirList)
-            {
-                createDirectories(dir);
-            }
-        }
-
-        if (verboseLvl >= 2)
-        {
-            // Printout verbose info.
-            System.err.println("Copying files ...");
-
-            for (Path[] filePairs : outList)
-            {
-                System.err.println(filePairs[0]);
-                System.err.println("    " + filePairs[1]);
-                copy(filePairs[0], filePairs[1], options);
-            }
-        } else
-        {
-            for (Path[] filePairs : outList)
-            {
-                copy(filePairs[0], filePairs[1], options);
-            }
-        }
-
     }
 
     /**
@@ -194,7 +208,11 @@ public class BEWFiles {
      * @throws URISyntaxException Name produces an invalid path data.
      * @throws IOException        General IO failure.
      */
-    public static Path getResource(final Class<?> clazz, final String name) throws URISyntaxException, IOException {
+    public static Path getResource(
+            final Class<?> clazz,
+            final String name
+    ) throws URISyntaxException, IOException
+    {
         // clazz and name must NOT be null.
         if (clazz == null || name == null || name.isBlank())
         {
@@ -224,9 +242,17 @@ public class BEWFiles {
         return Paths.get(uri);
     }
 
-    /**
-     * This class in not meant to be instantiated.
-     */
-    private BEWFiles() {
+    private static class FileData
+    {
+
+        public final Path destinationPath;
+
+        public final Path sourcePath;
+
+        public FileData(Path sourcePath, Path destinationPath)
+        {
+            this.sourcePath = sourcePath;
+            this.destinationPath = destinationPath;
+        }
     }
 }

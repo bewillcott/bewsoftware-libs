@@ -27,6 +27,7 @@
 module bewsoftware.files {
     requires transitive bewsoftware.property;
     requires transitive bewsoftware.common;
+    requires transitive bewsoftware.utils;
 
     exports com.bewsoftware.fileio;
     exports com.bewsoftware.fileio.ini;
