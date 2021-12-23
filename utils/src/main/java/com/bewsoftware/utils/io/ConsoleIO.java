@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 1.0.7
+ * @version 1.2.0
  */
 public final class ConsoleIO implements Display, Input
 {
@@ -55,6 +55,10 @@ public final class ConsoleIO implements Display, Input
     private final boolean blank;
 
     private final Console console;
+
+    private int debugLevel = 0;
+
+    private int displayLevel = 0;
 
     private Exception exception;
 
@@ -254,7 +258,7 @@ public final class ConsoleIO implements Display, Input
     {
         if (open)
         {
-            if (!blank)
+            if (!blank && displayOK())
             {
                 sb.append(text);
             }
@@ -278,7 +282,8 @@ public final class ConsoleIO implements Display, Input
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            sb = null;
+            formatter = null;
         }
     }
 
@@ -306,6 +311,20 @@ public final class ConsoleIO implements Display, Input
         }
 
         open = false;
+        clear();
+    }
+
+    @Override
+    public void debugLevel(int level)
+    {
+        debugLevel = level;
+    }
+
+    @Override
+    public Display displayLevel(int level)
+    {
+        displayLevel = level;
+        return this;
     }
 
     @Override
@@ -357,10 +376,13 @@ public final class ConsoleIO implements Display, Input
     @Override
     public Display format(String format, Object... args)
     {
-        formatter.format(
-                Locale.getDefault(Locale.Category.FORMAT),
-                format, args
-        );
+        if (open && displayOK())
+        {
+            formatter.format(
+                    Locale.getDefault(Locale.Category.FORMAT),
+                    format, args
+            );
+        }
 
         return this;
     }
@@ -507,6 +529,11 @@ public final class ConsoleIO implements Display, Input
 
         return rtn;
 
+    }
+
+    private boolean displayOK()
+    {
+        return debugLevel >= displayLevel;
     }
 
     /**

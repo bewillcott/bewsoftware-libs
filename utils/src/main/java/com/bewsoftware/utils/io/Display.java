@@ -54,7 +54,7 @@ import java.io.Closeable;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 1.0.7
+ * @version 1.2.0
  */
 public interface Display extends Closeable, Exceptions
 {
@@ -73,6 +73,23 @@ public interface Display extends Closeable, Exceptions
      * Empties the internal buffer of all unflushed output.
      */
     public void clear();
+
+    /**
+     * Set the debug level for this run.
+     *
+     * @param level Debug level to use
+     */
+    public void debugLevel(int level);
+
+    /**
+     * Display the following text if the {@linkplain #debugLevel(int) }
+     * is greater than or equal to the {@code level}.
+     *
+     * @param level The debug level at which to display the following text.
+     *
+     * @return this Display for chaining purposes
+     */
+    public Display displayLevel(int level);
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).
