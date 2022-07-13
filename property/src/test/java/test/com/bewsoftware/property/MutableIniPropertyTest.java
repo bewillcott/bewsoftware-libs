@@ -14,10 +14,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.bewsoftware.property;
+package test.com.bewsoftware.property;
 
+import com.bewsoftware.property.MutableIniProperty;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,19 +27,19 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  */
-public class MutablePropertyTest {
+public class MutableIniPropertyTest {
 
-    public MutablePropertyTest() {
+    public MutableIniPropertyTest() {
     }
 
     /**
-     * Test of comment method, of class MutableProperty.
+     * Test of comment method, of class MutableIniProperty.
      */
     @Test
     public void testComment() {
-        MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
+        MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
         assertNotNull(prop1);
-        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
+        assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
         assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
         assertNull(prop1.comment());
 
@@ -48,13 +49,13 @@ public class MutablePropertyTest {
     }
 
     /**
-     * Test of value method, of class MutableProperty.
+     * Test of value method, of class MutableIniProperty.
      */
     @Test
     public void testValue() {
-        MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
+        MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
         assertNotNull(prop1);
-        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
+        assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
         assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
 
         prop1.value("Now it has changed");
@@ -63,27 +64,27 @@ public class MutablePropertyTest {
     }
 
     /**
-     * Test of constructors, of class MutableProperty.
+     * Test of constructors, of class MutableIniProperty.
      */
     @Test
     public void testConstructors() {
-        MutableProperty<String, Integer> propA = new MutableProperty<>("one", 1);
+        MutableIniProperty<Integer> propA = new MutableIniProperty<>("one", 1);
         assertNotNull(propA);
         assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
         assertEquals(1L, (long) propA.value(), "propA.value().equals(1)");
         assertNull(propA.comment());
 
-        MutableProperty<String, Integer> propB = new MutableProperty<>("two", 2, "This is a two");
+        MutableIniProperty<Integer> propB = new MutableIniProperty<>("two", 2, "This is a two");
         assertNotNull(propB);
         assertEquals("two", propB.key(), "propB.key().equals(\"two\")");
-        assertEquals(2L, (long) propB.value(), "propB.value().equals(1)");
+        assertEquals(2L, (long) propB.value(), "propB.value().equals(2)");
         assertNotNull(propB.comment());
         assertEquals("This is a two", propB.comment(), "propB.comment().equals(\"This is a two\")");
 
-        MutableProperty<String, Integer> propC = new MutableProperty<>(propB);
+        MutableIniProperty<Integer> propC = new MutableIniProperty<>(propB);
         assertNotNull(propC);
         assertEquals("two", propC.key(), "propC.key().equals(\"two\")");
-        assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
+        assertEquals(2L, (long) propC.value(), "propC.value().equals(2)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
     }

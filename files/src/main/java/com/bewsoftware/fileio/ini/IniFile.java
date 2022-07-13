@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.fileio.ini;
 
@@ -107,9 +107,10 @@ import static java.nio.file.StandardOpenOption.WRITE;
  * has methods that provide easy access to, and management of, the associated
  * comments as shown above. See
  * {@link IniDocument#getComment(java.lang.String, java.lang.String) IniDocument.getComment},
- * and null {@link IniDocument#setComment(java.lang.String, java.lang.String, java.lang.String)
+ * and {@link IniDocument#setComment(java.lang.String, java.lang.String, java.lang.String)
  * IniDocument.setComment}. Also there are versions of the various other
- * {@code set*()} methods, such as null {@link IniDocument#setBoolean(java.lang.String, java.lang.String, boolean, java.lang.String)
+ * {@code set*()} methods, such as
+ * {@link IniDocument#setBoolean(java.lang.String, java.lang.String, boolean, java.lang.String)
  * IniDocument.setBoolean}, that allow you to set the {@code comment} at the
  * same time as setting the {@code value}.
  * </p><p>

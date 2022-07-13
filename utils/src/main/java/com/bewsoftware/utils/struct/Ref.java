@@ -2,7 +2,7 @@
  *  File Name:    Ref.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021 Bradley Willcott
+ *  Copyright (c) 2021-2022 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils.struct;
 
@@ -44,39 +44,18 @@ package com.bewsoftware.utils.struct;
  * @param <T> type of Object
  *
  * @since 1.0.8
- * @version 1.0.9
+ * @version 2.0.1
  */
+@SuppressWarnings("PublicField")
 public final class Ref<T>
 {
-
     /**
      * The object being held.
      */
     public T val;
 
-    /**
-     * Default constructor.
-     *
-     * @deprecated Replace {@code new Ref<>() } with
-     * {@link #val() Ref.val()}.
-     */
-    @Deprecated
-    public Ref()
+    private Ref()
     {
-    }
-
-    /**
-     * The initiating constructor.
-     *
-     * @param val the object to be held
-     *
-     * @deprecated Replace {@code new Ref<>(val) } with
-     * {@link #val(java.lang.Object) Ref.val(val)}.
-     */
-    @Deprecated
-    public Ref(T val)
-    {
-        this.val = val;
     }
 
     /**
@@ -105,6 +84,29 @@ public final class Ref<T>
         Ref<T> rtn = new Ref<>();
         rtn.val = val;
         return rtn;
+    }
+
+    /**
+     * Check to see if this {@linkplain Ref} object has not yet been set to a
+     * value.
+     *
+     * @return {@code true} if it hasn't been set to a value, {@code false}
+     *         otherwise.
+     */
+    public boolean isEmpty()
+    {
+        return this.val == null;
+    }
+
+    /**
+     * Check to see if this {@linkplain Ref} object has been set to a value.
+     *
+     * @return {@code true} if it has been set to a value, {@code false}
+     *         otherwise.
+     */
+    public boolean isPresent()
+    {
+        return this.val != null;
     }
 
     @Override

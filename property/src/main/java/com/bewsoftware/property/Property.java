@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.property;
 
@@ -52,7 +52,8 @@ import java.util.Objects;
  */
 public class Property<K extends Comparable<K>, V> implements
         Serializable,
-        Comparable<Property<K, V>> {
+        Comparable<Property<K, V>>
+{
 
     /**
      * @serial serial
@@ -67,27 +68,24 @@ public class Property<K extends Comparable<K>, V> implements
     /**
      * The property's key field.
      */
-    protected final K key;
+    protected transient final K key;
 
     /**
      * The property's value field.
      */
-    protected V value;
+    protected transient V value;
 
     /**
-     * Create a new instance of {@code Property} as a copy of an existing instance
+     * Create a new instance of {@code Property} as a copy of an existing
+     * instance
      * of {@code Property}, or one of its sub-classes.
      *
      * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
      */
-    public <T extends Property<K, V>> Property(T property) {
+    public <T extends Property<K, V>> Property(T property)
+    {
         this(property.key, property.value, property.comment);
-    }
-
-    @Override
-    public String toString() {
-        return "{ key = " + key + ", value = " + value + ", comment = " + comment + " }";
     }
 
     /**
@@ -96,7 +94,8 @@ public class Property<K extends Comparable<K>, V> implements
      * @param key   The key.
      * @param value The value.
      */
-    public Property(K key, V value) {
+    public Property(K key, V value)
+    {
         this(key, value, null);
     }
 
@@ -107,7 +106,8 @@ public class Property<K extends Comparable<K>, V> implements
      * @param value   The value.
      * @param comment The comment.
      */
-    public Property(K key, V value, String comment) {
+    public Property(K key, V value, String comment)
+    {
         this.key = key;
         this.value = value;
         this.comment = comment;
@@ -118,12 +118,14 @@ public class Property<K extends Comparable<K>, V> implements
      *
      * @return {@code comment} contents.
      */
-    public String comment() {
+    public String comment()
+    {
         return comment;
     }
 
     @Override
-    public int compareTo(Property<K, V> other) {
+    public int compareTo(Property<K, V> other)
+    {
         int rtn = 0;
 
         if (!equals(Objects.requireNonNull(other)))
@@ -155,7 +157,8 @@ public class Property<K extends Comparable<K>, V> implements
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         boolean rtn = false;
 
         if (this == obj)
@@ -166,8 +169,8 @@ public class Property<K extends Comparable<K>, V> implements
             Property<?, ?> other = (Property<?, ?>) obj;
 
             if (this.getClass() == other.getClass()
-                && this.value.getClass() == other.value.getClass()
-                && this.key.equals(other.key))
+                    && this.value.getClass() == other.value.getClass()
+                    && this.key.equals(other.key))
             {
                 rtn = true;
             }
@@ -177,7 +180,8 @@ public class Property<K extends Comparable<K>, V> implements
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = 7;
         hash = 37 * hash + Objects.hashCode(this.key);
         return hash;
@@ -188,8 +192,15 @@ public class Property<K extends Comparable<K>, V> implements
      *
      * @return {@code key} contents.
      */
-    public K key() {
+    public K key()
+    {
         return key;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "{ key = " + key + ", value = " + value + ", comment = " + comment + " }";
     }
 
     /**
@@ -197,7 +208,8 @@ public class Property<K extends Comparable<K>, V> implements
      *
      * @return {@code value} contents.
      */
-    public V value() {
+    public V value()
+    {
         return value;
     }
 

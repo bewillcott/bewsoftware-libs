@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.fileio;
 
@@ -90,7 +90,8 @@ public class BEWFiles
      * the {@code destPath}.
      * <p>
      * This method would most likely only be called by the
-     * {@linkplain #copyDirTree(String, String, String, int, CopyOption...)}
+     * {@linkplain #copyDirTree(com.bewsoftware.utils.io.Display, java.lang.String,
+     * java.lang.String, java.lang.String, java.nio.file.CopyOption...) }
      * method.
      *
      * @param display  Used to display output.
@@ -205,13 +206,13 @@ public class BEWFiles
      *
      * @return Path to the resource.
      *
-     * @throws URISyntaxException Name produces an invalid path data.
      * @throws IOException        General IO failure.
+     * @throws URISyntaxException Name produces an invalid path data.
      */
     public static Path getResource(
             final Class<?> clazz,
             final String name
-    ) throws URISyntaxException, IOException
+    ) throws IOException, URISyntaxException
     {
         // clazz and name must NOT be null.
         if (clazz == null || name == null || name.isBlank())
