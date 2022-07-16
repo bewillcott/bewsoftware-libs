@@ -58,6 +58,7 @@
         <project.reporting.outputEncoding>${source.encoding}</project.reporting.outputEncoding>
         <javadoc.link.url.jdk>https://docs.oracle.com/en/java/javase/${java.version}/docs/api/</javadoc.link.url.jdk>
         <javadoc.reporting.outputDirectory>${project.reporting.outputDirectory}/apidocs</javadoc.reporting.outputDirectory>
+        <keep.verion.number></keep.verion.number>
         <skip.unit.tests>true</skip.unit.tests>
     </properties>
 
@@ -92,6 +93,7 @@
                                     <goal>release</goal>
                                 </goals>
                                 <configuration>
+                                    <keep>${keep.verion.number}</keep>
                                     <finalBaseNamePropertyName>finalBaseName</finalBaseNamePropertyName>
                                 </configuration>
                             </execution>
@@ -172,7 +174,7 @@
                 <plugin>
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-version-plugin</artifactId>
-                    <version>1.1.0</version>
+                    <version>1.2.0</version>
                 </plugin>
 
                 <plugin>
@@ -284,6 +286,7 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
+                            <keep>${keep.verion.number}</keep>
                             <skip>${skip.version.build}</skip>
                         </configuration>
                     </execution>
