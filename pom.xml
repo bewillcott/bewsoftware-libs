@@ -4,7 +4,7 @@
 
     <groupId>com.bewsoftware</groupId>
     <artifactId>bewsoftware-libs</artifactId>
-    <version>2.0.2</version>
+    <version>2.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>BEWSoftware Libraries</name>
@@ -58,7 +58,7 @@
         <project.reporting.outputEncoding>${source.encoding}</project.reporting.outputEncoding>
         <javadoc.link.url.jdk>https://docs.oracle.com/en/java/javase/${java.version}/docs/api/</javadoc.link.url.jdk>
         <javadoc.reporting.outputDirectory>${project.reporting.outputDirectory}/apidocs</javadoc.reporting.outputDirectory>
-        <keep.verion.number></keep.verion.number>
+        <keep.verion.number/>
         <skip.unit.tests>true</skip.unit.tests>
     </properties>
 

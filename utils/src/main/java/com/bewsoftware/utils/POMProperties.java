@@ -83,16 +83,14 @@ import java.util.Properties;
  * @since 0.1
  * @version 1.0
  */
-public final class POMProperties {
+public final class POMProperties
+{
 
     /**
      * Provides single instance of this class.
      */
     public final static POMProperties INSTANCE = new POMProperties();
 
-    public static void main(String[] args) {
-        System.out.println(POMProperties.INSTANCE);
-    }
     /**
      * The identifier for this artifact that is unique within
      * the group given by the group ID.
@@ -103,6 +101,7 @@ public final class POMProperties {
      * Project Description
      */
     public final String description;
+
     /**
      * The filename of the binary output file.
      * <p>
@@ -126,7 +125,8 @@ public final class POMProperties {
      */
     public final String version;
 
-    private POMProperties() {
+    private POMProperties()
+    {
         Properties properties = new Properties();
         try
         {
@@ -144,8 +144,14 @@ public final class POMProperties {
         filename = properties.getProperty("filename");
     }
 
+    public static void main(String[] args)
+    {
+        System.out.println(POMProperties.INSTANCE);
+    }
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return new StringBuilder(POMProperties.class.getName()).append(":\n")
                 .append("  title: ").append(title).append("\n")
                 .append("  description: ").append(description).append("\n")

@@ -1,6 +1,6 @@
 /*
  *  File Name:    ReindexFailedException.java
- *  Project Name: Java3AT2-Two
+ *  Project Name: bewsoftware-utils
  *
  *  Copyright (c) 2021 Bradley Willcott
  *
@@ -74,5 +74,4 @@ public class ReindexFailedException extends RuntimeException
     {
         super(cause);
     }
-
 }

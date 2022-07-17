@@ -23,12 +23,13 @@
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0.5
+ * @version 2.0.2
  */
 module bewsoftware.utils {
     requires transitive java.desktop;
     requires transitive java.sql;
 
+    exports com.bewsoftware.utils;
     exports com.bewsoftware.utils.crypto;
     exports com.bewsoftware.utils.graphics;
     exports com.bewsoftware.utils.io;

@@ -32,12 +32,56 @@ import java.util.Objects;
  * @since 1.0
  * @version 1.0
  */
-public class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate> {
+public class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
+{
 
     /**
      * @serial serial
      */
     private static final long serialVersionUID = -5343636338811996888L;
+
+    /**
+     * The internal date field;
+     */
+    private Date date;
+
+    /**
+     * Allocates a {@code Date} object and initializes it so that
+     * it represents the time at which it was allocated, measured to the
+     * nearest millisecond.
+     *
+     * @see java.lang.System#currentTimeMillis()
+     */
+    public ImmutableDate()
+    {
+        this.date = new Date();
+    }
+
+    /**
+     * Creates a new {@code ImmutableDate} object, and stores a copy of the
+     * Date passed in.
+     *
+     * @param date Date object to copy from.
+     */
+    public ImmutableDate(Date date)
+    {
+        this.date = new Date(date.getTime());
+    }
+
+    /**
+     * Allocates a {@code Date} object and initializes it to
+     * represent the specified number of milliseconds since the
+     * standard base time known as "the epoch", namely January 1,
+     * 1970, 00:00:00 GMT.
+     *
+     * @param date the milliseconds since January 1, 1970, 00:00:00 GMT.
+     *
+     * @see java.lang.System#currentTimeMillis()
+     */
+    public ImmutableDate(long date)
+    {
+        this.date = new Date(date);
+    }
 
     /**
      * Obtains an instance of {@code Date} from an {@code Instant} object.
@@ -61,7 +105,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      *                                     represent as a {@code Date}
      * @since 1.8
      */
-    public static Date from(Instant instant) {
+    public static Date from(Instant instant)
+    {
         try
         {
             return new Date(instant.toEpochMilli());
@@ -69,46 +114,6 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
         {
             throw new IllegalArgumentException(ex);
         }
-    }
-
-    /**
-     * The internal date field;
-     */
-    private Date date;
-
-    /**
-     * Allocates a {@code Date} object and initializes it so that
-     * it represents the time at which it was allocated, measured to the
-     * nearest millisecond.
-     *
-     * @see java.lang.System#currentTimeMillis()
-     */
-    public ImmutableDate() {
-        this.date = new Date();
-    }
-
-    /**
-     * Creates a new {@code ImmutableDate} object, and stores a copy of the
-     * Date passed in.
-     *
-     * @param date Date object to copy from.
-     */
-    public ImmutableDate(Date date) {
-        this.date = new Date(date.getTime());
-    }
-
-    /**
-     * Allocates a {@code Date} object and initializes it to
-     * represent the specified number of milliseconds since the
-     * standard base time known as "the epoch", namely January 1,
-     * 1970, 00:00:00 GMT.
-     *
-     * @param date the milliseconds since January 1, 1970, 00:00:00 GMT.
-     *
-     * @see java.lang.System#currentTimeMillis()
-     */
-    public ImmutableDate(long date) {
-        this.date = new Date(date);
     }
 
     /**
@@ -123,7 +128,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      *
      * @exception NullPointerException if {@code when} is null.
      */
-    public boolean after(Date when) {
+    public boolean after(Date when)
+    {
         return date.after(when);
     }
 
@@ -139,16 +145,22 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      *
      * @exception NullPointerException if {@code when} is null.
      */
-    public boolean before(Date when) {
+    public boolean before(Date when)
+    {
         return date.before(when);
     }
 
     /**
-     * Return a copy of this object.
+     * @return a copy of this object.
      */
     @Override
-    @SuppressWarnings("CloneDeclaresCloneNotSupported")
-    public Object clone() {
+    @SuppressWarnings(
+            {
+                "CloneDeclaresCloneNotSupported",
+                "AccessingNonPublicFieldOfAnotherObject"
+            })
+    public Object clone()
+    {
         ImmutableDate id = null;
 
         try
@@ -172,7 +184,9 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(ImmutableDate o) {
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public int compareTo(ImmutableDate o)
+    {
         return date.compareTo(o.date);
     }
 
@@ -197,18 +211,29 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @see java.util.Date#getTime()
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Date)
+    @SuppressWarnings(
+            {
+                "AccessingNonPublicFieldOfAnotherObject",
+                "EqualsWhichDoesntCheckParameterClass"
+            })
+    public boolean equals(Object obj)
+    {
+        switch (obj)
         {
-            Date lDate = (Date) obj;
-            return date.getTime() == lDate.getTime();
-        } else if (obj instanceof ImmutableDate)
-        {
-            ImmutableDate iDate = (ImmutableDate) obj;
-            return date.getTime() == iDate.date.getTime();
-        } else
-        {
-            return false;
+            case Date lDate ->
+            {
+                return date.getTime() == lDate.getTime();
+            }
+
+            case ImmutableDate iDate ->
+            {
+                return date.getTime() == iDate.date.getTime();
+            }
+
+            case default ->
+            {
+                return false;
+            }
         }
     }
 
@@ -219,7 +244,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @return the number of milliseconds since January 1, 1970, 00:00:00 GMT
      *         represented by this date.
      */
-    public long getTime() {
+    public long getTime()
+    {
         return date.getTime();
     }
 
@@ -227,7 +253,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * {@inheritDoc}
      */
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = 3;
         hash = 37 * hash + Objects.hashCode(this.date);
         return hash;
@@ -244,7 +271,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      *
      * @since 1.8
      */
-    public Instant toInstant() {
+    public Instant toInstant()
+    {
         return date.toInstant();
     }
 
@@ -280,7 +308,8 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @see java.util.Date#toGMTString()
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return date.toString();
     }
 }

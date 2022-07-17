@@ -42,7 +42,8 @@ public class AvlTree<E extends Comparable<E>> implements Set<E>
     private static final String NO_NULLS = "This class does not support storage of 'null's";
 
     /**
-     * A value indicating whether this {@linkplain  AvlTree}{@literal <T>}is balanced.
+     * A value indicating whether this {@linkplain  AvlTree}{@literal <T>} is
+     * balanced.
      */
     private boolean balanced;
 
