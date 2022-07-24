@@ -30,5 +30,6 @@ module bewsoftware.files {
     requires transitive bewsoftware.utils;
 
     exports com.bewsoftware.fileio;
+    exports com.bewsoftware.fileio.derby;
     exports com.bewsoftware.fileio.ini;
 }

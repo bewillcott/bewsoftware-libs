@@ -2,7 +2,7 @@
  *  File Name:    BEWFiles.java
  *  Project Name: bewsoftware-files
  *
- *  Copyright (c) 2020, 2021 Bradley Willcott
+ *  Copyright (c) 2020-2022 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,8 @@ import com.bewsoftware.utils.io.Display;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.CopyOption;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -36,12 +34,12 @@ import static java.nio.file.Files.*;
 import static java.nio.file.Path.of;
 
 /**
- * This class contains various helper methods for file operations.
+ * This class contains various helper methods for file and directory operations.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 2.0.1
+ * @version 2.1.0
  */
 public class BEWFiles
 {
@@ -154,48 +152,40 @@ public class BEWFiles
         display.flush();
     }
 
-    private static void processInList(
-            final Path srcPath,
-            SortedSet<Path> inList,
-            final Path destPath,
-            List<FileData> outList,
-            Set<Path> dirList,
-            final Display display
-    ) throws IOException
+    /**
+     * Delete the 'targetDir' directory and it's contents, recursively.
+     *
+     * @param targetDir Directory to delete.
+     *
+     * @throws IOException if any.
+     */
+    public static void deleteDirTree(final Path targetDir) throws IOException
     {
-        Pattern pattern1 = Pattern.compile("^(?<filename>.*)$");
-        Pattern pattern2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
-
-        for (Path inPath : inList)
+        Files.walkFileTree(targetDir, new SimpleFileVisitor<Path>()
         {
-            Matcher matcher;
-
-            if (srcPath.toString().isEmpty())
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                    throws IOException
             {
-                matcher = pattern1.matcher(inPath.toString());
-            } else
-            {
-                matcher = pattern2.matcher(inPath.toString());
-            }
-
-            if (matcher.find())
-            {
-                Path outPath = of(destPath.toString(), matcher.group("filename"));
-
-                if (notExists(outPath) || getLastModifiedTime(inPath).compareTo(getLastModifiedTime(outPath)) > 0)
+                if (e == null)
                 {
-                    outList.add(new FileData(inPath, outPath));
-                    Path parent = outPath.getParent();
-
-                    if (notExists(parent))
-                    {
-                        dirList.add(parent);
-                    }
-
-                    display.level(2).println(outPath);
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                } else
+                {
+                    // directory iteration failed
+                    throw e;
                 }
             }
-        }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                    throws IOException
+            {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     /**
@@ -243,6 +233,50 @@ public class BEWFiles
         return Paths.get(uri);
     }
 
+    private static void processInList(
+            final Path srcPath,
+            SortedSet<Path> inList,
+            final Path destPath,
+            List<FileData> outList,
+            Set<Path> dirList,
+            final Display display
+    ) throws IOException
+    {
+        Pattern pattern1 = Pattern.compile("^(?<filename>.*)$");
+        Pattern pattern2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
+
+        for (Path inPath : inList)
+        {
+            Matcher matcher;
+
+            if (srcPath.toString().isEmpty())
+            {
+                matcher = pattern1.matcher(inPath.toString());
+            } else
+            {
+                matcher = pattern2.matcher(inPath.toString());
+            }
+
+            if (matcher.find())
+            {
+                Path outPath = of(destPath.toString(), matcher.group("filename"));
+
+                if (notExists(outPath) || getLastModifiedTime(inPath).compareTo(getLastModifiedTime(outPath)) > 0)
+                {
+                    outList.add(new FileData(inPath, outPath));
+                    Path parent = outPath.getParent();
+
+                    if (notExists(parent))
+                    {
+                        dirList.add(parent);
+                    }
+
+                    display.level(2).println(outPath);
+                }
+            }
+        }
+    }
+
     private static class FileData
     {
 
@@ -250,7 +284,7 @@ public class BEWFiles
 
         public final Path sourcePath;
 
-        public FileData(Path sourcePath, Path destinationPath)
+        private FileData(Path sourcePath, Path destinationPath)
         {
             this.sourcePath = sourcePath;
             this.destinationPath = destinationPath;

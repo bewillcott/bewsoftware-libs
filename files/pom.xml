@@ -13,7 +13,8 @@
     <packaging>jar</packaging>
 
     <name>BEWSoftware Files Library</name>
-    <description>This library contains classes related to working with files.</description>
+    <description>This library contains classes related to working with files,
+        including data storage.</description>
 
     <dependencies>
         <dependency>
@@ -30,7 +31,25 @@
             <groupId>com.bewsoftware</groupId>
             <artifactId>bewsoftware-utils</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
