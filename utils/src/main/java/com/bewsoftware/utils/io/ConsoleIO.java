@@ -2,7 +2,7 @@
  *  File Name:    ConsoleIO.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021 Bradley Willcott
+ *  Copyright (c) 2021-2022 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 1.2.0
+ * @version 2.1.0
  */
 public final class ConsoleIO implements Display, Input
 {
@@ -318,6 +318,12 @@ public final class ConsoleIO implements Display, Input
     public void debugLevel(int level)
     {
         debugLevel = level;
+    }
+
+    @Override
+    public int debugLevel()
+    {
+        return debugLevel;
     }
 
     @Override

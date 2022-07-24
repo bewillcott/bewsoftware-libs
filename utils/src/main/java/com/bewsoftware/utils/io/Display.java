@@ -2,7 +2,7 @@
  *  File Name:    Display.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021 Bradley Willcott
+ *  Copyright (c) 2021-2022 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ import java.io.Closeable;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 1.2.0
+ * @version 2.1.0
  */
 public interface Display extends Closeable, Exceptions
 {
@@ -75,21 +75,18 @@ public interface Display extends Closeable, Exceptions
     public void clear();
 
     /**
+     * Get the debug level for this run.
+     *
+     * @return Debug level currently set
+     */
+    public int debugLevel();
+
+    /**
      * Set the debug level for this run.
      *
      * @param level Debug level to use
      */
     public void debugLevel(int level);
-
-    /**
-     * Display all following text if the {@linkplain #debugLevel(int) }
-     * is greater than or equal to the {@code level}.
-     *
-     * @param level The debug level at which to display the following text.
-     *
-     * @return this Display for chaining purposes
-     */
-    public Display level(int level);
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).
@@ -107,6 +104,16 @@ public interface Display extends Closeable, Exceptions
      * @return this Display for chaining purposes
      */
     public Display format(String format, Object... args);
+
+    /**
+     * Display all following text if the {@linkplain #debugLevel(int) }
+     * is greater than or equal to the {@code level}.
+     *
+     * @param level The debug level at which to display the following text.
+     *
+     * @return this Display for chaining purposes
+     */
+    public Display level(int level);
 
     /**
      * Adds the text equivalent of the value to the internal buffer.

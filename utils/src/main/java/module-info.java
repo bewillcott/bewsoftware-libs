@@ -35,7 +35,6 @@ module bewsoftware.utils {
     exports com.bewsoftware.utils.io;
     exports com.bewsoftware.utils.reflect;
     exports com.bewsoftware.utils.regexp;
-    exports com.bewsoftware.utils.sqlite;
     exports com.bewsoftware.utils.string;
     exports com.bewsoftware.utils.struct;
 }
