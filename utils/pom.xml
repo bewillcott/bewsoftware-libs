@@ -13,27 +13,11 @@
     <packaging>jar</packaging>
 
     <name>BEWSoftware Utilities Library</name>
-    <description>This library contains classes whose packages are not yet large
-        enough, or important enough, to warrant their own modules.</description>
+    <description>
+        This library contains classes whose packages are not yet large
+        enough, or important enough, to warrant their own modules.
+    </description>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/pom.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>**/pom.properties</exclude>
-                </excludes>
-            </resource>
-        </resources>
-    </build>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -628,6 +628,7 @@ public final class ConsoleIO implements Display, Input
         }
 
         @Override
+        @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
         public boolean equals(Object obj)
         {
             if (this == obj)

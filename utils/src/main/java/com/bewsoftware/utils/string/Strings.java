@@ -17,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.bewsoftware.utils.string;
 
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class Strings
     }
 
     /**
-     * Centre fills the {@code number} within a text string of {@code width}
+     * centre fills the {@code number} within a text string of {@code width}
      * length.
      *
      * @param number to wrap

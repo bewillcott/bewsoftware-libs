@@ -38,15 +38,23 @@ import static java.util.Objects.requireNonNull;
  * @since 1.0.5
  * @version 1.0.7
  */
-public final class Reflect {
+public final class Reflect
+{
+    /**
+     * This class is not meant to be instantiated.
+     */
+    private Reflect()
+    {
+    }
 
     /**
      * Get access to a private attribute/field of a class instance.
      * <p>
      * Example:<br>
-     * The follow classes would be in separate files: {@code Person.java} and {@code Main.java}.<br>
+     * The follow classes would be in separate files: {@code Person.java} and
+     * {@code Main.java}.<br>
      * <br><hr>
-     * <pre><code>
+     * {@snippet internal:
      * public class Person {
      *     private String name;
      *
@@ -66,13 +74,14 @@ public final class Reflect {
      *         name.set(person, "Fred Smith");
      *         System.out.println("name = " + name.get(person));
      *         System.out.println(person);
-     *     }
-     * }</code></pre>
+     * }
+     * }
+     * }
      * <hr>
-     * <pre><code>
+     * {@snippet internal:
      * name = Fred Smith
      * Person { name = Fred Smith }
-     * </code></pre>
+     * }
      *
      * @param instance The instantiated Class object.
      * @param name     The name of the class attribute to get.
@@ -81,10 +90,12 @@ public final class Reflect {
      *         or <i>null</i> if not found.
      *
      * @throws IllegalArgumentException     if {@code name} is <i>blank</i>.
-     * @throws NullPointerException         if either {@code instance} or {@code name} are <i>null</i>.
+     * @throws NullPointerException         if either {@code instance} or
+     *                                      {@code name} are <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static Field getPrivateAttribute(Object instance, String name) throws ReflectiveOperationException {
+    public static Field getPrivateAttribute(Object instance, String name) throws ReflectiveOperationException
+    {
         Field field = null;
 
         // instance and name must NOT be null.
@@ -112,9 +123,10 @@ public final class Reflect {
      * Get access to a private method of a class instance.
      * <p>
      * Example:<br>
-     * The follow classes would be in separate files: {@code Person.java} and {@code Main.java}.<br>
+     * The follow classes would be in separate files: {@code Person.java} and
+     * {@code Main.java}.<br>
      * <br><hr>
-     * <pre><code>
+     * {@snippet internal:
      * public class Person {
      *     private String name;
      *
@@ -143,25 +155,30 @@ public final class Reflect {
      *         setName.invoke(person, "Peter Adams");
      *         System.out.println("name = " + getName.invoke(person));
      *         System.out.println(person);
-     *     }
-     * }</code></pre>
+     * }
+     * }
+     * }
      * <hr>
-     * <pre><code>
+     * {@snippet internal:
      * name = Peter Adams
      * Person { name = Peter Adams }
-     * </code></pre>
+     * }
      *
      * @param instance   The instantiated Class object.
      * @param name       The name of the class attribute to get.
-     * @param sampleArgs Sample arguments/parameters. Used only to obtain their Class&lt;?&gt; types.
+     * @param sampleArgs Sample arguments/parameters. Used only to obtain their
+     *                   Class&lt;?&gt; types.
      *
-     * @return The Method object representing the required class method, or <i>null</i> if not found.
+     * @return The Method object representing the required class method, or
+     * <i>null</i> if not found.
      *
      * @throws IllegalArgumentException     if {@code name} is <i>blank</i>.
-     * @throws NullPointerException         if either {@code instance} or {@code name} are <i>null</i>.
+     * @throws NullPointerException         if either {@code instance} or
+     *                                      {@code name} are <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static Method getPrivateMethod(Object instance, String name, Object... sampleArgs) throws ReflectiveOperationException {
+    public static Method getPrivateMethod(Object instance, String name, Object... sampleArgs) throws ReflectiveOperationException
+    {
         Class<?>[] types = null;
         Method method = null;
         int length = sampleArgs.length;
@@ -198,11 +215,13 @@ public final class Reflect {
     }
 
     /**
-     * Instantiate a class with a private parameterized constructor.To access the default constructor, only provide the {@code clazz} parameter.<p>
+     * Instantiate a class with a private parameterized constructor. To access
+     * the default constructor, only provide the {@code clazz} parameter.<p>
      * Example:<br>
-     * The follow classes would be in separate files: {@code Person.java} and {@code Main.java}.<br>
+     * The follow classes would be in separate files: {@code Person.java} and
+     * {@code Main.java}.<br>
      * <br>
-     * <pre><code>
+     * {@snippet internal:
      * public class Person {
      *     private String name;
      *
@@ -226,25 +245,29 @@ public final class Reflect {
      *
      *         person = instantiatePrivateClass(Person.class, "Jane Doe");
      *         System.out.println(person);
-     *     }
-     * }</code></pre>
+     * }
+     * }
+     * }
      * <hr>
-     * <pre><code>
+     * {@snippet internal:
      * Person { name = not set }
      * Person { name = Jane Doe }
-     * </code></pre>
+     * }
      *
      * @param <T>   The type of the reference.
      * @param clazz The class to instantiated.
      * @param args  The parameters to be passed to the constructor.
      *
      *
-     * @return The newly instantiated object, or <i>null</i> if the required constructor is not found.
+     * @return The newly instantiated object, or <i>null</i> if the required
+     *         constructor is not found.
      *
      * @throws NullPointerException         if {@code clazz} is <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static <T> T instantiatePrivateClass(Class<T> clazz, Object... args) throws ReflectiveOperationException {
+    public static <T> T instantiatePrivateClass(Class<T> clazz, Object... args)
+            throws ReflectiveOperationException
+    {
         Class<?>[] types = null;
         T rtn = null;
         int numParams = args.length;
@@ -279,7 +302,7 @@ public final class Reflect {
                 }
             }
         } catch (IllegalAccessException | IllegalArgumentException
-                 | InstantiationException | SecurityException | InvocationTargetException ex)
+                | InstantiationException | SecurityException | InvocationTargetException ex)
         {
             throw new ReflectiveOperationException(ex);
         }
@@ -295,17 +318,31 @@ public final class Reflect {
      * @param con       The constructor to check.
      * @param types     Class types of the required parameters.
      * @param rtn       Provides the return type reference.
-     * @param args      List of arguments to pass to the constructor on instantiation.
+     * @param args      List of arguments to pass to the constructor on
+     *                  instantiation.
      *
-     * @return The new instantiated object, or the value of the parameter: {@code rtn}.
+     * @return The new instantiated object, or the value of the parameter:
+     *         {@code rtn}.
      *
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
+     * @throws IllegalAccessException    if this {@code Constructor} object
+     *                                   is enforcing Java language access
+     *                                   control and the underlying
+     *                                   constructor is inaccessible.
+     * @throws InstantiationException    if the class that declares the
+     *                                   underlying constructor represents an
+     *                                   abstract class.
+     * @throws InvocationTargetException if the underlying constructor
+     *                                   throws an exception.
      */
-    @SuppressWarnings("unchecked")
-    private static <T> T checkConstructorSignature(int numParams, Constructor<?> con, Class<?>[] types, T rtn, Object[] args)
-            throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    @SuppressWarnings(
+            {
+                "unchecked", "AssignmentToMethodParameter"
+            })
+    private static <T> T checkConstructorSignature(
+            int numParams, Constructor<?> con, Class<?>[] types, T rtn, Object[] args
+    )
+            throws IllegalAccessException, InvocationTargetException, InstantiationException
+    {
 
         int found = 0;
 
@@ -319,8 +356,8 @@ public final class Reflect {
             {
                 // If match on class type...
                 if (params[i] == types[i]
-                    || params[i].isPrimitive()
-                       && Primitives.isWrapperFor(params[i].getName(), types[i].getName()))
+                        || params[i].isPrimitive()
+                        && Primitives.isWrapperFor(params[i].getName(), types[i].getName()))
                 {
                     found++;
                 }
@@ -337,24 +374,13 @@ public final class Reflect {
     }
 
     /**
-     * This class is not meant to be instantiated.
-     */
-    private Reflect() {
-    }
-
-    /**
      * Used for matching primitives and their wrapper classes.
      *
      * @since 1.0.5
      * @version 1.0.6
      */
-    private static class Primitives {
-
-        /**
-         * Not to be instantiated.
-         */
-        private Primitives() {
-        }
+    private static class Primitives
+    {
 
         /**
          * The list used in the comparison.
@@ -388,18 +414,28 @@ public final class Reflect {
         };
 
         /**
+         * Not to be instantiated. Class contains only static methods.
+         */
+        private Primitives()
+        {
+        }
+
+        /**
          * Determines whether or not the named class is the wrapper class
          * for the named primitive type.
          *
          * @param primitive Name of primitive.
          * @param className Name of class.
          *
-         * @return <i>true</i> if it is, <i>false</i> otherwise.
+         * @return {@code true} if it is, {@code false} otherwise.
          *
-         * @throws NullPointerException if either {@code primitive} or {@code className} are <i>null</i>.
-         * @throws BlankStringException if either {@code primitive} or {@code className} are <i>blank</i>.
+         * @throws NullPointerException     if either {@code primitive} or
+         *                                  {@code className} are <i>null</i>.
+         * @throws IllegalArgumentException if either {@code primitive} or
+         *                                  {@code className} are <i>blank</i>.
          */
-        public static boolean isWrapperFor(String primitive, String className) {
+        public static boolean isWrapperFor(String primitive, String className)
+        {
             requireNonBlank(primitive, "primitive");
             requireNonBlank(className, "className");
 

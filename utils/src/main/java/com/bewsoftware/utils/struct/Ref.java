@@ -24,7 +24,7 @@ package com.bewsoftware.utils.struct;
  * and out of either a Lambda expression or a method through a parameter.
  * <p>
  * <b>Example:</b>
- * <pre><code>
+ * {@snippet internal:
  * ...
  *     Ref&lt;Integer&gt; iRtn = new Ref&lt;&gt;();
  *
@@ -38,13 +38,17 @@ package com.bewsoftware.utils.struct;
  *
  *     return iRtn.val &gt; 0;  // just something to use up return
  * }
- * </code></pre>
+ * }
+ *
+ * @Note
+ *
+ * This file was copied from one of my personal libraries.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
  *
  * @since 1.0.8
- * @version 2.0.1
+ * @version 2.1.0
  */
 @SuppressWarnings("PublicField")
 public final class Ref<T>
@@ -54,8 +58,20 @@ public final class Ref<T>
      */
     public T val;
 
+    /**
+     * This constructor is <b>private</b> to prevent instantiation by external
+     * clients.
+     * <p>
+     * This class should <i>only</i> be instantiated through one of the factory
+     * methods:
+     * <ul>
+     * <li>{@link #val()}</li>
+     * <li>{@link #val(java.lang.Object) val(T val)}</li>
+     * </ul>
+     */
     private Ref()
     {
+        this.val = null;
     }
 
     /**
@@ -87,6 +103,14 @@ public final class Ref<T>
     }
 
     /**
+     * Reset 'val' to null.
+     */
+    public void clear()
+    {
+        this.val = null;
+    }
+
+    /**
      * Check to see if this {@linkplain Ref} object has not yet been set to a
      * value.
      *
@@ -112,6 +136,6 @@ public final class Ref<T>
     @Override
     public String toString()
     {
-        return "" + val;
+        return "" + this.val;
     }
 }

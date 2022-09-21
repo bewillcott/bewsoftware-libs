@@ -310,6 +310,21 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Adds a formatted string to internal buffer using the specified
+     * format string and arguments.
+     *
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes
+     */
+    default Display printf(String format, Object... args)
+    {
+        return format(format, args);
+    }
+
+    /**
      * Prints a line terminator to the Display.
      */
     default void println()

@@ -30,7 +30,8 @@ import javax.swing.ImageIcon;
 /**
  * This class contains various static helper methods related to the
  * manipulation of graphic images.
- * <p>
+ *
+ * @Note
  * The code or ideas for these methods came mostly from the effort/work
  * of others on the Internet. Recognition of their individual effort is
  * primarily given in the JavaDoc comments attached to each method.
