@@ -20,8 +20,11 @@
 package test.com.bewsoftware.utils;
 
 import com.bewsoftware.utils.AvlTree;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,61 +35,36 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AvlTreeTest
 {
 
-    private static final int[] SUB_LIST
-            =
-            {
-                4, 7, 3, 2, 9, 12
-            };
-
-    private static final int[] UNSORTED_LIST
-            =
-            {
-                4, 1, 7, 3, 10, 2, 9, 6, 5, 8, 11
-            };
-
-    private static final int[] SORTED_LIST
-            =
-            {
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-            };
+    private static final int[] SORTED_LIST =
+    {
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    };
 
     private static final String SORTED_STRING = "1,2,3,4,5,6,7,8,9,10,11,";
+
+    private static final int[] SUB_LIST =
+    {
+        4, 7, 3, 2, 9, 12
+    };
+
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
+    private static final int[] UNSORTED_LIST =
+    {
+        4, 1, 7, 3, 10, 2, 9, 6, 5, 8, 11
+    };
+
+    public AvlTreeTest()
+    {
+    }
 
     @BeforeAll
     public static void setUpClass()
     {
     }
 
-    public AvlTreeTest()
-    {
-    }
-
     @BeforeEach
     public void setUp()
     {
-    }
-
-    /**
-     * Test of add method, of class AvlTree.
-     */
-    @Test
-    public void testAdd_GenericType()
-    {
-        AvlTree<Integer> list = generateList();
-
-        for (int i = 0; i < SORTED_LIST.length; i++)
-        {
-            assertEquals(SORTED_LIST[i], (int) list.get(i));
-        }
-    }
-
-    /**
-     * Test of add method, of class AvlTree.
-     */
-//    @Test
-    public void testAdd_int_GenericType()
-    {
-        // not impl
     }
 
     /**
@@ -122,6 +100,29 @@ public class AvlTreeTest
     }
 
     /**
+     * Test of add method, of class AvlTree.
+     */
+    @Test
+    public void testAdd_GenericType()
+    {
+        AvlTree<Integer> list = generateList();
+
+        for (int i = 0; i < SORTED_LIST.length; i++)
+        {
+            assertEquals(SORTED_LIST[i], (int) list.get(i));
+        }
+    }
+
+    /**
+     * Test of add method, of class AvlTree.
+     */
+//    @Test
+    public void testAdd_int_GenericType()
+    {
+        // not impl
+    }
+
+    /**
      * Test of clear method, of class AvlTree.
      */
     @Test
@@ -142,6 +143,7 @@ public class AvlTreeTest
      * Test of contains method, of class AvlTree.
      */
     @Test
+    @SuppressWarnings("ThrowableResultIgnored")
     public void testContains()
     {
         AvlTree<Integer> list = generateList();
@@ -177,23 +179,6 @@ public class AvlTreeTest
 
         assertTrue(list.delete(5));
         assertFalse(list.contains(5));
-    }
-
-    /**
-     * Generate test list AvlTree.
-     *
-     * @return new AvlTree object
-     */
-    private AvlTree<Integer> generateList()
-    {
-        AvlTree<Integer> list = new AvlTree<>();
-
-        for (int i : UNSORTED_LIST)
-        {
-            list.add(i);
-        }
-
-        return list;
     }
 
 //    /**
@@ -315,6 +300,25 @@ public class AvlTreeTest
     }
 
     /**
+     * Test of removeAll method, of class AvlTree.
+     */
+    @Test
+    public void testRemoveAll()
+    {
+        List<Integer> killList = new ArrayList<>();
+
+        for (int i = 0; i < SUB_LIST.length; i++)
+        {
+            killList.add(SUB_LIST[i]);
+        }
+
+        AvlTree<Integer> list = generateList();
+        int size = list.size();
+        assertTrue(list.removeAll(killList));
+        assertEquals(size - (SUB_LIST.length - 1), list.size());
+    }
+
+    /**
      * Test of remove method, of class AvlTree.
      */
     @Test
@@ -334,25 +338,6 @@ public class AvlTreeTest
     public void testRemove_int()
     {
         // not impl
-    }
-
-    /**
-     * Test of removeAll method, of class AvlTree.
-     */
-    @Test
-    public void testRemoveAll()
-    {
-        List<Integer> killList = new ArrayList<>();
-
-        for (int i = 0; i < SUB_LIST.length; i++)
-        {
-            killList.add(SUB_LIST[i]);
-        }
-
-        AvlTree<Integer> list = generateList();
-        int size = list.size();
-        assertTrue(list.removeAll(killList));
-        assertEquals(size - (SUB_LIST.length - 1), list.size());
     }
 
     /**
@@ -436,5 +421,22 @@ public class AvlTreeTest
         }
 
         assertEquals(SORTED_STRING, sb.toString());
+    }
+
+    /**
+     * Generate test list AvlTree.
+     *
+     * @return new AvlTree object
+     */
+    private AvlTree<Integer> generateList()
+    {
+        AvlTree<Integer> list = new AvlTree<>();
+
+        for (int i : UNSORTED_LIST)
+        {
+            list.add(i);
+        }
+
+        return list;
     }
 }
