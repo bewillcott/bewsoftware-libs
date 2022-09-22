@@ -19,9 +19,11 @@
 package test.com.bewsoftware.property;
 
 import com.bewsoftware.property.MutableIniProperty;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -49,21 +51,6 @@ public class MutableIniPropertyTest {
     }
 
     /**
-     * Test of value method, of class MutableIniProperty.
-     */
-    @Test
-    public void testValue() {
-        MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
-        assertNotNull(prop1);
-        assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
-        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
-
-        prop1.value("Now it has changed");
-        assertEquals("Now it has changed", prop1.value(),
-                "prop1.value().equals(\"Now it has changed\")");
-    }
-
-    /**
      * Test of constructors, of class MutableIniProperty.
      */
     @Test
@@ -87,6 +74,22 @@ public class MutableIniPropertyTest {
         assertEquals(2L, (long) propC.value(), "propC.value().equals(2)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
+    }
+
+    /**
+     * Test of value method, of class MutableIniProperty.
+     */
+    @Test
+    public void testValue()
+    {
+        MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
+        assertNotNull(prop1);
+        assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
+        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
+
+        prop1.value("Now it has changed");
+        assertEquals("Now it has changed", prop1.value(),
+                "prop1.value().equals(\"Now it has changed\")");
     }
 
 }

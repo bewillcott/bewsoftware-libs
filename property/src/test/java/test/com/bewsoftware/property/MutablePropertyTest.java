@@ -19,24 +19,29 @@
 package test.com.bewsoftware.property;
 
 import com.bewsoftware.property.MutableProperty;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  */
-public class MutablePropertyTest {
+public class MutablePropertyTest
+{
 
-    public MutablePropertyTest() {
+    public MutablePropertyTest()
+    {
     }
 
     /**
      * Test of comment method, of class MutableProperty.
      */
     @Test
-    public void testComment() {
+    public void testComment()
+    {
         MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
         assertNotNull(prop1);
         assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
@@ -49,25 +54,11 @@ public class MutablePropertyTest {
     }
 
     /**
-     * Test of value method, of class MutableProperty.
-     */
-    @Test
-    public void testValue() {
-        MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
-        assertNotNull(prop1);
-        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
-        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
-
-        prop1.value("Now it has changed");
-        assertEquals("Now it has changed", prop1.value(),
-                "prop1.value().equals(\"Now it has changed\")");
-    }
-
-    /**
      * Test of constructors, of class MutableProperty.
      */
     @Test
-    public void testConstructors() {
+    public void testConstructors()
+    {
         MutableProperty<String, Integer> propA = new MutableProperty<>("one", 1);
         assertNotNull(propA);
         assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
@@ -87,6 +78,22 @@ public class MutablePropertyTest {
         assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
+    }
+
+    /**
+     * Test of value method, of class MutableProperty.
+     */
+    @Test
+    public void testValue()
+    {
+        MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
+        assertNotNull(prop1);
+        assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
+        assertEquals("twelve", prop1.value(), "prop1.value().equals(\"twelve\")");
+
+        prop1.value("Now it has changed");
+        assertEquals("Now it has changed", prop1.value(),
+                "prop1.value().equals(\"Now it has changed\")");
     }
 
 }

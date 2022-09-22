@@ -19,7 +19,8 @@
 package test.com.bewsoftware.property;
 
 import com.bewsoftware.property.Property;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,22 +32,31 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.0
  * @version 1.0
  */
-public class PropertyTest {
-
-    private Property<Integer, String> prop1;
-    private Property<Integer, String> prop2;
-    private Property<Integer, String> prop3;
-    private Property<Integer, String> prop4;
-    private final String one = "one";
+public class PropertyTest
+{
     private final String comment1 = "The first one";
-    private final String two = "two";
+
     private final String comment2 = "The first two";
 
-    public PropertyTest() {
+    private final String one = "one";
+
+    private Property<Integer, String> prop1;
+
+    private Property<Integer, String> prop2;
+
+    private Property<Integer, String> prop3;
+
+    private Property<Integer, String> prop4;
+
+    private final String two = "two";
+
+    public PropertyTest()
+    {
     }
 
     @BeforeEach
-    public void setUp() {
+    public void setUp()
+    {
         prop1 = new Property<>(1, one, comment1);
         prop2 = new Property<>(2, two, comment2);
         prop3 = new Property<>(1, one, comment1);
@@ -54,10 +64,36 @@ public class PropertyTest {
     }
 
     /**
+     * Test of comment method, of class Property.
+     */
+    @Test
+    public void testComment()
+    {
+        assertEquals(comment1, prop1.comment(), "prop1");
+        assertEquals(comment2, prop2.comment(), "prop2");
+        assertNotEquals(comment2, prop1.comment(), "prop1");
+        assertNotEquals(comment1, prop2.comment(), "prop2");
+    }
+
+    /**
+     * Test of compareTo method, of class Property.
+     */
+    @Test
+    public void testCompareTo()
+    {
+        assertTrue(prop1.compareTo(prop2) == -1, "compareTo: prop1 < prop2");
+        assertTrue(prop1.compareTo(prop3) == 0, "compareTo: prop1 == prop3");
+
+        assertTrue(prop2.compareTo(prop1) == 1, "compareTo: prop2 < prop1");
+        assertTrue(prop2.compareTo(prop4) == 0, "compareTo: prop2 == prop4");
+    }
+
+    /**
      * Test of constructors, of class Property.
      */
     @Test
-    public void testConstructors() {
+    public void testConstructors()
+    {
         Property<Integer, String> propA = new Property<>(prop3);
         assertNotNull(propA, "propA != null");
         assertEquals(prop1, propA, "propA == prop1");
@@ -69,33 +105,11 @@ public class PropertyTest {
     }
 
     /**
-     * Test of comment method, of class Property.
-     */
-    @Test
-    public void testComment() {
-        assertEquals(comment1, prop1.comment(), "prop1");
-        assertEquals(comment2, prop2.comment(), "prop2");
-        assertNotEquals(comment2, prop1.comment(), "prop1");
-        assertNotEquals(comment1, prop2.comment(), "prop2");
-    }
-
-    /**
-     * Test of compareTo method, of class Property.
-     */
-    @Test
-    public void testCompareTo() {
-        assertTrue(prop1.compareTo(prop2) == -1, "compareTo: prop1 < prop2");
-        assertTrue(prop1.compareTo(prop3) == 0, "compareTo: prop1 == prop3");
-
-        assertTrue(prop2.compareTo(prop1) == 1, "compareTo: prop2 < prop1");
-        assertTrue(prop2.compareTo(prop4) == 0, "compareTo: prop2 == prop4");
-    }
-
-    /**
      * Test of equals method, of class Property.
      */
     @Test
-    public void testEquals() {
+    public void testEquals()
+    {
         assertTrue(prop1.equals(prop3), "equals: prop1 == prop3");
         assertTrue(prop2.equals(prop4), "equals: prop2 == prop4");
         assertFalse(prop1.equals(prop4), "equals: prop1 != prop4");
@@ -106,7 +120,8 @@ public class PropertyTest {
      * Test of hashCode method, of class Property.
      */
     @Test
-    public void testHashCode() {
+    public void testHashCode()
+    {
         assertTrue(prop1.hashCode() == prop3.hashCode(), "hashCode: prop1 == prop3");
         assertTrue(prop2.hashCode() == prop4.hashCode(), "hashCode: prop2 == prop4");
         assertFalse(prop1.hashCode() == prop4.hashCode(), "hashCode: prop1 != prop4");
@@ -117,7 +132,8 @@ public class PropertyTest {
      * Test of key method, of class Property.
      */
     @Test
-    public void testKey() {
+    public void testKey()
+    {
         assertEquals(1L, (long) prop1.key(), "prop1");
         assertEquals(2L, (long) prop2.key(), "prop2");
         assertNotEquals(2L, (long) prop1.key(), "prop1");
@@ -128,7 +144,8 @@ public class PropertyTest {
      * Test of value method, of class Property.
      */
     @Test
-    public void testValue() {
+    public void testValue()
+    {
         assertEquals(one, prop1.value(), "prop1");
         assertEquals(two, prop2.value(), "prop2");
         assertNotEquals(two, prop1.value(), "prop1");

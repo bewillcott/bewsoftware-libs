@@ -14,4 +14,11 @@
 
     <name>BEWSoftware Property Library</name>
     <description>This library contains the Property class and its sub-classes.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
