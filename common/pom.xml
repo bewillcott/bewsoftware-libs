@@ -13,6 +13,8 @@
     <packaging>jar</packaging>
 
     <name>BEWSoftware Common Library</name>
-    <description>This library contains classes that are not of any specific type,
-        and they are used by classes from various modules.</description>
+    <description>
+        This library contains classes that are not of any specific type,
+        and they are used by classes from various modules.
+    </description>
 </project>
