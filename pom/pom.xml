@@ -15,30 +15,86 @@
     <description>This is the parent pom for all of the sub-projects.</description>
 
     <properties>
+        <manual.source>src/docs/manual</manual.source>
+        <manual.target>target/docs/manual</manual.target>
         <skip.version.build>true</skip.version.build>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <profiles>
         <profile>
+            <id>developer-api</id>
+            <properties>
+                <javadoc.linksource>true</javadoc.linksource>
+                <javadoc.outputDirectory>${manual.target}/apidocs</javadoc.outputDirectory>
+                <javadoc.show>private</javadoc.show>
+                <javadoc.skip>false</javadoc.skip>
+                <manual>clean</manual>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>Move module-info.java out</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>mv</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>src/main/java/module-info.java</argument>
+                                        <argument>src/main/module-info.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Remove old APIDoc files</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>rm</executable>
+                                    <arguments>
+                                        <argument>-r</argument>
+                                        <argument>-d</argument>
+                                        <argument>-f</argument>
+                                        <argument>${javadoc.outputDirectory}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Move module-info.java back</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>mv</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>src/main/module-info.java</argument>
+                                        <argument>src/main/java/module-info.java</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>manual-clean</id>
+            <activation>
+                <property>
+                    <name>manual</name>
+                    <value>clean</value>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -51,7 +107,7 @@
                                     <goal>clean</goal>
                                 </goals>
                                 <configuration>
-                                    <destination>target/docs/manual</destination>
+                                    <destination>${manual.target}</destination>
                                 </configuration>
                             </execution>
                         </executions>
@@ -74,8 +130,8 @@
                                     <goal>mdj</goal>
                                 </goals>
                                 <configuration>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -100,8 +156,8 @@
                                     <goal>mdj</goal>
                                 </goals>
                                 <configuration>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -148,12 +204,12 @@
                                 </goals>
                                 <configuration>
                                     <disallowBrowserFileCaching>true</disallowBrowserFileCaching>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <serverContexts>
                                         <serverContext>
                                             <context>/</context>
-                                            <htmlSource>target/docs/manual</htmlSource>
+                                            <htmlSource>${manual.target}</htmlSource>
                                         </serverContext>
                                         <serverContext>
                                             <context>/site</context>
@@ -188,12 +244,12 @@
                                 </goals>
                                 <configuration>
                                     <disallowBrowserFileCaching>true</disallowBrowserFileCaching>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <serverContexts>
                                         <serverContext>
                                             <context>/</context>
-                                            <htmlSource>target/docs/manual</htmlSource>
+                                            <htmlSource>${manual.target}</htmlSource>
                                         </serverContext>
                                     </serverContexts>
                                 </configuration>
@@ -222,12 +278,12 @@
                                 <configuration>
                                     <allowGeneratedIndex>true</allowGeneratedIndex>
                                     <disallowBrowserFileCaching>true</disallowBrowserFileCaching>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <serverContexts>
                                         <serverContext>
                                             <context>/</context>
-                                            <htmlSource>target/docs/manual</htmlSource>
+                                            <htmlSource>${manual.target}</htmlSource>
                                         </serverContext>
                                     </serverContexts>
                                 </configuration>
@@ -287,9 +343,9 @@
                                     <goal>jar</goal>
                                 </goals>
                                 <configuration>
-                                    <jarSrcDir>target/docs/manual</jarSrcDir>
+                                    <jarSrcDir>${manual.target}</jarSrcDir>
                                     <jarFilename>${project.build.finalName}-manual.jar</jarFilename>
-                                    <docRootDir>src/docs/manual</docRootDir>
+                                    <docRootDir>${manual.source}</docRootDir>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -299,9 +355,9 @@
                                     <goal>jar</goal>
                                 </goals>
                                 <configuration>
-                                    <jarSrcDir>src/docs/manual</jarSrcDir>
+                                    <jarSrcDir>${manual.source}</jarSrcDir>
                                     <jarFilename>${project.build.finalName}-manual-src.jar</jarFilename>
-                                    <docRootDir>src/docs/manual</docRootDir>
+                                    <docRootDir>${manual.source}</docRootDir>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -313,6 +369,9 @@
 
         <profile>
             <id>release-profile</id>
+            <properties>
+                <javadoc.skip>false</javadoc.skip>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -348,7 +407,7 @@
                                     <resources>
                                         <resource>
                                             <directory>
-                                                target/docs/manual
+                                                ${manual.target}
                                             </directory>
                                         </resource>
                                     </resources>
@@ -367,8 +426,8 @@
                                     <goal>mdj</goal>
                                 </goals>
                                 <configuration>
-                                    <source>src/docs/manual</source>
-                                    <destination>target/docs/manual</destination>
+                                    <source>${manual.source}</source>
+                                    <destination>${manual.target}</destination>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -379,8 +438,8 @@
                                 </goals>
                                 <configuration>
                                     <jarFilename>${finalBaseName}-manual.jar</jarFilename>
-                                    <jarSrcDir>target/docs/manual</jarSrcDir>
-                                    <docRootDir>src/docs/manual</docRootDir>
+                                    <jarSrcDir>${manual.target}</jarSrcDir>
+                                    <docRootDir>${manual.source}</docRootDir>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -391,8 +450,8 @@
                                 </goals>
                                 <configuration>
                                     <jarFilename>${finalBaseName}-manual-src.jar</jarFilename>
-                                    <jarSrcDir>src/docs/manual</jarSrcDir>
-                                    <docRootDir>src/docs/manual</docRootDir>
+                                    <jarSrcDir>${manual.source}</jarSrcDir>
+                                    <docRootDir>${manual.source}</docRootDir>
                                     <verbosity/>
                                 </configuration>
                             </execution>
@@ -494,7 +553,7 @@
         <profile>
             <id>test</id>
             <properties>
-                <skip.unit.tests>false</skip.unit.tests>
+                <unit.tests.skip>false</unit.tests.skip>
             </properties>
         </profile>
     </profiles>
@@ -542,6 +601,20 @@
                 </excludes>
             </resource>
             <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/pom.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/pom.properties</exclude>
+                </excludes>
+            </resource>
+            <resource>
                 <directory>
                     src/uml
                 </directory>
@@ -550,6 +623,12 @@
                         **/*
                     </exclude>
                 </excludes>
+            </resource>
+            <resource>
+                <!-- Javadoc files to be filtered -->
+                <directory>src/main/resources-filtered/javadoc</directory>
+                <filtering>true</filtering>
+                <targetPath>javadoc</targetPath>
             </resource>
         </resources>
 
@@ -576,6 +655,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
+                        <arg>--enable-preview</arg>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
                 </configuration>
@@ -595,8 +675,8 @@
                 <configuration>
                     <!-- Sets the VM argument line used when unit tests are run. -->
                     <argLine>${surefire.args}</argLine>
-                    <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                    <skip>${skip.unit.tests}</skip>
+                    <!-- Skips unit tests if the value of unit.tests.skip property is true -->
+                    <skip>${unit.tests.skip}</skip>
                 </configuration>
             </plugin>
             <plugin>
@@ -619,17 +699,25 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <skip>${javadoc.skip}</skip>
+                    <show>${javadoc.show}</show>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <header>${javadoc.header}</header>
                     <docfilessubdirs>true</docfilessubdirs>
                     <source>${javadoc.source.version}</source>
                     <links>
                         <link>${javadoc.link.url.jdk}</link>
                     </links>
+                    <linksource>${javadoc.linksource}</linksource>
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
+                    <additionalOptions>
+                        --enable-preview
+                    </additionalOptions>
                     <bottom>
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
-                    <outputDirectory>${javadoc.reporting.outputDirectory}</outputDirectory>
+                    <reportOutputDirectory>${javadoc.outputDirectory}</reportOutputDirectory>
                     <tags>
                         <tag>
                             <name>Note</name>
@@ -675,6 +763,11 @@
                         <tag>
                             <name>see</name>
                         </tag>
+                        <tag>
+                            <name>todo</name>
+                            <placement>a</placement>
+                            <head>To Do:</head>
+                        </tag>
                     </tags>
                 </configuration>
                 <executions>
@@ -683,15 +776,11 @@
                         <goals>
                             <goal>javadoc-no-fork</goal>
                         </goals>
-                        <phase>site</phase>
+                        <phase>package</phase>
+                        <configuration>
+                            <quiet>true</quiet>
+                        </configuration>
                     </execution>
-                    <!--                    <execution>
-                        <id>javadoc-test</id>
-                        <goals>
-                            <goal>test-javadoc-no-fork</goal>
-                        </goals>
-                        <phase></phase>
-                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
