@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class DatabaseTest
 {
 
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] CREATE_SQL =
     {
         "CREATE TABLE USERS (\n"
@@ -69,6 +70,7 @@ public class DatabaseTest
 
     private static final Display DISPLAY = ConsoleIO.consoleDisplay("");
 
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] QUERY_SQL =
     {
         "SELECT * FROM users",
