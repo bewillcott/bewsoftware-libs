@@ -58,7 +58,7 @@ public final class MessageBuilder
      *
      * @param obj to append
      *
-     * @return this object for chaining
+     * @return a reference to this object
      */
     public MessageBuilder append(final Object obj)
     {
@@ -71,7 +71,7 @@ public final class MessageBuilder
      *
      * @param message to append
      *
-     * @return this object for chaining
+     * @return a reference to this object
      */
     public MessageBuilder append(final String message)
     {
@@ -90,9 +90,7 @@ public final class MessageBuilder
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
      *
-     * @return this object for chaining
-     *
-     *
+     * @return a reference to this object
      */
     public MessageBuilder append(final String format, final Object... args)
     {
@@ -102,7 +100,7 @@ public final class MessageBuilder
     /**
      * Append a line-terminator.
      *
-     * @return this object for chaining
+     * @return a reference to this object
      */
     public MessageBuilder appendln()
     {
@@ -114,7 +112,7 @@ public final class MessageBuilder
      *
      * @param message to append
      *
-     * @return this object for chaining
+     * @return a reference to this object
      */
     public MessageBuilder appendln(final String message)
     {
@@ -126,13 +124,43 @@ public final class MessageBuilder
      *
      * @param obj to append
      *
-     * @return this object for chaining
+     * @return a reference to this object
      */
     public MessageBuilder appendln(final Object obj)
     {
         return append(obj).appendln();
     }
 
+    /**
+     * <b>Description copied from class:</b> {@link StringBuilder}
+     * <p>
+     * Returns the length (character count).
+     *
+     * @implNote
+     * This value is supplied directly from the internal StringBuilder object.
+     *
+     * @return the length of the sequence of characters currently represented by
+     *         this object
+     */
+    public int length()
+    {
+        return sb.length();
+    }
+
+    /**
+     * <b>Description copied from class:</b> {@link StringBuilder}
+     * <p>
+     * Returns a string representing the data in this sequence. A new String
+     * object is allocated and initialized to contain the character sequence
+     * currently represented by this object. This String is then returned.
+     * Subsequent changes to this sequence do not affect the contents of the
+     * String.
+     *
+     * @implNote
+     * This String is supplied directly from the internal StringBuilder object.
+     *
+     * @return a string representation of this sequence of characters.
+     */
     @Override
     public String toString()
     {

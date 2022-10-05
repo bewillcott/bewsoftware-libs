@@ -28,7 +28,7 @@ import java.util.Objects;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 2.0.1
+ * @version 2.1.0
  */
 public class Strings
 {
@@ -65,6 +65,37 @@ public class Strings
      */
     public static String centreFill(final String text, final int width)
     {
+        return centreFill(text, width, " ");
+    }
+
+    /**
+     * centre fills the {@code number} within a text string of {@code width}
+     * length.
+     *
+     * @param number to wrap
+     * @param width  of required text
+     * @param fill   text
+     *
+     * @return the formatted text
+     */
+    public static String centreFill(final int number, final int width, final String fill)
+    {
+        return centreFill(Integer.toString(number), width, fill);
+    }
+
+    /**
+     * Formats the {@code text} to be centred within a text string of
+     * {@code width}
+     * length.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     * @param fill  text
+     *
+     * @return the formatted text
+     */
+    public static String centreFill(final String text, final int width, final String fill)
+    {
         String rtn;
         int length = text.length();
 
@@ -74,7 +105,7 @@ public class Strings
             StringBuilder sb = new StringBuilder();
             int preLen = (width - text.length()) / 2;
             int postLen = width - text.length() - preLen;
-            sb.append(" ".repeat(preLen)).append(text).append(" ".repeat(postLen));
+            sb.append(fill.repeat(preLen)).append(text).append(fill.repeat(postLen));
             rtn = sb.toString();
 
         } else
@@ -173,6 +204,32 @@ public class Strings
         if (length < width)
         {
             rtn += " ".repeat(width - length);
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Formats the {@code text} to be left justified within a text string of
+     * {@code width} length.
+     * <p>
+     * Appends spaces to the right of the 'text' so the final String is 'width'
+     * long.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     * @param fill  text
+     *
+     * @return the formatted text
+     */
+    public static String leftJustify(final String text, final int width, final String fill)
+    {
+        String rtn = text.trim();
+        int length = rtn.length();
+
+        if (length < width)
+        {
+            rtn += fill.repeat(width - length);
         }
 
         return rtn;
@@ -319,5 +376,4 @@ public class Strings
 
         return str;
     }
-
 }
