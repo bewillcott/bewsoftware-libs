@@ -132,8 +132,6 @@ public final class MessageBuilder
     }
 
     /**
-     * <b>Description copied from class:</b> {@link StringBuilder}
-     * <p>
      * Returns the length (character count).
      *
      * @implNote
@@ -148,8 +146,6 @@ public final class MessageBuilder
     }
 
     /**
-     * <b>Description copied from class:</b> {@link StringBuilder}
-     * <p>
      * Returns a string representing the data in this sequence. A new String
      * object is allocated and initialized to contain the character sequence
      * currently represented by this object. This String is then returned.
