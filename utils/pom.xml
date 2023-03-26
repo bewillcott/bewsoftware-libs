@@ -17,7 +17,6 @@
         This library contains classes whose packages are not yet large
         enough, or important enough, to warrant their own modules.
     </description>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

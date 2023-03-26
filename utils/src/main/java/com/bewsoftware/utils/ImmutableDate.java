@@ -32,7 +32,7 @@ import java.util.Objects;
  * @since 1.0
  * @version 1.0
  */
-public class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
+public final class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
 {
 
     /**

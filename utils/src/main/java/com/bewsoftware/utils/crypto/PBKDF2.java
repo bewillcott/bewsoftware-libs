@@ -47,9 +47,9 @@ import javax.crypto.spec.SecretKeySpec;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since v1.0.10
- * @version v1.0.10
+ * @version v2.1.0
  */
-public class PBKDF2
+public final class PBKDF2
 {
     private static final String HASH_ALGORITHM = "sha512";// Was "sha1"
 
@@ -79,6 +79,13 @@ public class PBKDF2
     private static final int SALT_BYTE_SIZE = HASH_BYTE_SIZE;// Was 24
 
     private static final int SALT_INDEX = 3;
+
+    /**
+     * This static helper class is not meant to be instantiated.
+     */
+    private PBKDF2()
+    {
+    }
 
     /**
      * Returns a salted PBKDF2 hash of the password.
@@ -119,7 +126,7 @@ public class PBKDF2
      * Source:
      * <a href="https://www.baeldung.com/java-aes-encryption-decryption">
      * https://www.baeldung.com/java-aes-encryption-decryption</a>
-      * <p>
+     * <p>
      * Modified by Bradley Willcott (06/10/2021)
      *
      * @param n size of key to generate (in bits)
@@ -153,7 +160,6 @@ public class PBKDF2
      */
     public static SecretKey getKeyFromPassword(String password, String salt)
             throws CannotPerformOperationException
-
     {
         byte[] passwordHash = pbkdf2(password.toCharArray(), salt.getBytes(),
                 ITERATION_INDEX, HASH_BYTE_SIZE);
@@ -165,6 +171,7 @@ public class PBKDF2
      *
      * @param args ignored
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public static void main(String[] args)
     {
         try
@@ -211,7 +218,7 @@ public class PBKDF2
             {
                 System.out.println("TESTS PASSED!");
             }
-        } catch (Exception ex)
+        } catch (CannotPerformOperationException | InvalidHashException ex)
         {
             System.out.println("ERROR: " + ex);
         }
@@ -401,18 +408,14 @@ public class PBKDF2
     }
 
     /**
-     * This static helper class is not meant to be instantiated.
-     */
-    private PBKDF2()
-    {
-    }
-
-    /**
      * This exception is thrown when something is wrong with the platform
      * your code is running on, and for some reason it's not safe to verify a
      * password on it.
      */
-    @SuppressWarnings("serial")
+    @SuppressWarnings(
+            {
+                "serial", "PublicInnerClass"
+            })
     public static class CannotPerformOperationException extends Exception
     {
         public CannotPerformOperationException(String message)
@@ -439,7 +442,10 @@ public class PBKDF2
      * thrown if a hash has been changed, but if it is thrown then you can be
      * sure that the hash <i>was</i> changed.
      */
-    @SuppressWarnings("serial")
+    @SuppressWarnings(
+            {
+                "serial", "PublicInnerClass"
+            })
     public static class InvalidHashException extends Exception
     {
         public InvalidHashException(String message)
@@ -452,5 +458,4 @@ public class PBKDF2
             super(message, source);
         }
     }
-
 }

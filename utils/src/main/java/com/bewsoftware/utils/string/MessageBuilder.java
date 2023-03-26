@@ -43,6 +43,9 @@ import java.util.Formatter;
  */
 public final class MessageBuilder
 {
+    /**
+     * Internal storage of strings.
+     */
     private final StringBuilder sb;
 
     /**

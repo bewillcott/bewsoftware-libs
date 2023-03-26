@@ -220,6 +220,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     /**
      * Display the data items in order.
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void display()
     {
         if (root == null)

@@ -2,7 +2,7 @@
  *  File Name:    Display.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021-2022 Bradley Willcott
+ *  Copyright (c) 2021-2023 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,17 +35,16 @@ import java.io.Closeable;
  * @implNote
  * The ideas for the various methods, and even some of the implementation code
  * for the <i>default</i> methods was derived from the
- * {@link java.io.PrintStream}
- * and {@link java.lang.StringBuilder} classes from JDK 15.
+ * {@link java.io.PrintStream} and {@link java.lang.StringBuilder} classes from
+ * JDK 15.
  * <p>
  * The reason for this, was to make it as close as possible to being a
- * minimalist
- * drop-in replacement for {@link java.lang.System#out}. Further more, by
- * including
- * methods from both classes, I believe it makes this class even more useful.
+ * minimalist drop-in replacement for {@link java.lang.System#out}. Further
+ * more, by including methods from both classes, I believe it makes this class
+ * even more useful.
  * <p>
- * In addition to the methods derived from the above mentioned classes,
- * I have included a few extra helper methods:
+ * In addition to the methods derived from the above mentioned classes, I have
+ * included a few extra helper methods:
  * <ul>
  * <li>{@link #appendln(java.lang.String)}</li>
  * <li>{@link #appendln(int)}</li>
@@ -54,10 +53,40 @@ import java.io.Closeable;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 2.1.0
+ * @version 3.0.0
  */
 public interface Display extends Closeable, Exceptions
 {
+    /**
+     * Display/Debug level.
+     * <p>
+     * Designates fine-grained informational events that
+     * are most useful to debug an application.
+     */
+    public static int DEBUG = 2;
+
+    /**
+     * Display/Debug level.
+     * <p>
+     * Normal text display.
+     */
+    public static int DEFAULT = 0;
+
+    /**
+     * Display/Debug level.
+     * <p>
+     * Designates informational messages that highlight the
+     * progress of the application at coarse-grained level.
+     */
+    public static int INFO = 1;
+
+    /**
+     * Display/Debug level.
+     * <p>
+     * Designates finer-grained informational events than
+     * the DEBUG.
+     */
+    public static int TRACE = 3;
 
     /**
      * Adds the text to the internal buffer, much like with
@@ -94,7 +123,7 @@ public interface Display extends Closeable, Exceptions
     public void flush();
 
     /**
-     * Adds a formatted string to internal buffer using the specified
+     * Adds a formatted string to the internal buffer using the specified
      * format string and arguments.
      *
      * @param format The syntax of this string is implementation specific.
@@ -251,6 +280,31 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Obtain the text label for the current debug level.
+     *
+     * @return text label
+     */
+    default String debugLevelStr()
+    {
+        String rtn = "";
+
+        switch (debugLevel())
+        {
+            case DEFAULT -> rtn = "DEFAULT";
+
+            case INFO -> rtn = "INFO";
+
+            case DEBUG -> rtn = "DEBUG";
+
+            case TRACE -> rtn = "TRACE";
+
+            default -> throw new AssertionError();
+        }
+
+        return rtn;
+    }
+
+    /**
      * Prints the text equivalent of the value to the Display.
      *
      * @implNote
@@ -266,7 +320,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the number to the Display.
+     * Prints the number.
      *
      * @implNote
      * Uses {@code Integer.toString(number)} to convert int to String.
@@ -281,7 +335,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the object to the Display.
+     * Prints the object.
      *
      * @implNote
      * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
@@ -297,7 +351,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text to the Display.
+     * Prints the text.
      *
      * @param text to print
      *
@@ -310,22 +364,20 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Adds a formatted string to internal buffer using the specified
-     * format string and arguments.
+     * Prints a formatted string using the specified format string and
+     * arguments.
      *
      * @param format The syntax of this string is implementation specific.
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
-     *
-     * @return this Display for chaining purposes
      */
-    default Display printf(String format, Object... args)
+    default void printf(String format, Object... args)
     {
-        return format(format, args);
+        format(format, args).flush();
     }
 
     /**
-     * Prints a line terminator to the Display.
+     * Prints a line terminator.
      */
     default void println()
     {
@@ -333,7 +385,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text equivalent of the value to the Display.
+     * Prints the text equivalent of the value.
      *
      * @implNote
      * Uses {@code value ? "true" : "false"} to convert boolean to String.
@@ -348,7 +400,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the number, followed by the System line separator, to the Display.
+     * Prints the number, followed by the System line separator.
      *
      * @implNote
      * Uses {@code Integer.toString(number)} to convert int to String.
@@ -363,7 +415,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the object to the LCD Display.
+     * Prints the object.
      *
      * @implNote
      * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
@@ -379,7 +431,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text, followed by the System line separator, to the Display.
+     * Prints the text, followed by the System line separator.
      *
      * @param text to print
      *

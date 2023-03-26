@@ -18,6 +18,8 @@
  */
 package com.bewsoftware.common;
 
+import static java.lang.String.format;
+
 /**
  * Thrown to indicate that a method has been passed a parameter with an invalid
  * or inappropriate value.
@@ -25,16 +27,18 @@ package com.bewsoftware.common;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 2.1.0
  */
-public class InvalidParameterValueException extends RuntimeException {
+public class InvalidParameterValueException extends RuntimeException
+{
 
     private static final long serialVersionUID = 947167888439966970L;
 
     /**
      * Constructs a new exception without a detail message.
      */
-    public InvalidParameterValueException() {
+    public InvalidParameterValueException()
+    {
         super();
     }
 
@@ -43,23 +47,38 @@ public class InvalidParameterValueException extends RuntimeException {
      *
      * @param message The detail message.
      */
-    public InvalidParameterValueException(String message) {
+    public InvalidParameterValueException(String message)
+    {
         super(message);
     }
 
     /**
+     * Constructs a new exception with the constructed message.
+     *
+     * @param format the format string.
+     * @param args   the arguments for the format string.
+     */
+    public InvalidParameterValueException(String format, Object... args)
+    {
+        super(format(format, args));
+    }
+
+    /**
      * Constructs a new exception with the specified cause and a detail message
-     * of (cause == null ? null : cause.toString()) (which typically contains the
+     * of (cause == null ? null : cause.toString()) (which typically contains
+     * the
      * class and detail message of cause).
      * <p>
-     * This constructor is useful for exceptions that are little more than wrappers
+     * This constructor is useful for exceptions that are little more than
+     * wrappers
      * for other throwables (for example, PrivilegedActionException).
      *
      * @param cause The cause (which is saved for later retrieval by the
      *              Throwable.getCause() method). (A null value is permitted,
      *              and indicates that the cause is nonexistent or unknown.)
      */
-    public InvalidParameterValueException(Throwable cause) {
+    public InvalidParameterValueException(Throwable cause)
+    {
         super(cause);
     }
 
@@ -75,7 +94,8 @@ public class InvalidParameterValueException extends RuntimeException {
      *                Throwable.getCause() method). (A null value is permitted,
      *                and indicates that the cause is nonexistent or unknown.)
      */
-    public InvalidParameterValueException(String message, Throwable cause) {
+    public InvalidParameterValueException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 }

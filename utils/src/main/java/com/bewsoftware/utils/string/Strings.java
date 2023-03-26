@@ -30,7 +30,7 @@ import java.util.Objects;
  * @since 1.0.6
  * @version 2.1.0
  */
-public class Strings
+public final class Strings
 {
     /**
      * This class is not meant to be instantiated.

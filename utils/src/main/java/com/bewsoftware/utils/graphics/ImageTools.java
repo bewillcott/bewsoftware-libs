@@ -43,12 +43,14 @@ import javax.swing.ImageIcon;
  * @since 1.0.0
  * @version 1.0.0
  */
-public class ImageTools {
+public final class ImageTools
+{
 
     /**
      * This class in not meant to be instantiated.
      */
-    private ImageTools() {
+    private ImageTools()
+    {
     }
 
     /**
@@ -62,17 +64,22 @@ public class ImageTools {
      * <a href="https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/IconDemoProject/src/components/IconDemoApp.java"
      * target="_blank">Java Tutorials Code Sample – IconDemoApp.java</a>
      * <p>
-     * Modified the code to add the new first parameter: {@code t}. This allows the code to be
-     * further modified, making it into a {@code static} method of an external library class.
+     * Modified the code to add the new first parameter: {@code t}. This allows
+     * the code to be
+     * further modified, making it into a {@code static} method of an external
+     * library class.
      *
      * @param <T>         class type of the calling instance.
-     * @param t           Usually should be the calling class, such as: {@code MyClass.class}.
+     * @param t           Usually should be the calling class, such as:
+     *                    {@code MyClass.class}.
      * @param path        Image file path.
      * @param description of icon.
      *
      * @return new icon, or {@code null} if not found.
      */
-    public static <T> ImageIcon createImageIcon(Class<T> t, String path, String description) {
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static <T> ImageIcon createImageIcon(Class<T> t, String path, String description)
+    {
         URL imgURL = t.getResource(path);
 
         if (imgURL != null)
@@ -86,77 +93,24 @@ public class ImageTools {
     }
 
     /**
-     * Resizes an image using a Graphics2D object backed by a BufferedImage.
-     * <p>
-     * Method code sourced from:
-     * <a href="https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/IconDemoProject/src/components/IconDemoApp.java"
-     * target="_blank">Java Tutorials Code Sample – IconDemoApp.java</a>
-     * <p>
-     * This code has been modified to incorporate code from:
-     * <a href="https://exceptionshub.com/java-image-resize-maintain-aspect-ratio.html"
-     * target="_blank">ExceptionsHub.com - Java image resize, maintain aspect ratio</a><br>
-     * Added preservation of aspect ratio, and changed the parameter names for {@code w}
-     * and {@code h}.
-     * <p>
-     * Further modification ideas came from:
-     * <a href="https://stackoverflow.com/questions/244164/how-can-i-resize-an-image-using-java"
-     * target="_blank">How can I resize an image using Java?</a> and
-     * <a href="https://mkyong.com/java/how-to-resize-an-image-in-java/" target="_blank">
-     * How to resize an image in Java ?</a><br>
-     * Added Alpha preservation and additional {@code RenderingHints}.
-     *
-     * @param srcImg        source image to scale
-     * @param scaledWidth   desired width
-     * @param scaledHeight  desired height
-     * @param preserveAlpha Preserve Alpha - image with 8-bit RGBA color components
-     * @param preserveRatio Preserve aspect ratio?
-     *
-     * @return - the new resized image
-     */
-    public static Image getScaledImage(Image srcImg, int scaledWidth, int scaledHeight, boolean preserveAlpha, boolean preserveRatio) {
-        if (preserveRatio)
-        {
-            double imageHeight = srcImg.getHeight(null);
-            double imageWidth = srcImg.getWidth(null);
-
-            if (imageHeight / scaledHeight > imageWidth / scaledWidth)
-            {
-                scaledWidth = (int) (scaledHeight * imageWidth / imageHeight);
-            } else
-            {
-                scaledHeight = (int) (scaledWidth * imageHeight / imageWidth);
-            }
-        }
-
-        BufferedImage resizedImg = new BufferedImage(scaledWidth, scaledHeight,
-                                                     preserveAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
-
-        Graphics2D g2 = resizedImg.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.drawImage(srcImg, 0, 0, scaledWidth, scaledHeight, null);
-        g2.dispose();
-
-        return resizedImg;
-    }
-
-    /**
      * The fastest way to scale an image in java without losing image quality is
      * to use Bilinear scaling. Bilinear is only good if you scale the image by
      * 50% at a time because of the way it works. The following code is from
      * "Filthy rich clients" by Chet Haase. He explains multiple techniques in
      * the book, but this one has the highest performance to quality trade-off.
      * <p>
-     * It supports all types of BufferedImages so don't worry about compatibility.
-     * It also lets java2D hardware accelerate your image because the calculations
+     * It supports all types of BufferedImages so don't worry about
+     * compatibility.
+     * It also lets java2D hardware accelerate your image because the
+     * calculations
      * are done by Java2D. Don't worry if you don't understand that last part.
      * The most important thing is that this is the fastest way to do it.
      * <p>
      * Method code and the above comments were sourced from:
      * <a href="https://stackoverflow.com/questions/3967731/how-to-improve-the-performance-of-g-drawimage-method-for-resizing-images/11371387#11371387"
      * target="_blank">
-     * Stack Overflow - How to improve the performance of g.drawImage() method for
+     * Stack Overflow - How to improve the performance of g.drawImage() method
+     * for
      * resizing images</a>
      *
      * @param img                 Source image.
@@ -166,9 +120,11 @@ public class ImageTools {
      *
      * @return the scaled image.
      */
-    public static BufferedImage getFasterScaledInstance(BufferedImage img, int targetWidth, int targetHeight, boolean progressiveBilinear) {
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static BufferedImage getFasterScaledInstance(BufferedImage img, int targetWidth, int targetHeight, boolean progressiveBilinear)
+    {
         int type = (img.getTransparency() == Transparency.OPAQUE)
-                   ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+                ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
         BufferedImage ret = img;
         BufferedImage scratchImage = null;
         Graphics2D g2 = null;
@@ -215,7 +171,7 @@ public class ImageTools {
 
             Objects.requireNonNull(g2).
                     setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(ret, 0, 0, w, h, 0, 0, prevW, prevH, null);
             prevW = w;
             prevH = h;
@@ -235,5 +191,66 @@ public class ImageTools {
 
         System.out.println("ret is " + ret);
         return ret;
+    }
+
+    /**
+     * Resizes an image using a Graphics2D object backed by a BufferedImage.
+     * <p>
+     * Method code sourced from:
+     * <a href="https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/uiswing/examples/components/IconDemoProject/src/components/IconDemoApp.java"
+     * target="_blank">Java Tutorials Code Sample – IconDemoApp.java</a>
+     * <p>
+     * This code has been modified to incorporate code from:
+     * <a href="https://exceptionshub.com/java-image-resize-maintain-aspect-ratio.html"
+     * target="_blank">ExceptionsHub.com - Java image resize, maintain aspect
+     * ratio</a><br>
+     * Added preservation of aspect ratio, and changed the parameter names for
+     * {@code w}
+     * and {@code h}.
+     * <p>
+     * Further modification ideas came from:
+     * <a href="https://stackoverflow.com/questions/244164/how-can-i-resize-an-image-using-java"
+     * target="_blank">How can I resize an image using Java?</a> and
+     * <a href="https://mkyong.com/java/how-to-resize-an-image-in-java/" target="_blank">
+     * How to resize an image in Java ?</a><br>
+     * Added Alpha preservation and additional {@code RenderingHints}.
+     *
+     * @param srcImg        source image to scale
+     * @param scaledWidth   desired width
+     * @param scaledHeight  desired height
+     * @param preserveAlpha Preserve Alpha - image with 8-bit RGBA color
+     *                      components
+     * @param preserveRatio Preserve aspect ratio?
+     *
+     * @return - the new resized image
+     */
+    @SuppressWarnings("AssignmentToMethodParameter")
+    public static Image getScaledImage(Image srcImg, int scaledWidth, int scaledHeight, boolean preserveAlpha, boolean preserveRatio)
+    {
+        if (preserveRatio)
+        {
+            double imageHeight = srcImg.getHeight(null);
+            double imageWidth = srcImg.getWidth(null);
+
+            if (imageHeight / scaledHeight > imageWidth / scaledWidth)
+            {
+                scaledWidth = (int) (scaledHeight * imageWidth / imageHeight);
+            } else
+            {
+                scaledHeight = (int) (scaledWidth * imageHeight / imageWidth);
+            }
+        }
+
+        BufferedImage resizedImg = new BufferedImage(scaledWidth, scaledHeight,
+                preserveAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g2 = resizedImg.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.drawImage(srcImg, 0, 0, scaledWidth, scaledHeight, null);
+        g2.dispose();
+
+        return resizedImg;
     }
 }

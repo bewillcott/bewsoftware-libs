@@ -26,23 +26,19 @@ package com.bewsoftware.utils.struct;
  * <b>Example:</b>
  * {@snippet internal:
  * ...
- *     Ref&lt;Integer&gt; iRtn = new Ref&lt;&gt;();
+ *     Ref<Integer>; iRtn = new Ref<>();
  *
  *     if(add(2, 3, iRtn)){
  *         System.out.println("2 + 3 = " + iRtn.val);
  *     }
  * ...
  *
- * public boolean add(final int a, final int b, final Ref&lt;Integer&gt; iRtn){
+ * public boolean add(final int a, final int b, final Ref<Integer> iRtn){
  *     iRtn.val = a + b;
  *
- *     return iRtn.val &gt; 0;  // just something to use up return
+ *     return iRtn.val > 0; // just something to use up return
  * }
  * }
- *
- * @Note
- *
- * This file was copied from one of my personal libraries.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
@@ -111,7 +107,7 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this {@linkplain Ref} object has not yet been set to a
+     * Check to see if this {@linkplain Ref} object has yet been set to a
      * value.
      *
      * @return {@code true} if it hasn't been set to a value, {@code false}
@@ -133,9 +129,20 @@ public final class Ref<T>
         return this.val != null;
     }
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @implSpec
+     * This implementation returns a string consisting of the default conversion
+     * to a string, of the object held in {@code val}. This is achieved by calling
+     * its {@code toString()} method. If {@code val} is empty, then the empty string
+     * is returned: "".
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString()
     {
-        return "" + this.val;
+        return isPresent() ? this.val.toString() : "";
     }
 }

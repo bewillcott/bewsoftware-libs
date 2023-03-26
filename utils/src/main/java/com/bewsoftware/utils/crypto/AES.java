@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @since 1.0.10
  * @version 1.0.10
  */
-public class AES
+public final class AES
 {
 
     private AES()

@@ -572,7 +572,7 @@
             </resource>
             <resource>
                 <directory>
-                    src/docs
+                    ${manual.source}
                 </directory>
                 <excludes>
                     <exclude>
@@ -582,7 +582,7 @@
             </resource>
             <resource>
                 <directory>
-                    target/docs
+                    ${manual.target}
                 </directory>
                 <excludes>
                     <exclude>

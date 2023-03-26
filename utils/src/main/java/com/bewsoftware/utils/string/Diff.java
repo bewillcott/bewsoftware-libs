@@ -32,7 +32,8 @@ import java.util.List;
  * @since 1.0.4
  * @version 1.0.4
  */
-public class Diff {
+public final class Diff
+{
 
     /**
      * Not meant to be instantiated.

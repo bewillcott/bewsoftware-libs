@@ -39,7 +39,15 @@ import static java.util.regex.Pattern.MULTILINE;
  * @since 1.0
  * @version 1.0.5
  */
-public class Regexp {
+public final class Regexp
+{
+
+    /**
+     * This class in not intended to be instantiated.
+     */
+    private Regexp()
+    {
+    }
 
     /**
      * Used for testing only.
@@ -48,7 +56,8 @@ public class Regexp {
      *
      * @throws IOException If any file I/O errors.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException
+    {
         String filename = "/Markdown Documentation - Basics.html";
 
         System.out.println(HtmlTagRegex);
@@ -114,11 +123,5 @@ public class Regexp {
         {
             throw new FileNotFoundException(filename);
         }
-    }
-
-    /**
-     * This class in not intended to be instantiated.
-     */
-    private Regexp() {
     }
 }
