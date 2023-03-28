@@ -20,6 +20,7 @@
 
 package com.bewsoftware.utils.string;
 
+import java.util.Formatter;
 import java.util.Objects;
 
 /**
@@ -28,10 +29,14 @@ import java.util.Objects;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 2.1.0
+ * @version 2.2.0
  */
 public final class Strings
 {
+    private static Formatter _formatter;
+
+    private static StringBuilder _stringBuilder;
+
     /**
      * This class is not meant to be instantiated.
      */
@@ -102,11 +107,14 @@ public final class Strings
         // Process only if necessary
         if (length < width)
         {
-            StringBuilder sb = new StringBuilder();
+            getStringBuilder().setLength(0);
             int preLen = (width - text.length()) / 2;
             int postLen = width - text.length() - preLen;
-            sb.append(fill.repeat(preLen)).append(text).append(fill.repeat(postLen));
-            rtn = sb.toString();
+
+            getStringBuilder().append(fill.repeat(preLen)).append(text)
+                    .append(fill.repeat(postLen));
+
+            rtn = getStringBuilder().toString();
 
         } else
         {
@@ -375,5 +383,49 @@ public final class Strings
         }
 
         return str;
+    }
+
+    /**
+     * Provide C 'printf'-style formatting of text, only instead of printing it
+     * to the console, the resulting text is return as a String object.
+     *
+     * @param format string
+     * @param args   parameters to be used
+     *
+     * @return a new string containing the formatted text.
+     */
+    public static synchronized String sprintf(final String format, Object... args)
+    {
+        return getFormatter().format(format, args).toString();
+    }
+
+    /**
+     * Obtain the single instance of the static Formatter.
+     *
+     * @return the _formatter
+     */
+    private static synchronized Formatter getFormatter()
+    {
+        if (_formatter == null)
+        {
+            _formatter = new Formatter();
+        }
+
+        return _formatter;
+    }
+
+    /**
+     * Obtain the single instance of the static StringBuilder.
+     *
+     * @return the _stringBuilder
+     */
+    private static synchronized StringBuilder getStringBuilder()
+    {
+        if (_stringBuilder == null)
+        {
+            _stringBuilder = new StringBuilder();
+        }
+
+        return _stringBuilder;
     }
 }

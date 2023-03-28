@@ -19,9 +19,9 @@
  */
 package com.bewsoftware.utils.io;
 
+import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class implements a console with benefits.
@@ -66,9 +66,9 @@ public final class ConsoleIO implements Display, Input
 
     private final String filename;
 
-    private Formatter formatter;
-
     private final String linePrefix;
+
+    private Lines lines;
 
     private boolean open;
 
@@ -103,6 +103,7 @@ public final class ConsoleIO implements Display, Input
      *
      * @param linePrefix text to prepend to each line
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix)
     {
         this.open = true;
@@ -120,7 +121,8 @@ public final class ConsoleIO implements Display, Input
         }
 
         this.linePrefix = linePrefix;
-        clear();
+        this.sb = new StringBuilder();
+        this.lines = new Lines();
         this.blank = false;
     }
 
@@ -131,8 +133,8 @@ public final class ConsoleIO implements Display, Input
      * @implSpec
      * If {@code filename} is not {@code null} and not {@code isBlank()}, then
      * the file will be opened/created. If the file exists, it will be
-     * truncated.
-     * If successful, a copy of all text will be appended to this file.
+     * truncated. If successful, a copy of all text will be appended to this
+     * file.
      * <p>
      * If {@code withConsole} is {@code true}, then the System console will be
      * sent a copy of all text.
@@ -143,6 +145,7 @@ public final class ConsoleIO implements Display, Input
      * @param filename    the file to output to
      * @param withConsole whether or not to output to the console, if any
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole)
     {
         this.open = true;
@@ -161,7 +164,8 @@ public final class ConsoleIO implements Display, Input
             }
 
             this.linePrefix = linePrefix;
-            clear();
+            this.sb = new StringBuilder();
+            this.lines = new Lines();
             lBlank = false;
         } else
         {
@@ -260,11 +264,30 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank && displayOK())
             {
-                sb.append(text);
+                lines.append(displayLevel, text);
             }
         } else
         {
             exception = new IOException(CLOSED);
+        }
+
+        return this;
+    }
+
+    /**
+     * @param format This implementation uses
+     *               {@link Formatter#format(java.lang.String, java.lang.Object...)
+     *               Formatter.format(String format, Object... args)}
+     *               as the work-horse.
+     *
+     * @see java.util.Formatter - Format String Syntax
+     */
+    @Override
+    public Display append(String format, Object... args)
+    {
+        if (open && displayOK())
+        {
+            lines.append(displayLevel, Strings.sprintf(format, args));
         }
 
         return this;
@@ -277,13 +300,13 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank)
             {
-                sb = new StringBuilder();
-                formatter = new Formatter(sb);
+                sb.setLength(0);
+                lines.clear();
             }
         } else
         {
             sb = null;
-            formatter = null;
+            lines = null;
         }
     }
 
@@ -333,15 +356,20 @@ public final class ConsoleIO implements Display, Input
         {
             if (out != null || file != null)
             {
-                if (linePrefix != null && linePrefix.length() > 0)
+                if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
                 {
-                    List<String> lines = sb.toString().lines().collect(Collectors.toList());
-                    clear();
+                    sb.setLength(0);
 
-                    for (int i = 0; i < lines.size(); i++)
+                    for (Line line : lines.getLines())
                     {
-                        sb.append(linePrefix).append(lines.get(i)).append(System.lineSeparator());
+                        sb.append(linePrefix)
+                                .append("[").append(getLevelStr(line.getLevel())).append("] ")
+                                .append(line.getText());
+
                     }
+                } else if (!lines.isEmpty())
+                {
+                    sb.append(lines.getText());
                 }
 
                 if (out != null)
@@ -362,28 +390,6 @@ public final class ConsoleIO implements Display, Input
         {
             exception = new IOException(CLOSED);
         }
-    }
-
-    /**
-     * @param format This implementation uses
-     *               {@link Formatter#format(java.lang.String, java.lang.Object...)
-     *               Formatter.format(String format, Object... args)}
-     *               as the work-horse.
-     *
-     * @see java.util.Formatter - Format String Syntax
-     */
-    @Override
-    public Display format(String format, Object... args)
-    {
-        if (open && displayOK())
-        {
-            formatter.format(
-                    Locale.getDefault(Locale.Category.FORMAT),
-                    format, args
-            );
-        }
-
-        return this;
     }
 
     @Override
@@ -543,13 +549,241 @@ public final class ConsoleIO implements Display, Input
     }
 
     /**
+     * Used to store a single appended text entry.
+     */
+    private static final class Line
+    {
+        private final int level;
+
+        private boolean terminated;
+
+        private String text = "";
+
+        /**
+         * Only accessible by the enclosing class.
+         *
+         * @param level Debug level of text.
+         * @param text  to store
+         */
+        private Line(final int level, final String text)
+        {
+            this.level = level;
+            append(text);
+        }
+
+        /**
+         * @return the level
+         */
+        public int getLevel()
+        {
+            return level;
+        }
+
+        /**
+         * @return the text
+         */
+        public String getText()
+        {
+            return text;
+        }
+
+        /**
+         * @return the terminated status
+         */
+        public boolean isTerminated()
+        {
+            return terminated;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Line{" + "level=" + level + ", terminated=" + terminated + ", text=" + text + '}';
+        }
+
+        /**
+         * Append the new 'text' to the existing stored 'text'.
+         * <p>
+         * Updates 'terminated' status.
+         *
+         * @param text to append
+         *
+         * @return {@code true} if successful, {@code false} otherwise.
+         */
+        public boolean append(final String text)
+        {
+            boolean rtn = false;
+
+            if (text != null)
+            {
+                this.text += text;
+                this.terminated = text.endsWith("\n");
+                rtn = true;
+            }
+
+            return rtn;
+        }
+    }
+
+    /**
+     * Used to store all of the text entries prior to printing.
+     */
+    private static final class Lines
+    {
+        private Line lastUnterminated = null;
+
+        private final ArrayList<Line> lines;
+
+        /**
+         * Only accessible by the enclosing class.
+         */
+        private Lines()
+        {
+            lines = new ArrayList<>();
+        }
+
+        /**
+         * Append the text by either adding a new line, or appending it to a
+         * previously added, unterminated line of the same 'level'.
+         *
+         * @param level debug display level.
+         * @param text  to be stored.
+         *
+         * @return {@code true} if successful, {@code false} otherwise.
+         */
+        public boolean append(final int level, final String text)
+        {
+            boolean rtn = false;
+
+            if (level >= 0 && text != null)
+            {
+                if (lastUnterminated != null)
+                {
+                    if (lastUnterminated.getLevel() == level)
+                    {
+                        rtn = lastUnterminated.append(text);
+
+                        if (lastUnterminated.isTerminated())
+                        {
+                            lastUnterminated = null;
+                        }
+                    }
+                } else
+                {
+                    Line line = new Line(level, text);
+                    rtn = lines.add(line);
+
+                    if (!line.isTerminated())
+                    {
+                        lastUnterminated = line;
+                    }
+                }
+            }
+
+            return rtn;
+        }
+
+        /**
+         * Removes all of the lines currently being stored.
+         */
+        public void clear()
+        {
+            lines.clear();
+        }
+
+        /**
+         * Get all of the lines currently being stored.
+         * <p>
+         * If there is an unterminated line, it will be terminate, and cleared.
+         *
+         * @return a new list of terminated lines.
+         */
+        public List<Line> getLines()
+        {
+            List<Line> list = new ArrayList<>();
+
+            if (lastUnterminated != null)
+            {
+                lastUnterminated.append("\n");
+                lastUnterminated = null;
+            }
+
+            lines.forEach(line ->
+            {
+                String[] textArr = line.getText().replace("\n", " \n").split("\n");
+
+                if (textArr.length > 1)
+                {
+                    for (String text : textArr)
+                    {
+                        Line line2 = new Line(line.getLevel(), Strings.rTrim(text) + "\n");
+                        list.add(line2);
+                    }
+                } else
+                {
+                    list.add(line);
+                }
+            });
+
+            return list;
+        }
+
+        /**
+         * Returns a text string representation of all the lines being stored.
+         * <p>
+         * If there is an unterminated line, it will be terminate, and cleared.
+         *
+         * @return a text string representation of all the lines being stored.
+         */
+        public String getText()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (!lines.isEmpty())
+            {
+                if (lastUnterminated != null)
+                {
+                    lastUnterminated.append("\n");
+                    lastUnterminated = null;
+                }
+
+                lines.forEach(line -> sb.append(line.getText()));
+            }
+
+            return sb.toString();
+        }
+
+        /**
+         * @return {@code true} if no lines are being stored.
+         */
+        public boolean isEmpty()
+        {
+            return lines.isEmpty();
+        }
+
+        /**
+         * @return the number of lines being stored.
+         */
+        public int size()
+        {
+            return lines.size();
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Lines{" + "lines=" + lines + '}';
+        }
+    }
+
+    /**
      * Contains a single instance of the {@link PrintWriter} object associated
      * with the file: {@code filename}.
      *
      * @since 1.0.7
      * @version 1.0.7
      */
-    private static class WriterInstance implements Closeable
+    private static final class WriterInstance implements Closeable
     {
 
         /**

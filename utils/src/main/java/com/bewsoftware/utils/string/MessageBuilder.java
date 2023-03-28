@@ -27,7 +27,7 @@ import java.util.Formatter;
  * class.
  * <p>
  * I wrote this class because I prefer to use a method like {@link #appendln()}
- * in my client code, rather than adding a "\n" to text strings that don't come
+ * in my client code, rather than adding a "\n" to text strings that doesn't come
  * with it. It is especially appropriate when dealing with objects.
  * <p>
  * Also I like to have the {@link #append(String, Object...)} method for using a
@@ -97,7 +97,7 @@ public final class MessageBuilder
      */
     public MessageBuilder append(final String format, final Object... args)
     {
-        return append(format.formatted(args));
+        return append(Strings.sprintf(format, args));
     }
 
     /**

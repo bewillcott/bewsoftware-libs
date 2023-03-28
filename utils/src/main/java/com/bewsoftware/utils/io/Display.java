@@ -99,6 +99,18 @@ public interface Display extends Closeable, Exceptions
     public Display append(final String text);
 
     /**
+     * Adds a formatted string to the internal buffer using the specified
+     * format string and arguments.
+     *
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes
+     */
+    public Display append(String format, Object... args);
+
+    /**
      * Empties the internal buffer of all unflushed output.
      */
     public void clear();
@@ -121,18 +133,6 @@ public interface Display extends Closeable, Exceptions
      * Flushes all output from the internal buffer to the output destination(s).
      */
     public void flush();
-
-    /**
-     * Adds a formatted string to the internal buffer using the specified
-     * format string and arguments.
-     *
-     * @param format The syntax of this string is implementation specific.
-     * @param args   Arguments referenced by the format specifiers in the format
-     *               string.
-     *
-     * @return this Display for chaining purposes
-     */
-    public Display format(String format, Object... args);
 
     /**
      * Display all following text if the {@linkplain #debugLevel(int) }
@@ -280,19 +280,48 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Adds a formatted string to the internal buffer using the specified
+     * format string and arguments, followed by the System line separator.
+     *
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes
+     *
+     * @see #append(java.lang.String, java.lang.Object...)
+     */
+    default Display appendln(String format, Object... args)
+    {
+        return append(format, args).appendln();
+    }
+
+    /**
      * Obtain the text label for the current debug level.
      *
      * @return text label
      */
     default String debugLevelStr()
     {
+        return getLevelStr(debugLevel());
+    }
+
+    /**
+     * Obtain the text label for the required level.
+     *
+     * @param level to obtain
+     *
+     * @return text label
+     */
+    default String getLevelStr(final int level)
+    {
         String rtn = "";
 
-        switch (debugLevel())
+        switch (level)
         {
             case DEFAULT -> rtn = "DEFAULT";
 
-            case INFO -> rtn = "INFO";
+            case INFO -> rtn = "INFO ";
 
             case DEBUG -> rtn = "DEBUG";
 
@@ -305,7 +334,7 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text equivalent of the value to the Display.
+     * Prints the text equivalent of the value.
      *
      * @implNote
      * Uses {@code value ? "true" : "false"} to convert boolean to String.
@@ -371,9 +400,9 @@ public interface Display extends Closeable, Exceptions
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
      */
-    default void printf(String format, Object... args)
+    default void print(String format, Object... args)
     {
-        format(format, args).flush();
+        append(format, args).flush();
     }
 
     /**
@@ -441,5 +470,18 @@ public interface Display extends Closeable, Exceptions
     default void println(final String text)
     {
         appendln(text).flush();
+    }
+
+    /**
+     * Prints a formatted string using the specified format string and
+     * arguments, followed by the System line separator.
+     *
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     */
+    default void println(String format, Object... args)
+    {
+        appendln(format, args).flush();
     }
 }
