@@ -38,7 +38,7 @@ import java.util.*;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 2.1.0
+ * @version 3.0.0
  */
 public final class ConsoleIO implements Display, Input
 {
@@ -185,7 +185,7 @@ public final class ConsoleIO implements Display, Input
                 if (idx == -1)
                 {
                     WRITERS.add(new WriterInstance(filename));
-                    idx = WRITERS.indexOf(filename);
+                    idx = indexOfWriters(filename);
                 }
 
                 this.file = WRITERS.get(idx).addUsage();
@@ -255,6 +255,35 @@ public final class ConsoleIO implements Display, Input
     {
 
         return new ConsoleIO(linePrefix, filename, false);
+    }
+
+    /**
+     * Find the index of the required WriterInstance.
+     *
+     * @param filename to find
+     *
+     * @return index of WriterInstance
+     */
+    @SuppressWarnings("IncompatibleEquals")
+    private static int indexOfWriters(final String filename)
+    {
+        int rtn = -1;
+
+        if (!WRITERS.isEmpty() && filename != null && !filename.isBlank())
+        {
+            for (int i = 0; i < WRITERS.size(); i++)
+            {
+                WriterInstance wi = WRITERS.get(i);
+
+                if (wi.equals(filename))
+                {
+                    rtn = i;
+                    break;
+                }
+            }
+        }
+
+        return rtn;
     }
 
     @Override
