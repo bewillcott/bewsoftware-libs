@@ -23,27 +23,18 @@ package com.bewsoftware.utils.string;
 import java.util.Formatter;
 import java.util.Objects;
 
+import static java.lang.Character.isWhitespace;
+
 /**
- * This class contains some helper methods.
+ * This interface contains helper methods for modifying Strings.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 2.2.0
+ * @version 3.0.0
  */
-public final class Strings
+public interface Strings
 {
-    private static Formatter _formatter;
-
-    private static StringBuilder _stringBuilder;
-
-    /**
-     * This class is not meant to be instantiated.
-     */
-    private Strings()
-    {
-    }
-
     /**
      * centre fills the {@code number} within a text string of {@code width}
      * length.
@@ -53,7 +44,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String centreFill(final int number, final int width)
+    static String centreFill(final int number, final int width)
     {
         return centreFill(Integer.toString(number), width);
     }
@@ -68,7 +59,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String centreFill(final String text, final int width)
+    static String centreFill(final String text, final int width)
     {
         return centreFill(text, width, " ");
     }
@@ -83,7 +74,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String centreFill(final int number, final int width, final String fill)
+    static String centreFill(final int number, final int width, final String fill)
     {
         return centreFill(Integer.toString(number), width, fill);
     }
@@ -99,7 +90,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String centreFill(final String text, final int width, final String fill)
+    static String centreFill(final String text, final int width, final String fill)
     {
         String rtn;
         int length = text.length();
@@ -107,14 +98,11 @@ public final class Strings
         // Process only if necessary
         if (length < width)
         {
-            getStringBuilder().setLength(0);
             int preLen = (width - text.length()) / 2;
             int postLen = width - text.length() - preLen;
 
-            getStringBuilder().append(fill.repeat(preLen)).append(text)
-                    .append(fill.repeat(postLen));
-
-            rtn = getStringBuilder().toString();
+            rtn = new StringBuilder().append(fill.repeat(preLen)).append(text)
+                    .append(fill.repeat(postLen)).toString();
 
         } else
         {
@@ -137,9 +125,84 @@ public final class Strings
      *
      * @see java.lang.String#repeat(int)
      */
-    public static String fill(final String text, final int count)
+    static String fill(final String text, final int count)
     {
         return text.repeat(count);
+    }
+
+    /**
+     * Process a single 'line', either indenting or outdenting the text by the
+     * number of 'spaces' required.
+     *
+     * @param line   to process
+     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
+     *               indent.
+     *
+     * @return the processed line.
+     */
+    static String indentLine(final String line, final int spaces)
+    {
+        String rtn = "";
+
+        if (!line.isEmpty())
+        {
+            if (spaces > 0)
+            {
+                rtn = fill(" ", spaces) + line;
+            } else if (spaces < 0)
+            {
+                int i = 0;
+
+                for (; i < Math.abs(spaces); i++)
+                {
+                    if (!isWhitespace(line.codePointAt(i)))
+                    {
+                        break;
+                    }
+                }
+
+                if (i > 0)
+                {
+                    rtn = line.substring(i);
+                } else
+                {
+                    rtn = line;
+                }
+            } else
+            {
+                rtn = line;
+            }
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Process the 'text' string (containing any number of lines), indenting or
+     * outdenting the lines by the number of 'spaces' required.
+     *
+     * @param text   to process
+     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
+     *               indent.
+     *
+     * @return the processed text
+     */
+    static String indentLines(final String text, final int spaces)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if (!text.isBlank() && spaces != 0)
+        {
+            String[] arr = text.replace("\n", " \n").split("\n");
+
+            for (String strLine : arr)
+            {
+                String line = strLine.isBlank() ? "" : strLine;
+                sb.append(indentLine(line, spaces)).append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 
     /**
@@ -152,7 +215,7 @@ public final class Strings
      *
      * @see Character#isWhitespace(char)
      */
-    public static String lTrim(final String text)
+    static String lTrim(final String text)
     {
         String rtn = "";
 
@@ -187,7 +250,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String leftJustify(final int number, final int width)
+    static String leftJustify(final int number, final int width)
     {
         return Strings.leftJustify(Integer.toString(number), width);
     }
@@ -204,7 +267,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String leftJustify(final String text, final int width)
+    static String leftJustify(final String text, final int width)
     {
         String rtn = text.trim();
         int length = rtn.length();
@@ -230,7 +293,7 @@ public final class Strings
      *
      * @return the formatted text
      */
-    public static String leftJustify(final String text, final int width, final String fill)
+    static String leftJustify(final String text, final int width, final String fill)
     {
         String rtn = text.trim();
         int length = rtn.length();
@@ -253,7 +316,7 @@ public final class Strings
      *
      * @see Character#isWhitespace(char)
      */
-    public static String rTrim(final String text)
+    static String rTrim(final String text)
     {
         String rtn = "";
 
@@ -294,7 +357,7 @@ public final class Strings
      *
      * @see #requireNonEmpty(java.lang.String)
      */
-    public static String requireNonBlank(String str)
+    static String requireNonBlank(String str)
     {
         if (Objects.requireNonNull(str).isBlank())
         {
@@ -325,7 +388,7 @@ public final class Strings
      *
      * @see #requireNonEmpty(java.lang.String, java.lang.String)
      */
-    public static String requireNonBlank(String str, String message)
+    static String requireNonBlank(String str, String message)
     {
         if (Objects.requireNonNull(str, message).isBlank())
         {
@@ -349,7 +412,7 @@ public final class Strings
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    public static String requireNonEmpty(String str)
+    static String requireNonEmpty(String str)
     {
         if (Objects.requireNonNull(str).isEmpty())
         {
@@ -375,7 +438,7 @@ public final class Strings
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    public static String requireNonEmpty(String str, String message)
+    static String requireNonEmpty(String str, String message)
     {
         if (Objects.requireNonNull(str, message).isEmpty())
         {
@@ -394,38 +457,8 @@ public final class Strings
      *
      * @return a new string containing the formatted text.
      */
-    public static synchronized String sprintf(final String format, Object... args)
+    static String sprintf(final String format, Object... args)
     {
-        return getFormatter().format(format, args).toString();
-    }
-
-    /**
-     * Obtain the single instance of the static Formatter.
-     *
-     * @return the _formatter
-     */
-    private static synchronized Formatter getFormatter()
-    {
-        if (_formatter == null)
-        {
-            _formatter = new Formatter();
-        }
-
-        return _formatter;
-    }
-
-    /**
-     * Obtain the single instance of the static StringBuilder.
-     *
-     * @return the _stringBuilder
-     */
-    private static synchronized StringBuilder getStringBuilder()
-    {
-        if (_stringBuilder == null)
-        {
-            _stringBuilder = new StringBuilder();
-        }
-
-        return _stringBuilder;
+        return new Formatter().format(format, args).toString();
     }
 }
