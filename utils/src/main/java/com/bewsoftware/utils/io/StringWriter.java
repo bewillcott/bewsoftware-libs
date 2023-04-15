@@ -1,8 +1,8 @@
 /*
- *  File Name:    Exceptions.java
+ *  File Name:    StringWriter.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021 Bradley Willcott
+ *  Copyright (c) 2023 Bradley Willcott
  *
  *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,35 +17,36 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.bewsoftware.utils.io;
 
 /**
- * Exceptions interface description.
+ * This StringWriter class extends the {@code java.io.StringWriter} by adding
+ * a convenience method: {@linkplain #clear()}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0.7
- * @version 1.0.7
+ * @since 3.0.0
+ * @version 3.0.0
  */
-public interface Exceptions {
+public class StringWriter extends java.io.StringWriter
+{
+    public StringWriter()
+    {
+        super();
+    }
+
+    public StringWriter(int initialSize)
+    {
+        super(initialSize);
+    }
 
     /**
-     * Clears all exceptions in preparation for an operation that may cause such to
-     * occur.
+     * Empty out the internal buffer. When this returns, the buffer will be
+     * empty.
      */
-    public void clearExceptions();
-
-    /**
-     * Checks to see if there is an Exception.
-     *
-     * @return {@code true} if so, {@code false} otherwise.
-     */
-    public boolean isException();
-
-    /**
-     * Retrieves the last Exception.
-     *
-     * @return the Exception
-     */
-    public Exception popException();
+    public void clear()
+    {
+        getBuffer().setLength(0);
+    }
 }

@@ -2,14 +2,14 @@
  *  File Name:    ConsoleIO.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021-2022 Bradley Willcott
+ *  Copyright (c) 2021-2023 Bradley Willcott
  *
- *  This program is free software: you can redistribute it and/or modify
+ *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  bewsoftware-utils is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -23,6 +23,8 @@ import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
 
+import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
+
 /**
  * This class implements a console with benefits.
  * <p>
@@ -32,33 +34,30 @@ import java.util.*;
  * @implNote
  * Once the ConsolIO object is closed, any further calls to any of the methods:
  * append, appendln, print, println, flush, newScanner, readLine, or
- * readPassword,
- * will cause an {@link IOException}.
+ * readPassword, will cause an {@link IOException}.
+ *
+ * This file has been modified to be compatible with JDK 1.8, by using
+ * {@linkplain Strings} methods.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
  * @version 3.0.0
+ *
+ * @see Strings
  */
 public final class ConsoleIO implements Display, Input
 {
 
     private static final String CLOSED = "ConsoleIO is closed.";
 
-    /**
-     * Stores the singleton of each {@link Writer} object related to each
-     * specific instance of {@link PrintWriter} associated with a
-     * {@code filename}.
-     */
-    private static final List<WriterInstance> WRITERS = new ArrayList<>();
-
     private final boolean blank;
 
     private final Console console;
 
-    private int debugLevel = 0;
+    private DisplayDebugLevel debugLevel = DEFAULT;
 
-    private int displayLevel = 0;
+    private DisplayDebugLevel displayLevel = DEFAULT;
 
     private Exception exception;
 
@@ -77,6 +76,13 @@ public final class ConsoleIO implements Display, Input
     private StringBuilder sb;
 
     /**
+     * Stores the singleton of each {@link Writer} object related to each
+     * specific instance of {@link PrintWriter} associated with a
+     * {@code filename}.
+     */
+    private static final List<WriterInstance> writers = Collections.synchronizedList(new ArrayList<>());
+
+    /**
      * Instantiates a "blank console".
      * <p>
      * All output is thrown away.
@@ -85,13 +91,13 @@ public final class ConsoleIO implements Display, Input
      */
     private ConsoleIO()
     {
-        this.file = null;
-        this.out = null;
-        this.linePrefix = "";
-        this.open = true;
-        this.blank = true;
-        this.filename = null;
-        this.console = null;
+        file = null;
+        out = null;
+        linePrefix = "";
+        open = true;
+        blank = true;
+        filename = null;
+        console = null;
     }
 
     /**
@@ -106,24 +112,24 @@ public final class ConsoleIO implements Display, Input
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix)
     {
-        this.open = true;
-        this.file = null;
-        this.filename = null;
+        open = true;
+        file = null;
+        filename = null;
 
         console = System.console();
 
         if (console != null)
         {
-            this.out = console.writer();
+            out = console.writer();
         } else
         {
-            this.out = new PrintWriter(System.out);
+            out = new PrintWriter(System.out);
         }
 
         this.linePrefix = linePrefix;
-        this.sb = new StringBuilder();
-        this.lines = new Lines();
-        this.blank = false;
+        sb = new StringBuilder();
+        lines = new Lines();
+        blank = false;
     }
 
     /**
@@ -148,59 +154,151 @@ public final class ConsoleIO implements Display, Input
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole)
     {
-        this.open = true;
+        open = true;
         boolean lBlank;
 
         if (withConsole)
         {
-            this.console = System.console();
+            console = System.console();
 
-            if (this.console != null)
+            if (console != null)
             {
-                this.out = this.console.writer();
+                out = this.console.writer();
             } else
             {
-                this.out = new PrintWriter(System.out);
+                out = new PrintWriter(System.out);
             }
 
             this.linePrefix = linePrefix;
-            this.sb = new StringBuilder();
-            this.lines = new Lines();
             lBlank = false;
         } else
         {
-            this.console = null;
-            this.out = null;
+            console = null;
+            out = null;
             this.linePrefix = "";
             lBlank = true;
         }
 
+        sb = new StringBuilder();
+        lines = new Lines();
+
         if (filename != null && !filename.isBlank())
         {
             this.filename = filename;
-            int idx = WRITERS.indexOf(filename);
 
             try
             {
-                if (idx == -1)
+                synchronized (writers)
                 {
-                    WRITERS.add(new WriterInstance(filename));
-                    idx = indexOfWriters(filename);
-                }
+                    int idx = writers.indexOf(filename);
 
-                this.file = WRITERS.get(idx).addUsage();
-                lBlank = false;
+                    if (idx == -1)
+                    {
+                        writers.add(new WriterInstance(filename));
+                        idx = indexOfWriters(filename);
+                    }
+
+                    this.file = writers.get(idx).addUsage();
+                    lBlank = false;
+                }
             } catch (IOException ex)
             {
                 exception = ex;
             }
         } else
         {
-            this.file = null;
+            file = null;
             this.filename = null;
         }
 
-        this.blank = lBlank;
+        blank = lBlank;
+    }
+
+    /**
+     * Instantiates a type of display based on the parameters: {@code writer}
+     * and {@code withConsole}.
+     *
+     * @implSpec
+     * If {@code writer} is not {@code null}, then then it will be
+     * opened/created. If successful, a copy of all text will be appended to it.
+     * <p>
+     * If {@code withConsole} is {@code true}, then the System console will be
+     * sent a copy of all text.
+     * <p>
+     * For use by factory method.
+     *
+     * @param linePrefix  text to prepend to each line.
+     * @param writer      Where to send to output.
+     * @param ident       String to identify this Writer in internal data store.
+     * @param withConsole whether or not to output to the console, if any.
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    private ConsoleIO(
+            final String linePrefix,
+            final Writer writer,
+            final String ident,
+            final boolean withConsole)
+    {
+        open = true;
+        boolean lBlank;
+
+        if (withConsole)
+        {
+            console = System.console();
+
+            if (console != null)
+            {
+                out = this.console.writer();
+            } else
+            {
+                out = new PrintWriter(System.out);
+            }
+
+            this.linePrefix = linePrefix;
+            lBlank = false;
+        } else
+        {
+            console = null;
+            out = null;
+            this.linePrefix = "";
+            lBlank = true;
+        }
+
+        sb = new StringBuilder();
+        lines = new Lines();
+
+        if (writer != null)
+        {
+            filename = ident != null && !ident.isBlank()
+                    ? ident
+                    : writer.getClass().getName();
+
+            try
+            {
+                synchronized (writers)
+                {
+                    int idx = writers.indexOf(filename);
+
+                    if (idx == -1)
+                    {
+                        writers.add(new WriterInstance(writer, filename));
+                        idx = indexOfWriters(filename);
+                    }
+
+                    this.file = writers.get(idx).addUsage();
+                    lBlank = false;
+                }
+            } catch (IOException ex)
+            {
+                exception = ex;
+            }
+        } else
+        {
+            file = null;
+            this.filename = null;
+        }
+
+        blank = lBlank;
     }
 
     /**
@@ -234,11 +332,31 @@ public final class ConsoleIO implements Display, Input
      *
      * @return new Display
      */
-    public static Display consoleFileDisplay(final String linePrefix,
+    public static Display consoleFileDisplay(
+            final String linePrefix,
             final String filename)
     {
 
         return new ConsoleIO(linePrefix, filename, true);
+    }
+
+    /**
+     * Provides a version of the ConsoleIO that outputs to both the console and
+     * the designated file.
+     *
+     * @param linePrefix text to prepend to each line
+     * @param writer     where to write output
+     * @param ident      String to identify this Writer in internal data store.
+     *
+     * @return new Display
+     */
+    public static Display consoleWriterDisplay(
+            final String linePrefix,
+            final Writer writer,
+            final String ident)
+    {
+
+        return new ConsoleIO(linePrefix, writer, ident, true);
     }
 
     /**
@@ -250,7 +368,8 @@ public final class ConsoleIO implements Display, Input
      *
      * @return new Display
      */
-    public static Display fileDisplay(final String linePrefix,
+    public static Display fileDisplay(
+            final String linePrefix,
             final String filename)
     {
 
@@ -258,36 +377,26 @@ public final class ConsoleIO implements Display, Input
     }
 
     /**
-     * Find the index of the required WriterInstance.
+     * Provides a version of the ConsoleIO that outputs only to the designated
+     * {@code writer}.
      *
-     * @param filename to find
+     * @param linePrefix text to prepend to each line
+     * @param writer     where to write output
+     * @param ident      String to identify this Writer in internal data store.
      *
-     * @return index of WriterInstance
+     * @return new Display
      */
-    @SuppressWarnings("IncompatibleEquals")
-    private static int indexOfWriters(final String filename)
+    public static Display writerDisplay(
+            final String linePrefix,
+            final Writer writer,
+            final String ident)
     {
-        int rtn = -1;
 
-        if (!WRITERS.isEmpty() && filename != null && !filename.isBlank())
-        {
-            for (int i = 0; i < WRITERS.size(); i++)
-            {
-                WriterInstance wi = WRITERS.get(i);
-
-                if (wi.equals(filename))
-                {
-                    rtn = i;
-                    break;
-                }
-            }
-        }
-
-        return rtn;
+        return new ConsoleIO(linePrefix, writer, ident, false);
     }
 
     @Override
-    public Display append(final String text)
+    public synchronized Display append(final String text)
     {
         if (open)
         {
@@ -312,11 +421,17 @@ public final class ConsoleIO implements Display, Input
      * @see java.util.Formatter - Format String Syntax
      */
     @Override
-    public Display append(String format, Object... args)
+    public synchronized Display append(String format, Object... args)
     {
-        if (open && displayOK())
+        if (open)
         {
-            lines.append(displayLevel, Strings.sprintf(format, args));
+            if (!blank && displayOK())
+            {
+                lines.append(displayLevel, Strings.sprintf(format, args));
+            }
+        } else
+        {
+            exception = new IOException(CLOSED);
         }
 
         return this;
@@ -358,7 +473,11 @@ public final class ConsoleIO implements Display, Input
 
         if (file != null)
         {
-            WRITERS.get(WRITERS.indexOf(filename)).removeUsage();
+            synchronized (writers)
+            {
+                writers.get(writers.indexOf(filename)).removeUsage();
+            }
+
             file = null;
         }
 
@@ -367,53 +486,61 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    public void debugLevel(int level)
+    public synchronized void debugLevel(DisplayDebugLevel level)
     {
         debugLevel = level;
     }
 
     @Override
-    public int debugLevel()
+    public synchronized DisplayDebugLevel debugLevel()
     {
         return debugLevel;
     }
 
     @Override
-    public void flush()
+    public synchronized void flush()
     {
         if (open)
         {
-            if (out != null || file != null)
+            if (displayOK())
             {
-                if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
+                if (out != null || file != null)
                 {
-                    sb.setLength(0);
-
-                    for (Line line : lines.getLines())
+                    if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
                     {
-                        sb.append(linePrefix)
-                                .append("[").append(getLevelStr(line.getLevel())).append("] ")
-                                .append(line.getText());
+                        sb.setLength(0);
 
+                        for (Line line : lines.getLines())
+                        {
+                            sb.append(linePrefix);
+
+                            if (line.getLevel().value > DEFAULT.value)
+                            {
+                                sb.append("[").append(line.getLevel().label).append("] ");
+                            }
+
+                            sb.append(line.getText());
+
+                        }
+                    } else if (!lines.isEmpty())
+                    {
+                        sb.append(lines.getText());
                     }
-                } else if (!lines.isEmpty())
-                {
-                    sb.append(lines.getText());
-                }
 
-                if (out != null)
-                {
-                    out.print(sb);
-                    out.flush();
-                }
+                    if (out != null)
+                    {
+                        out.print(sb);
+                        out.flush();
+                    }
 
-                if (file != null)
-                {
-                    file.print(sb);
-                    file.flush();
-                }
+                    if (file != null)
+                    {
+                        file.print(sb);
+                        file.flush();
+                    }
 
-                clear();
+                    clear();
+                }
             }
         } else
         {
@@ -428,7 +555,7 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    public Display level(int level)
+    public synchronized Display level(DisplayDebugLevel level)
     {
         displayLevel = level;
         return this;
@@ -572,9 +699,41 @@ public final class ConsoleIO implements Display, Input
 
     }
 
-    private boolean displayOK()
+    private synchronized boolean displayOK()
     {
-        return debugLevel >= displayLevel;
+        return debugLevel.value >= displayLevel.value;
+    }
+
+    /**
+     * Find the index of the required WriterInstance.
+     *
+     * @param filename to find
+     *
+     * @return index of WriterInstance
+     */
+    @SuppressWarnings("IncompatibleEquals")
+    private int indexOfWriters(final String filename)
+    {
+        int rtn = -1;
+
+        synchronized (writers)
+        {
+            if (!writers.isEmpty() && filename != null && !filename.isBlank())
+            {
+                for (int i = 0; i < writers.size(); i++)
+                {
+                    WriterInstance wi = writers.get(i);
+
+                    if (wi.equals(filename))
+                    {
+                        rtn = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return rtn;
     }
 
     /**
@@ -582,7 +741,7 @@ public final class ConsoleIO implements Display, Input
      */
     private static final class Line
     {
-        private final int level;
+        private final DisplayDebugLevel level;
 
         private boolean terminated;
 
@@ -594,7 +753,7 @@ public final class ConsoleIO implements Display, Input
          * @param level Debug level of text.
          * @param text  to store
          */
-        private Line(final int level, final String text)
+        private Line(final DisplayDebugLevel level, final String text)
         {
             this.level = level;
             append(text);
@@ -603,7 +762,7 @@ public final class ConsoleIO implements Display, Input
         /**
          * @return the level
          */
-        public int getLevel()
+        public DisplayDebugLevel getLevel()
         {
             return level;
         }
@@ -661,14 +820,14 @@ public final class ConsoleIO implements Display, Input
     {
         private Line lastUnterminated = null;
 
-        private final ArrayList<Line> lines;
+        private final List<Line> lines;
 
         /**
          * Only accessible by the enclosing class.
          */
         private Lines()
         {
-            lines = new ArrayList<>();
+            lines = Collections.synchronizedList(new ArrayList<>());
         }
 
         /**
@@ -680,11 +839,12 @@ public final class ConsoleIO implements Display, Input
          *
          * @return {@code true} if successful, {@code false} otherwise.
          */
-        public boolean append(final int level, final String text)
+        public boolean append(final DisplayDebugLevel level, final String text)
         {
             boolean rtn = false;
+            boolean done = false;
 
-            if (level >= 0 && text != null)
+            if (level != null && text != null)
             {
                 if (lastUnterminated != null)
                 {
@@ -696,8 +856,16 @@ public final class ConsoleIO implements Display, Input
                         {
                             lastUnterminated = null;
                         }
+
+                        done = true;
+                    } else
+                    {
+                        rtn = lastUnterminated.append("\n");
+                        lastUnterminated = null;
                     }
-                } else
+                }
+
+                if (!done)
                 {
                     Line line = new Line(level, text);
                     rtn = lines.add(line);
@@ -731,28 +899,41 @@ public final class ConsoleIO implements Display, Input
         {
             List<Line> list = new ArrayList<>();
 
-            if (lastUnterminated != null)
-            {
-                lastUnterminated.append("\n");
-                lastUnterminated = null;
-            }
+            int len1 = lines.size();
 
-            lines.forEach(line ->
+            for (int i = 0; i < len1; i++)
             {
+                Line line = lines.get(i);
+
                 String[] textArr = line.getText().replace("\n", " \n").split("\n");
 
                 if (textArr.length > 1)
                 {
-                    for (String text : textArr)
+                    int len2 = textArr.length;
+
+                    for (int j = 0; j < len2; j++)
                     {
-                        Line line2 = new Line(line.getLevel(), Strings.rTrim(text) + "\n");
+                        Line line2 = new Line(line.getLevel(), Strings.rTrim(textArr[j]));
+
+                        if (lastUnterminated == null)
+                        {
+                            line2.append("\n");
+                        } else if (i == len1 - 1 && j == len2 - 1)
+                        {
+                            lastUnterminated = null;
+                        } else
+                        {
+                            line2.append("\n");
+                        }
+
                         list.add(line2);
+
                     }
                 } else
                 {
                     list.add(line);
                 }
-            });
+            }
 
             return list;
         }
@@ -846,8 +1027,22 @@ public final class ConsoleIO implements Display, Input
         private WriterInstance(final String filename) throws FileNotFoundException
         {
             this.filename = filename;
-            this.printWriter = new PrintWriter(filename);
-            this.count = 1;
+            printWriter = new PrintWriter(filename);
+            count = 1;
+        }
+
+        /**
+         * Will only be instantiated by parent class.
+         *
+         * @param writer where to write output
+         * @param ident  String to identify this Writer in internal data store.
+         */
+        private WriterInstance(final Writer writer, final String ident)
+        {
+            Objects.requireNonNull(writer);
+            printWriter = new PrintWriter(writer);
+            this.filename = ident;
+            count = 1;
         }
 
         /**

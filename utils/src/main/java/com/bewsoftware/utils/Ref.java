@@ -17,8 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.bewsoftware.utils.struct;
-
+package com.bewsoftware.utils;
 /**
  * This class provides a way to get a value of type &lt;T&gt; into
  * and out of either a Lambda expression or a method through a parameter.
@@ -27,29 +26,25 @@ package com.bewsoftware.utils.struct;
  * {@snippet internal:
  * ...
  *     Ref<Integer>; iRtn = new Ref<>();
- * <p>
- * if(add(2, 3, iRtn)){
- * System.out.println("2 + 3 = " + iRtn.val);
- * }
+ *
+ *     if(add(2, 3, iRtn)){
+ *         System.out.println("2 + 3 = " + iRtn.val);
+ *     }
  * ...
- * <p>
+ *
  * public boolean add(final int a, final int b, final Ref<Integer> iRtn){
- * iRtn.val = a + b;
- * <p>
- * return iRtn.val > 0; // just something to use up return
+ *     iRtn.val = a + b;
+ *
+ *     return iRtn.val > 0; // just something to use up return
  * }
  * }
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
  *
- * @since 1.0.8
- * @version 2.1.0
- *
- * @deprecated Will be removed from a later version. Use
- * {@linkplain com.bewsoftware.utils.Ref}
+ * @since 3.0.0
+ * @version 3.0.0
  */
-@Deprecated
 @SuppressWarnings("PublicField")
 public final class Ref<T>
 {
@@ -138,10 +133,8 @@ public final class Ref<T>
      *
      * @implSpec
      * This implementation returns a string consisting of the default conversion
-     * to a string, of the object held in {@code val}. This is achieved by
-     * calling
-     * its {@code toString()} method. If {@code val} is empty, then the empty
-     * string
+     * to a string, of the object held in {@code val}. This is achieved by calling
+     * its {@code toString()} method. If {@code val} is empty, then the empty string
      * is returned: "".
      *
      * @return a string representation of the object.

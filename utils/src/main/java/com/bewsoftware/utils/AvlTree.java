@@ -19,7 +19,6 @@
  */
 package com.bewsoftware.utils;
 
-import com.bewsoftware.utils.struct.Ref;
 import java.util.*;
 
 /**
@@ -32,7 +31,7 @@ import java.util.*;
  * @param <E> type of item stored in this tree.
  *
  * @since 1.0.9
- * @version 2.1.0
+ * @version 3.0.0
  */
 public final class AvlTree<E extends Comparable<E>> implements Set<E>
 {

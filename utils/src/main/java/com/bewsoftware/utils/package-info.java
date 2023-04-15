@@ -19,11 +19,12 @@
  */
 
 /**
-* Contains the AVLTree collection class,
+* Contains a general collection of classes that don't fit into a more specific
+* package.
  *
 * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
 *
-* @since 1.0
-* @version 1.0
+* @since 1.0.0
+* @version 1.0.0
 */
 package com.bewsoftware.utils;

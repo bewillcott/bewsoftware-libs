@@ -2,14 +2,14 @@
  *  File Name:    MessageBuilder.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2022 Bradley Willcott
+ *  Copyright (c) 2022, 2023 Bradley Willcott
  *
- *  BuilderTrials is free software: you can redistribute it and/or modify
+ *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  BuilderTrials is distributed in the hope that it will be useful,
+ *  bewsoftware-utils is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -27,7 +27,7 @@ import java.util.Formatter;
  * class.
  * <p>
  * I wrote this class because I prefer to use a method like {@link #appendln()}
- * in my client code, rather than adding a "\n" to text strings that doesn't come
+ * in my client code, rather than adding a "\n" to text strings that don't come
  * with it. It is especially appropriate when dealing with objects.
  * <p>
  * Also I like to have the {@link #append(String, Object...)} method for using a
@@ -39,7 +39,7 @@ import java.util.Formatter;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 2.1.0
- * @version 2.1.0
+ * @version 3.0.0
  */
 public final class MessageBuilder
 {
@@ -107,7 +107,7 @@ public final class MessageBuilder
      */
     public MessageBuilder appendln()
     {
-        return append("\n");
+        return append(System.lineSeparator());
     }
 
     /**

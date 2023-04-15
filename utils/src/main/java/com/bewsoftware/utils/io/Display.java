@@ -4,12 +4,12 @@
  *
  *  Copyright (c) 2021-2023 Bradley Willcott
  *
- *  This program is free software: you can redistribute it and/or modify
+ *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  bewsoftware-utils is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -58,37 +58,6 @@ import java.io.Closeable;
 public interface Display extends Closeable, Exceptions
 {
     /**
-     * Display/Debug level.
-     * <p>
-     * Designates fine-grained informational events that
-     * are most useful to debug an application.
-     */
-    public static int DEBUG = 2;
-
-    /**
-     * Display/Debug level.
-     * <p>
-     * Normal text display.
-     */
-    public static int DEFAULT = 0;
-
-    /**
-     * Display/Debug level.
-     * <p>
-     * Designates informational messages that highlight the
-     * progress of the application at coarse-grained level.
-     */
-    public static int INFO = 1;
-
-    /**
-     * Display/Debug level.
-     * <p>
-     * Designates finer-grained informational events than
-     * the DEBUG.
-     */
-    public static int TRACE = 3;
-
-    /**
      * Adds the text to the internal buffer, much like with
      * {@code StringBuilder}.
      *
@@ -120,14 +89,14 @@ public interface Display extends Closeable, Exceptions
      *
      * @return Debug level currently set
      */
-    public int debugLevel();
+    public DisplayDebugLevel debugLevel();
 
     /**
      * Set the debug level for this run.
      *
      * @param level Debug level to use
      */
-    public void debugLevel(int level);
+    public void debugLevel(DisplayDebugLevel level);
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).
@@ -135,14 +104,14 @@ public interface Display extends Closeable, Exceptions
     public void flush();
 
     /**
-     * Display all following text if the {@linkplain #debugLevel(int) }
+     * Display all following text if the {@linkplain #debugLevel(DisplayDebugLevel)  }
      * is greater than or equal to the {@code level}.
      *
      * @param level The debug level at which to display the following text.
      *
      * @return this Display for chaining purposes
      */
-    public Display level(int level);
+    public Display level(DisplayDebugLevel level);
 
     /**
      * Adds the text equivalent of the value to the internal buffer.
@@ -303,34 +272,7 @@ public interface Display extends Closeable, Exceptions
      */
     default String debugLevelStr()
     {
-        return getLevelStr(debugLevel());
-    }
-
-    /**
-     * Obtain the text label for the required level.
-     *
-     * @param level to obtain
-     *
-     * @return text label
-     */
-    default String getLevelStr(final int level)
-    {
-        String rtn = "";
-
-        switch (level)
-        {
-            case DEFAULT -> rtn = "DEFAULT";
-
-            case INFO -> rtn = "INFO ";
-
-            case DEBUG -> rtn = "DEBUG";
-
-            case TRACE -> rtn = "TRACE";
-
-            default -> throw new AssertionError();
-        }
-
-        return rtn;
+        return debugLevel().label;
     }
 
     /**
@@ -469,7 +411,8 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final String text)
     {
-        appendln(text).flush();
+        Display d = appendln(text);
+        d.flush();
     }
 
     /**
