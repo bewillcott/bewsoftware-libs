@@ -163,6 +163,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestCentreFill_String_int")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testCentreFill_String_int(String input, int width, String expected)
     {
         String result = Strings.centreFill(input, width);
@@ -184,6 +185,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestCentreFill_int_int")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testCentreFill_int_int(int number, int width, String expected)
     {
         String result = Strings.centreFill(number, width);
@@ -205,6 +207,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestFill_String_int")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testFill(String text, int count, String expected)
     {
         String result = Strings.fill(text, count);
@@ -225,6 +228,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestLTrim")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testLTrim(String input, String expected)
     {
         String result = Strings.lTrim(input);
@@ -246,6 +250,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestLeftJustify_String_int")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testLeftJustify_String_int(String text, int width, String expected)
     {
         String result = Strings.leftJustify(text, width);
@@ -267,6 +272,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestLeftJustify_int_int")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testLeftJustify_int_int(int number, int width, String expected)
     {
         String result = Strings.leftJustify(number, width);
@@ -287,6 +293,7 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRTrim")
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRTrim(String input, String expected)
     {
         String result = Strings.rTrim(input);
@@ -310,6 +317,7 @@ public class StringsTest
             {
                 "Non-blank"
             })
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRequireNonBlank_String(String text)
     {
         String result = Strings.requireNonBlank(text);
@@ -333,6 +341,10 @@ public class StringsTest
             {
                 "", "  "
             })
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonBlank_String_IllegalArgumentException(String text)
     {
         assertThrows(
@@ -355,6 +367,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @NullSource
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonBlank_String_NullPointerException(String text)
     {
         assertThrows(
@@ -381,6 +397,7 @@ public class StringsTest
     {
         "test:test", "test2:test", "Java:Java"
     }, delimiter = ':')
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRequireNonBlank_String_String(String text, String msg)
     {
         String result = Strings.requireNonBlank(text, msg);
@@ -401,6 +418,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_IllegalArgumentException")
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonBlank_String_String_IllegalArgumentException(String text, String msg)
     {
         assertThrows(
@@ -424,6 +445,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_NullPointerException")
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonBlank_String_String_NullPointerException(String text, String msg)
     {
         assertThrows(
@@ -450,6 +475,7 @@ public class StringsTest
             {
                 "Non-Empty"
             })
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRequireNonEmpty_String(String text)
     {
         String result = Strings.requireNonEmpty(text);
@@ -473,6 +499,10 @@ public class StringsTest
             {
                 ""
             })
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonEmpty_String_IllegalArgumentException(String text)
     {
         assertThrows(
@@ -495,6 +525,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @NullSource
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonEmpty_String_NullPointerException(String text)
     {
         assertThrows(
@@ -521,6 +555,7 @@ public class StringsTest
     {
         "test:test", "test2:test", "Java:Java"
     }, delimiter = ':')
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRequireNonEmpty_String_String(String text, String msg)
     {
         String result = Strings.requireNonEmpty(text, msg);
@@ -541,6 +576,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_IllegalArgumentException")
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonEmpty_String_String_IllegalArgumentException(String text, String msg)
     {
         assertThrows(
@@ -564,6 +603,10 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_NullPointerException")
+    @SuppressWarnings(
+    {
+        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+    })
     public void testRequireNonEmpty_String_String_NullPointerException(String text, String msg)
     {
         assertThrows(
