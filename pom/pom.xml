@@ -16,7 +16,7 @@
 
     <properties>
         <manual.source>src/docs/manual</manual.source>
-        <manual.target>target/docs/manual</manual.target>
+        <manual.target>docs</manual.target>
         <skip.version.build>true</skip.version.build>
     </properties>
 
@@ -25,7 +25,7 @@
             <id>developer-api</id>
             <properties>
                 <javadoc.linksource>true</javadoc.linksource>
-                <javadoc.outputDirectory>${manual.target}/apidocs</javadoc.outputDirectory>
+                <javadoc.outputDirectory>${manual.source}/apidocs</javadoc.outputDirectory>
                 <javadoc.show>private</javadoc.show>
                 <javadoc.skip>false</javadoc.skip>
                 <manual>clean</manual>
@@ -33,54 +33,46 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>Move module-info.java out</id>
                                 <phase>initialize</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
                                 <configuration>
-                                    <executable>mv</executable>
-                                    <arguments>
-                                        <argument>-v</argument>
-                                        <argument>src/main/java/module-info.java</argument>
-                                        <argument>src/main/module-info.java</argument>
-                                    </arguments>
+                                    <target>
+                                        <move file="src/main/java/module-info.java" todir="src/main"/>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                             <execution>
                                 <id>Remove old APIDoc files</id>
                                 <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
                                 <configuration>
-                                    <executable>rm</executable>
-                                    <arguments>
-                                        <argument>-r</argument>
-                                        <argument>-d</argument>
-                                        <argument>-f</argument>
-                                        <argument>${javadoc.outputDirectory}</argument>
-                                    </arguments>
+                                    <target>
+                                        <delete quiet="true" includeEmptyDirs="true">
+                                            <fileset dir="${javadoc.outputDirectory}"/>
+                                        </delete>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                             <execution>
                                 <id>Move module-info.java back</id>
                                 <phase>verify</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
                                 <configuration>
-                                    <executable>mv</executable>
-                                    <arguments>
-                                        <argument>-v</argument>
-                                        <argument>src/main/module-info.java</argument>
-                                        <argument>src/main/java/module-info.java</argument>
-                                    </arguments>
+                                    <target>
+                                        <move file="src/main/module-info.java" todir="src/main/java"/>
+                                    </target>
                                 </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
