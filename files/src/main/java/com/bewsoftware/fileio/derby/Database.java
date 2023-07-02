@@ -2,7 +2,7 @@
  *  File Name:    Database.java
  *  Project Name: bewsoftware-files
  *
- *  Copyright (c) 2020-2022 Bradley Willcott
+ *  Copyright (c) 2020-2023 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import com.bewsoftware.common.InvalidParameterValueException;
 import com.bewsoftware.fileio.BEWFiles;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
+import com.bewsoftware.utils.io.DisplayDebugLevel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,6 +36,9 @@ import static com.bewsoftware.fileio.derby.Database.DbOpenResult.FAILED;
 import static com.bewsoftware.fileio.derby.Database.DbOpenResult.NEW;
 import static com.bewsoftware.fileio.derby.Database.Status.OFF;
 import static com.bewsoftware.fileio.derby.Database.Status.ON;
+import static com.bewsoftware.utils.io.DisplayDebugLevel.DEBUG;
+import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
+import static com.bewsoftware.utils.io.DisplayDebugLevel.INFO;
 import static java.nio.file.Path.of;
 
 /**
@@ -44,7 +48,7 @@ import static java.nio.file.Path.of;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 2.1.0
+ * @version 3.0.0
  */
 public class Database implements AutoCloseable
 {
@@ -144,13 +148,13 @@ public class Database implements AutoCloseable
      *
      * @return <b>True</b> if the statement is successfully executed.
      */
-    public boolean execute(String sql)
+    public boolean execute(final String sql)
     {
         boolean rtn;
 
-        try ( Statement st = conn.createStatement())
+        try (Statement st = conn.createStatement())
         {
-            DISPLAY.level(1).println("sql: " + sql);
+            DISPLAY.level(INFO).println("sql: " + sql);
             st.execute(sql);
             rtn = true;
         } catch (SQLException ex)
@@ -172,7 +176,7 @@ public class Database implements AutoCloseable
      *
      * @throws SQLException SQL Error.
      */
-    public ResultSet executeQuery(String sql) throws SQLException
+    public ResultSet executeQuery(final String sql) throws SQLException
     {
         Statement st = conn.createStatement();
         stmts.add(st);
@@ -216,7 +220,7 @@ public class Database implements AutoCloseable
      *
      * @return <b>True</b> if ALL statements are successfully executed.
      */
-    public boolean executeUpdate(String[] arraySQL)
+    public boolean executeUpdate(final String[] arraySQL)
     {
         boolean rtn = false;
 
@@ -224,11 +228,11 @@ public class Database implements AutoCloseable
         {
             Savepoint svpnt = conn.setSavepoint();
 
-            try ( Statement st = conn.createStatement())
+            try (Statement st = conn.createStatement())
             {
                 for (String sql : arraySQL)
                 {
-                    DISPLAY.level(1).println("sql: " + sql);
+                    DISPLAY.level(INFO).println("sql: " + sql);
                     st.executeUpdate(sql);
                 }
 
@@ -257,18 +261,6 @@ public class Database implements AutoCloseable
     }
 
     /**
-     * Set the debug level for the displaying of information.
-     * <p>
-     * The default level is: 0.
-     *
-     * @param level new level to set
-     */
-    public void setDebugLevel(int level)
-    {
-        DISPLAY.debugLevel(level);
-    }
-
-    /**
      * Status of the Foreign Keys Constraint setting.
      *
      * @return Current status.
@@ -278,14 +270,14 @@ public class Database implements AutoCloseable
      */
     public final Status getForeignKeysConstraint() throws SQLException
     {
-        try ( Statement st = conn.createStatement())
+        try (Statement st = conn.createStatement())
         {
 
             // Check status
             st.execute("PRAGMA foreign_keys");
             int val;
 
-            try ( ResultSet rs = st.getResultSet())
+            try (ResultSet rs = st.getResultSet())
             {
                 val = rs.getInt(1);
             }
@@ -294,61 +286,18 @@ public class Database implements AutoCloseable
             {
                 case 1 ->
                 {
-                    DISPLAY.level(0).println("'foreign_keys' constraint is set.");
+                    DISPLAY.level(DEBUG).println("'foreign_keys' constraint is set.");
                     return ON;
                 }
 
                 case 0 ->
                 {
-                    DISPLAY.level(0).println("'foreign_keys' constraint is unset.");
+                    DISPLAY.level(DEBUG).println("'foreign_keys' constraint is unset.");
                     return OFF;
                 }
 
                 default ->
                     throw new SQLException("'foreign_keys' constraint not being set.");
-            }
-        }
-    }
-
-    /**
-     * Set <b>Foreign Keys</b> constraint to <u>ON</u> or <u>OFF</u>.
-     *
-     * @param setting Refer to {@link Status}.
-     *
-     * @throws SQLException SQL error, or "'foreign_keys' constraint not being
-     *                      set."
-     */
-    public final void setForeignKeysConstraint(Status setting) throws SQLException
-    {
-        try ( Statement st = conn.createStatement())
-        {
-            switch (setting)
-            {
-                case ON -> // Activate foreign keys constraint checking
-                    st.execute("PRAGMA foreign_keys = on");
-
-                case OFF -> // De-activate foreign keys constraint checking
-                    st.execute("PRAGMA foreign_keys = off");
-            }
-
-            // Check status
-            st.execute("PRAGMA foreign_keys");
-            int val;
-
-            try ( ResultSet rs = st.getResultSet())
-            {
-                val = rs.getInt(1);
-            }
-
-            if (val == 1 && setting == ON)
-            {
-                DISPLAY.level(0).println("'foreign_keys' constraint is set.");
-            } else if (val == 0 && setting == OFF)
-            {
-                DISPLAY.level(0).println("'foreign_keys' constraint is unset.");
-            } else
-            {
-                throw new SQLException("'foreign_keys' constraint not being set.");
             }
         }
     }
@@ -430,6 +379,61 @@ public class Database implements AutoCloseable
         return rtn;
     }
 
+    /**
+     * Set the debug level for the displaying of information.
+     * <p>
+     * The default level is: 0.
+     *
+     * @param level new level to set
+     */
+    public void setDebugLevel(final DisplayDebugLevel level)
+    {
+        DISPLAY.debugLevel(level);
+    }
+
+    /**
+     * Set <b>Foreign Keys</b> constraint to <u>ON</u> or <u>OFF</u>.
+     *
+     * @param setting Refer to {@link Status}.
+     *
+     * @throws SQLException SQL error, or "'foreign_keys' constraint not being
+     *                      set."
+     */
+    public final void setForeignKeysConstraint(final Status setting) throws SQLException
+    {
+        try (Statement st = conn.createStatement())
+        {
+            switch (setting)
+            {
+                case ON -> // Activate foreign keys constraint checking
+                    st.execute("PRAGMA foreign_keys = on");
+
+                case OFF -> // De-activate foreign keys constraint checking
+                    st.execute("PRAGMA foreign_keys = off");
+            }
+
+            // Check status
+            st.execute("PRAGMA foreign_keys");
+            int val;
+
+            try (ResultSet rs = st.getResultSet())
+            {
+                val = rs.getInt(1);
+            }
+
+            if (val == 1 && setting == ON)
+            {
+                DISPLAY.level(DEBUG).println("'foreign_keys' constraint is set.");
+            } else if (val == 0 && setting == OFF)
+            {
+                DISPLAY.level(DEBUG).println("'foreign_keys' constraint is unset.");
+            } else
+            {
+                throw new SQLException("'foreign_keys' constraint not being set.");
+            }
+        }
+    }
+
     @Override
     public String toString()
     {
@@ -453,10 +457,10 @@ public class Database implements AutoCloseable
 
         if (!gotSQLExc)
         {
-            DISPLAY.level(0).println("Database did not shut down normally");
+            DISPLAY.level(DEFAULT).println("Database did not shut down normally");
         } else
         {
-            DISPLAY.level(0).println("Database shut down normally");
+            DISPLAY.level(DEFAULT).println("Database shut down normally");
         }
     }
 

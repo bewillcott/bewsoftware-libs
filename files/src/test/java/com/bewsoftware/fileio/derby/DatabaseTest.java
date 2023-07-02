@@ -33,6 +33,7 @@ import static com.bewsoftware.fileio.derby.Database.DbOpen.CREATE;
 import static com.bewsoftware.fileio.derby.Database.DbOpen.OPEN;
 import static com.bewsoftware.fileio.derby.Database.DbOpenResult.EXISTING;
 import static com.bewsoftware.fileio.derby.Database.DbOpenResult.NEW;
+import static com.bewsoftware.utils.io.DisplayDebugLevel.TRACE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -89,7 +90,7 @@ public class DatabaseTest
         DISPLAY.println("setUp()");
 
         db = new Database(DBNAME);
-        db.setDebugLevel(1);
+        db.setDebugLevel(TRACE);
 
         DISPLAY.println("Init db: " + db);
     }
@@ -144,7 +145,7 @@ public class DatabaseTest
         {
             DISPLAY.println(sql);
 
-            try ( ResultSet result = db.executeQuery(sql))
+            try (ResultSet result = db.executeQuery(sql))
             {
                 ResultSetPrinter.print(result);
                 DISPLAY.println();

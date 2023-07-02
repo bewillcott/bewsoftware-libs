@@ -2,7 +2,7 @@
  *  File Name:    BEWFiles.java
  *  Project Name: bewsoftware-files
  *
- *  Copyright (c) 2020-2022 Bradley Willcott
+ *  Copyright (c) 2020-2023 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.bewsoftware.utils.io.DisplayDebugLevel.DEBUG;
 import static java.nio.file.Files.*;
 import static java.nio.file.Path.of;
 
@@ -39,7 +40,7 @@ import static java.nio.file.Path.of;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 2.1.0
+ * @version 3.0.0
  */
 public class BEWFiles
 {
@@ -129,7 +130,7 @@ public class BEWFiles
 
         processInList(srcPath, inList, destPath, outList, dirList, display);
 
-        display.level(2).appendln("Creating directories ...");
+        display.level(DEBUG).appendln("Creating directories ...");
 
         for (Path dir : dirList)
         {
@@ -138,7 +139,7 @@ public class BEWFiles
         }
 
         display.flush();
-        display.level(2).appendln("Copying files ...");
+        display.level(DEBUG).appendln("Copying files ...");
 
         for (FileData fileData : outList)
         {
@@ -271,7 +272,7 @@ public class BEWFiles
                         dirList.add(parent);
                     }
 
-                    display.level(2).println(outPath);
+                    display.level(DEBUG).println(outPath);
                 }
             }
         }
