@@ -27,9 +27,11 @@
  * @version 3.0.0
  */
 module bewsoftware.jfx {
-    requires bewsoftware.utils;
+    requires transitive bewsoftware.utils;
     requires javafx.base;
     requires javafx.controls;
     requires javafx.graphics;
-    requires jcip.annotations;
+    requires bewsoftware.annotations;
+
+    exports com.bewsoftware.jfx;
 }

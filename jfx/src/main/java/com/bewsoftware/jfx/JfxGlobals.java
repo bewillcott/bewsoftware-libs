@@ -20,8 +20,8 @@
 
 package com.bewsoftware.jfx;
 
+import com.bewsoftware.annotations.GuardedBy;
 import com.bewsoftware.utils.io.DisplayDebugLevel;
-import net.jcip.annotations.GuardedBy;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 
@@ -35,7 +35,7 @@ import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
  */
 public class JfxGlobals
 {
-    @GuardedBy("Globals")
+    @GuardedBy("JfxGlobals")
     private static volatile DisplayDebugLevel debugLevel = DEFAULT; // Do NOT edit this line!
     // Overide value in your main(...) method.
 
@@ -53,7 +53,7 @@ public class JfxGlobals
      *
      * @see #setDebugLevel(DisplayDebugLevel)
      */
-    @GuardedBy("Globals")
+    @GuardedBy("JfxGlobals")
     public static synchronized DisplayDebugLevel getDebugLevel()
     {
         return JfxGlobals.debugLevel;
@@ -81,7 +81,7 @@ public class JfxGlobals
      *
      * @param level new level to set
      */
-    @GuardedBy("Globals")
+    @GuardedBy("JfxGlobals")
     public static synchronized void setDebugLevel(final DisplayDebugLevel level)
     {
         JfxGlobals.debugLevel = level;

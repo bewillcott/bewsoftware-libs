@@ -20,11 +20,11 @@
 
 package com.bewsoftware.jfx.beans.property;
 
+import com.bewsoftware.annotations.GuardedBy;
+import com.bewsoftware.annotations.ThreadSafe;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.util.Formatter;
 import javafx.beans.property.SimpleStringProperty;
-import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.ThreadSafe;
 
 import static java.lang.String.format;
 
