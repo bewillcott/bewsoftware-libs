@@ -28,7 +28,11 @@ import static java.lang.String.format;
  *
  * @since 1.0
  * @version 2.1.0
+ *
+ * @deprecated Use {@link InvalidParameterException} instead. Will be removed
+ * in later version.
  */
+@Deprecated
 public class InvalidParameterValueException extends RuntimeException
 {
 
