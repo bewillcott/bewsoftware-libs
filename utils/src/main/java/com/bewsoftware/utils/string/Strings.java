@@ -93,16 +93,19 @@ public interface Strings
     static String centreFill(final String text, final int width, final String fill)
     {
         String rtn;
-        int length = text.length();
+        final int length = text.length();
 
         // Process only if necessary
         if (length < width)
         {
-            int preLen = (width - text.length()) / 2;
-            int postLen = width - text.length() - preLen;
+            final int preLen = (width - text.length()) / 2;
+            final int postLen = width - text.length() - preLen;
 
-            rtn = new StringBuilder().append(fill.repeat(preLen)).append(text)
-                    .append(fill.repeat(postLen)).toString();
+            rtn = new StringBuilder()
+                    .append(fill.repeat(preLen))
+                    .append(text)
+                    .append(fill.repeat(postLen))
+                    .toString();
 
         } else
         {
@@ -156,7 +159,7 @@ public interface Strings
                 for (; i < Math.abs(spaces); i++)
                 {
                     if (!isWhitespace(line.codePointAt(i)))
-                    {
+                    { // First non-whitespace character.
                         break;
                     }
                 }
@@ -178,6 +181,21 @@ public interface Strings
     }
 
     /**
+     * Process 'obj.toString()' (containing any number of lines), indenting or
+     * outdenting the lines by the number of 'spaces' required.
+     *
+     * @param obj    to process
+     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
+     *               indent.
+     *
+     * @return the processed text
+     */
+    static String indentLines(final Object obj, final int spaces)
+    {
+        return indentLines((obj != null ? obj.toString() : "null"), spaces);
+    }
+
+    /**
      * Process the 'text' string (containing any number of lines), indenting or
      * outdenting the lines by the number of 'spaces' required.
      *
@@ -189,20 +207,29 @@ public interface Strings
      */
     static String indentLines(final String text, final int spaces)
     {
-        StringBuilder sb = new StringBuilder();
+        final MessageBuilder mb = new MessageBuilder();
 
         if (!text.isBlank() && spaces != 0)
         {
-            String[] arr = text.replace("\n", " \n").split("\n");
+            final boolean endsWithNewLine = text.endsWith("\n");
+            final String[] arr = text.replace("\n", " \n").split("\n");
 
-            for (String strLine : arr)
+            for (int i = 0; i < arr.length; i++)
             {
-                String line = strLine.isBlank() ? "" : strLine;
-                sb.append(indentLine(line, spaces)).append("\n");
+                final String strLine = arr[i];
+
+                if (i < arr.length - 1 || endsWithNewLine)
+                {
+                    final String line = strLine.substring(0, strLine.length() - 1);
+                    mb.appendln(indentLine(line, spaces));
+                } else
+                {
+                    mb.append(indentLine(strLine, spaces));
+                }
             }
         }
 
-        return sb.toString();
+        return mb.toString();
     }
 
     /**
@@ -296,7 +323,7 @@ public interface Strings
     static String leftJustify(final String text, final int width, final String fill)
     {
         String rtn = text.trim();
-        int length = rtn.length();
+        final int length = rtn.length();
 
         if (length < width)
         {
@@ -449,6 +476,82 @@ public interface Strings
     }
 
     /**
+     * Right justifies the {@code number} within a text string of {@code width}
+     * length.
+     *
+     * @param number to wrap
+     * @param width  of required text
+     *
+     * @return the formatted text
+     */
+    static String rightJustify(final int number, final int width)
+    {
+        return rightJustify(Integer.toString(number), width);
+    }
+
+    /**
+     * Formats the {@code text} to be Right justified within a text string of
+     * {@code width} length.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     *
+     * @return the formatted text
+     */
+    static String rightJustify(final String text, final int width)
+    {
+        return rightJustify(text, width, " ");
+    }
+
+    /**
+     * Right justifies the {@code number} within a text string of {@code width}
+     * length.
+     *
+     * @param number to wrap
+     * @param width  of required text
+     * @param fill   text
+     *
+     * @return the formatted text
+     */
+    static String rightJustify(final int number, final int width, final String fill)
+    {
+        return rightJustify(Integer.toString(number), width, fill);
+    }
+
+    /**
+     * Formats the {@code text} to be right justified within a text string of
+     * {@code width} length.
+     *
+     * @param text  to wrap
+     * @param width of required text
+     * @param fill  text
+     *
+     * @return the formatted text
+     */
+    static String rightJustify(final String text, final int width, final String fill)
+    {
+        String rtn;
+        final int length = text.length();
+
+        // Process only if necessary
+        if (length < width)
+        {
+            final int preLen = (width - text.length());
+
+            rtn = new StringBuilder()
+                    .append(fill.repeat(preLen))
+                    .append(text)
+                    .toString();
+
+        } else
+        {
+            rtn = text;
+        }
+
+        return rtn;
+    }
+
+    /**
      * Provide C 'printf'-style formatting of text, only instead of printing it
      * to the console, the resulting text is return as a String object.
      *
@@ -456,7 +559,11 @@ public interface Strings
      * @param args   parameters to be used
      *
      * @return a new string containing the formatted text.
+     *
+     * @deprecated Use String.format(String, Object...) instead.
+     * @see String#format(String, Object...)
      */
+    @Deprecated
     static String sprintf(final String format, Object... args)
     {
         return new Formatter().format(format, args).toString();

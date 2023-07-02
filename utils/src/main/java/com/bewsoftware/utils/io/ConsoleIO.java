@@ -19,11 +19,13 @@
  */
 package com.bewsoftware.utils.io;
 
+import com.bewsoftware.annotations.GuardedBy;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
+import static java.lang.String.format;
 
 /**
  * This class implements a console with benefits.
@@ -37,7 +39,7 @@ import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
  * readPassword, will cause an {@link IOException}.
  *
  * This file has been modified to be compatible with JDK 1.8, by using
- * {@linkplain Strings} methods.
+ * {@link Strings} methods.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -51,14 +53,25 @@ public final class ConsoleIO implements Display, Input
 
     private static final String CLOSED = "ConsoleIO is closed.";
 
+    /**
+     * Stores the singleton of each {@link Writer} object related to each
+     * specific instance of {@link PrintWriter} associated with a
+     * {@code filename}.
+     */
+    @GuardedBy("ConsoleIO.writers")
+    private static final List<WriterInstance> writers = Collections.synchronizedList(new ArrayList<>());
+
     private final boolean blank;
 
     private final Console console;
 
+    @GuardedBy("this")
     private DisplayDebugLevel debugLevel = DEFAULT;
 
+    @GuardedBy("this")
     private DisplayDebugLevel displayLevel = DEFAULT;
 
+    @GuardedBy("this")
     private Exception exception;
 
     private PrintWriter file;
@@ -69,18 +82,12 @@ public final class ConsoleIO implements Display, Input
 
     private Lines lines;
 
+    @GuardedBy("this")
     private boolean open;
 
     private PrintWriter out;
 
     private StringBuilder sb;
-
-    /**
-     * Stores the singleton of each {@link Writer} object related to each
-     * specific instance of {@link PrintWriter} associated with a
-     * {@code filename}.
-     */
-    private static final List<WriterInstance> writers = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Instantiates a "blank console".
@@ -219,8 +226,8 @@ public final class ConsoleIO implements Display, Input
      * and {@code withConsole}.
      *
      * @implSpec
-     * If {@code writer} is not {@code null}, then then it will be
-     * opened/created. If successful, a copy of all text will be appended to it.
+     * If {@code writer} is not {@code null}, then it will be opened/created. If
+     * successful, a copy of all text will be appended to it.
      * <p>
      * If {@code withConsole} is {@code true}, then the System console will be
      * sent a copy of all text.
@@ -228,7 +235,7 @@ public final class ConsoleIO implements Display, Input
      * For use by factory method.
      *
      * @param linePrefix  text to prepend to each line.
-     * @param writer      Where to send to output.
+     * @param writer      Where to send the output.
      * @param ident       String to identify this Writer in internal data store.
      * @param withConsole whether or not to output to the console, if any.
      */
@@ -396,6 +403,7 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    @GuardedBy("this")
     public synchronized Display append(final String text)
     {
         if (open)
@@ -421,13 +429,14 @@ public final class ConsoleIO implements Display, Input
      * @see java.util.Formatter - Format String Syntax
      */
     @Override
+    @GuardedBy("this")
     public synchronized Display append(String format, Object... args)
     {
         if (open)
         {
             if (!blank && displayOK())
             {
-                lines.append(displayLevel, Strings.sprintf(format, args));
+                lines.append(displayLevel, format(format, args));
             }
         } else
         {
@@ -438,7 +447,7 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    public void clear()
+    public Display clear()
     {
         if (open)
         {
@@ -452,6 +461,8 @@ public final class ConsoleIO implements Display, Input
             sb = null;
             lines = null;
         }
+
+        return this;
     }
 
     @Override
@@ -460,6 +471,7 @@ public final class ConsoleIO implements Display, Input
         exception = null;
     }
 
+    @GuardedBy("ConsoleIO.writers")
     @Override
     public void close() throws IOException
     {
@@ -486,18 +498,28 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    @GuardedBy("this")
     public synchronized void debugLevel(DisplayDebugLevel level)
     {
         debugLevel = level;
     }
 
     @Override
+    @GuardedBy("this")
     public synchronized DisplayDebugLevel debugLevel()
     {
         return debugLevel;
     }
 
+    @GuardedBy("this")
     @Override
+    public synchronized boolean displayOK()
+    {
+        return debugLevel.value >= displayLevel.value;
+    }
+
+    @Override
+    @GuardedBy("this")
     public synchronized void flush()
     {
         if (open)
@@ -555,6 +577,7 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    @GuardedBy("this")
     public synchronized Display level(DisplayDebugLevel level)
     {
         displayLevel = level;
@@ -699,11 +722,6 @@ public final class ConsoleIO implements Display, Input
 
     }
 
-    private synchronized boolean displayOK()
-    {
-        return debugLevel.value >= displayLevel.value;
-    }
-
     /**
      * Find the index of the required WriterInstance.
      *
@@ -711,6 +729,7 @@ public final class ConsoleIO implements Display, Input
      *
      * @return index of WriterInstance
      */
+    @GuardedBy("ConsoleIO.writers")
     @SuppressWarnings("IncompatibleEquals")
     private int indexOfWriters(final String filename)
     {

@@ -1,20 +1,21 @@
 /*
- * This file is part of the BEWSoftware Utils Library.
+ *  File Name:    ImmutableDate.java
+ *  Project Name: bewsoftware-utils
  *
- * Copyright (C) 2020, 2021 Bradley Willcott
+ *  Copyright (c) 2021-2023 Bradley Willcott
  *
- * BEWSoftware Utils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  bewsoftware-utils is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * BEWSoftware Utils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  bewsoftware-utils is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils;
 
@@ -30,7 +31,7 @@ import java.util.Objects;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.0.0
  */
 public final class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
 {
@@ -185,9 +186,9 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
      */
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-    public int compareTo(ImmutableDate o)
+    public int compareTo(ImmutableDate other)
     {
-        return date.compareTo(o.date);
+        return date.compareTo(other.date);
     }
 
     /**
@@ -218,23 +219,23 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
             })
     public boolean equals(Object obj)
     {
-        switch (obj)
+        return switch (obj)
         {
             case Date lDate ->
             {
-                return date.getTime() == lDate.getTime();
+                yield date.getTime() == lDate.getTime();
             }
 
             case ImmutableDate iDate ->
             {
-                return date.getTime() == iDate.date.getTime();
+                yield date.getTime() == iDate.date.getTime();
             }
 
-            case default ->
+            default ->
             {
-                return false;
+                yield false;
             }
-        }
+        };
     }
 
     /**

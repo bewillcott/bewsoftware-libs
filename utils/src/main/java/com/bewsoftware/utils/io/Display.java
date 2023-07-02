@@ -20,6 +20,7 @@
 package com.bewsoftware.utils.io;
 
 import java.io.Closeable;
+import java.util.function.Supplier;
 
 /**
  * This interface provides a means of displaying output in an abstract manner.
@@ -32,7 +33,7 @@ import java.io.Closeable;
  * (<i>default</i> and <i>static</i>), it will make it even simpler to develop
  * additional implementations.
  *
- * @implNote
+ * @implSpec
  * The ideas for the various methods, and even some of the implementation code
  * for the <i>default</i> methods was derived from the
  * {@link java.io.PrintStream} and {@link java.lang.StringBuilder} classes from
@@ -61,9 +62,9 @@ public interface Display extends Closeable, Exceptions
      * Adds the text to the internal buffer, much like with
      * {@code StringBuilder}.
      *
-     * @param text to be added
+     * @param text to be added.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      */
     public Display append(final String text);
 
@@ -75,28 +76,37 @@ public interface Display extends Closeable, Exceptions
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      */
-    public Display append(String format, Object... args);
+    public Display append(final String format, final Object... args);
 
     /**
      * Empties the internal buffer of all unflushed output.
+     *
+     * @return this Display for chaining purposes.
      */
-    public void clear();
+    public Display clear();
 
     /**
      * Get the debug level for this run.
      *
-     * @return Debug level currently set
+     * @return Debug level currently set.
      */
     public DisplayDebugLevel debugLevel();
 
     /**
      * Set the debug level for this run.
      *
-     * @param level Debug level to use
+     * @param level Debug level to use.
      */
-    public void debugLevel(DisplayDebugLevel level);
+    public void debugLevel(final DisplayDebugLevel level);
+
+    /**
+     * Determine if the current text will be displayed.
+     *
+     * @return {@code true} if it will be, {@code false} otherwise.
+     */
+    public boolean displayOK();
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).
@@ -104,24 +114,46 @@ public interface Display extends Closeable, Exceptions
     public void flush();
 
     /**
-     * Display all following text if the {@linkplain #debugLevel(DisplayDebugLevel)  }
+     * Display all following text if the {@link #debugLevel(DisplayDebugLevel)}
      * is greater than or equal to the {@code level}.
      *
      * @param level The debug level at which to display the following text.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      */
-    public Display level(DisplayDebugLevel level);
+    public Display level(final DisplayDebugLevel level);
+
+    /**
+     * Adds the result of the supplier interface to the internal buffer.
+     *
+     * @implNote
+     * This is meant to be used to provide provisional processing of non-trivial
+     * parameters, such as formatting a long list of objects, that would only
+     * be necessary if the debug level would allow the result to be displayed.
+     *
+     * @param supplier of text to append.
+     *
+     * @return this Display for chaining purposes.
+     */
+    default Display append(final Supplier<String> supplier)
+    {
+        if (displayOK())
+        {
+            return append(supplier.get());
+        }
+
+        return this;
+    }
 
     /**
      * Adds the text equivalent of the value to the internal buffer.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code value ? "true" : "false"} to convert value to String.
      *
-     * @param value to print
+     * @param value to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
      * @see #append(java.lang.String)
      */
@@ -133,14 +165,14 @@ public interface Display extends Closeable, Exceptions
     /**
      * Adds the number to the internal buffer.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code Integer.toString(number)} to convert int to String.
      *
-     * @param number to print
+     * @param number to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String)
+     * @see #append(java.lang.String).
      */
     default Display append(final int number)
     {
@@ -150,15 +182,15 @@ public interface Display extends Closeable, Exceptions
     /**
      * Adds the obj to the internal buffer.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
      * String.
      *
-     * @param obj to print
+     * @param obj to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String)
+     * @see #append(java.lang.String).
      */
     default Display append(final Object obj)
     {
@@ -166,11 +198,34 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Adds the result of the supplier interface to the internal buffer,
+     * followed by the System line separator.
+     *
+     * @implNote
+     * This is meant to be used to provide provisional processing of non-trivial
+     * parameters, such as formatting a long list of objects, that would only
+     * be necessary if the debug level would allow the result to be displayed.
+     *
+     * @param supplier of text to append.
+     *
+     * @return this Display for chaining purposes.
+     */
+    default Display appendln(final Supplier<String> supplier)
+    {
+        if (displayOK())
+        {
+            return appendln(supplier.get());
+        }
+
+        return this;
+    }
+
+    /**
      * Add the System line separator to the internal buffer.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String)
+     * @see #append(java.lang.String).
      */
     default Display appendln()
     {
@@ -180,14 +235,14 @@ public interface Display extends Closeable, Exceptions
     /**
      * Adds the text equivalent of the value to the internal buffer.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code value ? "true" : "false"} to convert value to String.
      *
-     * @param value to print
+     * @param value to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String)
+     * @see #appendln(java.lang.String).
      */
     default Display appendln(final boolean value)
     {
@@ -198,15 +253,15 @@ public interface Display extends Closeable, Exceptions
      * Adds the number to the internal buffer, followed by the System line
      * separator.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code Integer.toString(number)} to convert int to String.
      *
-     * @param number to print
+     * @param number to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String)
-     * @see java.lang.System#lineSeparator()
+     * @see #appendln(java.lang.String).
+     * @see java.lang.System#lineSeparator().
      */
     default Display appendln(final int number)
     {
@@ -217,15 +272,15 @@ public interface Display extends Closeable, Exceptions
      * Adds the obj to the internal buffer, followed by the System line
      * separator.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
      * String.
      *
-     * @param obj to print
+     * @param obj to print.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String)
+     * @see #appendln(java.lang.String).
      */
     default Display appendln(final Object obj)
     {
@@ -236,12 +291,12 @@ public interface Display extends Closeable, Exceptions
      * Adds the text to the internal buffer, followed by the System line
      * separator.
      *
-     * @param text to be added
+     * @param text to be added.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String)
-     * @see #appendln()
+     * @see #append(java.lang.String).
+     * @see #appendln().
      */
     default Display appendln(final String text)
     {
@@ -256,9 +311,9 @@ public interface Display extends Closeable, Exceptions
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
      *
-     * @return this Display for chaining purposes
+     * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String, java.lang.Object...)
+     * @see #append(java.lang.String, java.lang.Object...).
      */
     default Display appendln(String format, Object... args)
     {
@@ -268,7 +323,7 @@ public interface Display extends Closeable, Exceptions
     /**
      * Obtain the text label for the current debug level.
      *
-     * @return text label
+     * @return text label.
      */
     default String debugLevelStr()
     {
@@ -276,14 +331,34 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text equivalent of the value.
+     * Prints the internal buffer with the result of the supplier interface
+     * appended. After this returns, the internal buffer will be empty.
      *
      * @implNote
+     * This is meant to be used to provide provisional processing of non-trivial
+     * parameters, such as formatting a long list of objects, that would only
+     * be necessary if the debug level would allow the result to be displayed.
+     *
+     * @param supplier of text to append.
+     */
+    default void print(final Supplier<String> supplier)
+    {
+        if (displayOK())
+        {
+            print(supplier.get());
+        }
+    }
+
+    /**
+     * Prints the text equivalent of the value. After this returns, the internal
+     * buffer will be empty.
+     *
+     * @implSpec
      * Uses {@code value ? "true" : "false"} to convert boolean to String.
      *
-     * @param value to print
+     * @param value to print.
      *
-     * @see #print(java.lang.String)
+     * @see #print(java.lang.String).
      */
     default void print(final boolean value)
     {
@@ -291,14 +366,14 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the number.
+     * Prints the number. After this returns, the internal buffer will be empty.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code Integer.toString(number)} to convert int to String.
      *
-     * @param number to print
+     * @param number to print.
      *
-     * @see #print(java.lang.String)
+     * @see #print(java.lang.String).
      */
     default void print(final int number)
     {
@@ -306,15 +381,15 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the object.
+     * Prints the object. After this returns, the internal buffer will be empty.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
      * to String.
      *
-     * @param obj to print
+     * @param obj to print.
      *
-     * @see #print(java.lang.String)
+     * @see #print(java.lang.String).
      */
     default void print(final Object obj)
     {
@@ -322,12 +397,12 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text.
+     * Prints the text. After this returns, the internal buffer will be empty.
      *
-     * @param text to print
+     * @param text to print.
      *
-     * @see #append(java.lang.String)
-     * @see #flush()
+     * @see #append(java.lang.String).
+     * @see #flush().
      */
     default void print(final String text)
     {
@@ -336,7 +411,7 @@ public interface Display extends Closeable, Exceptions
 
     /**
      * Prints a formatted string using the specified format string and
-     * arguments.
+     * arguments. After this returns, the internal buffer will be empty.
      *
      * @param format The syntax of this string is implementation specific.
      * @param args   Arguments referenced by the format specifiers in the format
@@ -348,6 +423,26 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Prints the internal buffer with the result of the supplier interface
+     * appended, followed by the System line separator. After this method
+     * returns, the internal buffer will be empty.
+     *
+     * @implNote
+     * This is meant to be used to provide provisional processing of non-trivial
+     * parameters, such as formatting a long list of objects, that would only
+     * be necessary if the debug level would allow the result to be displayed.
+     *
+     * @param supplier of text to append.
+     */
+    default void println(final Supplier<String> supplier)
+    {
+        if (displayOK())
+        {
+            println(supplier.get());
+        }
+    }
+
+    /**
      * Prints a line terminator.
      */
     default void println()
@@ -356,14 +451,15 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text equivalent of the value.
+     * Prints the text equivalent of the value. After this returns, the internal
+     * buffer will be empty.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code value ? "true" : "false"} to convert boolean to String.
      *
-     * @param value to print
+     * @param value to print.
      *
-     * @see #println(java.lang.String)
+     * @see #println(java.lang.String).
      */
     default void println(final boolean value)
     {
@@ -371,14 +467,15 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the number, followed by the System line separator.
+     * Prints the number, followed by the System line separator. After this
+     * returns, the internal buffer will be empty.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code Integer.toString(number)} to convert int to String.
      *
-     * @param number to print
+     * @param number to print.
      *
-     * @see #println(java.lang.String)
+     * @see #println(java.lang.String).
      */
     default void println(final int number)
     {
@@ -386,15 +483,16 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the object.
+     * Prints the object, followed by the System line separator. After this
+     * returns, the internal buffer will be empty.
      *
-     * @implNote
+     * @implSpec
      * Uses {@code obj != null ? obj.toString() : "null"} to convert the Object
      * to String.
      *
-     * @param obj to print
+     * @param obj to print.
      *
-     * @see #println(java.lang.String)
+     * @see #println(java.lang.String).
      */
     default void println(final Object obj)
     {
@@ -402,22 +500,23 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Prints the text, followed by the System line separator.
+     * Prints the text, followed by the System line separator. After this
+     * returns, the internal buffer will be empty.
      *
-     * @param text to print
+     * @param text to print.
      *
-     * @see #appendln(java.lang.String)
-     * @see #flush()
+     * @see #appendln(java.lang.String).
+     * @see #flush().
      */
     default void println(final String text)
     {
-        Display d = appendln(text);
-        d.flush();
+        appendln(text).flush();
     }
 
     /**
      * Prints a formatted string using the specified format string and
-     * arguments, followed by the System line separator.
+     * arguments, followed by the System line separator. After this returns, the
+     * internal buffer will be empty.
      *
      * @param format The syntax of this string is implementation specific.
      * @param args   Arguments referenced by the format specifiers in the format

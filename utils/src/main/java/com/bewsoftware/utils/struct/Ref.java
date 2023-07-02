@@ -24,21 +24,19 @@ package com.bewsoftware.utils.struct;
  * and out of either a Lambda expression or a method through a parameter.
  * <p>
  * <b>Example:</b>
- * {@snippet internal:
+ * <hr><pre><code> ...
+ *     Ref&lt;Integer&gt; iRtn = Ref.val();
+ *
+ *     if(add(2, 3, iRtn)){
+ *         System.out.println("2 + 3 = " + iRtn.val);
+ *     }
  * ...
- *     Ref<Integer>; iRtn = new Ref<>();
- * <p>
- * if(add(2, 3, iRtn)){
- * System.out.println("2 + 3 = " + iRtn.val);
- * }
- * ...
- * <p>
- * public boolean add(final int a, final int b, final Ref<Integer> iRtn){
- * iRtn.val = a + b;
- * <p>
- * return iRtn.val > 0; // just something to use up return
- * }
- * }
+ *
+ * public boolean add(final int a, final int b, final Ref&lt;Integer&gt; iRtn){
+ *     iRtn.val = a + b;
+ *
+ *     return iRtn.val &gt; 0;  // just something to use up return
+ * }</code></pre><hr>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
@@ -65,8 +63,8 @@ public final class Ref<T>
      * This class should <i>only</i> be instantiated through one of the factory
      * methods:
      * <ul>
-     * <li>{@link #val()}</li>
-     * <li>{@link #val(java.lang.Object) val(T val)}</li>
+     * <li>{@linkplain  #val()}</li>
+     * <li>{@linkplain  #val(Object) val(T val)}</li>
      * </ul>
      */
     private Ref()
@@ -75,9 +73,9 @@ public final class Ref<T>
     }
 
     /**
-     * Alternative to using the 'new' directive to instantiate the class.
+     * This factory method instantiates an empty Ref object.
      *
-     * @param <T> type of Object
+     * @param <T> type of object.
      *
      * @return a new instance of the Ref class.
      */
@@ -87,9 +85,9 @@ public final class Ref<T>
     }
 
     /**
-     * Alternative to using the 'new' directive to instantiate the class.
+     * This factory method instantiates a Ref object containing {@code val}.
      *
-     * @param <T> type of Object
+     * @param <T> type of object.
      * @param val the object to be held
      *
      * @return a new instance of the Ref class, initialized with the 'val'
@@ -103,7 +101,7 @@ public final class Ref<T>
     }
 
     /**
-     * Reset 'val' to null.
+     * Reset 'val' to {@code null}.
      */
     public void clear()
     {
@@ -111,8 +109,7 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this {@linkplain Ref} object has yet been set to a
-     * value.
+     * Check to see if this Ref object has not yet been set to a value.
      *
      * @return {@code true} if it hasn't been set to a value, {@code false}
      *         otherwise.
@@ -123,7 +120,7 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this {@linkplain Ref} object has been set to a value.
+     * Check to see if this Ref object has been set to a value.
      *
      * @return {@code true} if it has been set to a value, {@code false}
      *         otherwise.
@@ -139,10 +136,8 @@ public final class Ref<T>
      * @implSpec
      * This implementation returns a string consisting of the default conversion
      * to a string, of the object held in {@code val}. This is achieved by
-     * calling
-     * its {@code toString()} method. If {@code val} is empty, then the empty
-     * string
-     * is returned: "".
+     * calling its {@code toString()} method. If {@code val} is empty, then the
+     * empty string is returned: "".
      *
      * @return a string representation of the object.
      */

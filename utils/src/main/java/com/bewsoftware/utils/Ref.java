@@ -2,7 +2,7 @@
  *  File Name:    Ref.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021-2022 Bradley Willcott
+ *  Copyright (c) 2021-2023 Bradley Willcott
  *
  *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,26 +18,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.bewsoftware.utils;
+
 /**
  * This class provides a way to get a value of type &lt;T&gt; into
  * and out of either a Lambda expression or a method through a parameter.
  * <p>
  * <b>Example:</b>
- * {@snippet internal:
- * ...
- *     Ref<Integer>; iRtn = new Ref<>();
+ * <hr><pre><code> ...
+ *     Ref&lt;Integer&gt; iRtn = Ref.val();
  *
  *     if(add(2, 3, iRtn)){
  *         System.out.println("2 + 3 = " + iRtn.val);
  *     }
  * ...
  *
- * public boolean add(final int a, final int b, final Ref<Integer> iRtn){
+ * public boolean add(final int a, final int b, final Ref&lt;Integer&gt; iRtn){
  *     iRtn.val = a + b;
  *
- *     return iRtn.val > 0; // just something to use up return
- * }
- * }
+ *     return iRtn.val &gt; 0;  // just something to use up return
+ * }</code></pre><hr>
+ *
+ * @Note
+ * This file was copied from one of my personal libraries.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
@@ -60,8 +62,8 @@ public final class Ref<T>
      * This class should <i>only</i> be instantiated through one of the factory
      * methods:
      * <ul>
-     * <li>{@link #val()}</li>
-     * <li>{@link #val(java.lang.Object) val(T val)}</li>
+     * <li>{@link  #val()}</li>
+     * <li>{@link  #val(Object) val(T val)}</li>
      * </ul>
      */
     private Ref()
@@ -70,9 +72,9 @@ public final class Ref<T>
     }
 
     /**
-     * Alternative to using the 'new' directive to instantiate the class.
+     * This factory method instantiates an empty Ref object.
      *
-     * @param <T> type of Object
+     * @param <T> type of object.
      *
      * @return a new instance of the Ref class.
      */
@@ -82,9 +84,9 @@ public final class Ref<T>
     }
 
     /**
-     * Alternative to using the 'new' directive to instantiate the class.
+     * This factory method instantiates a Ref object containing {@code val}.
      *
-     * @param <T> type of Object
+     * @param <T> type of object.
      * @param val the object to be held
      *
      * @return a new instance of the Ref class, initialized with the 'val'
@@ -98,7 +100,7 @@ public final class Ref<T>
     }
 
     /**
-     * Reset 'val' to null.
+     * Reset 'val' to {@code null}.
      */
     public void clear()
     {
@@ -106,8 +108,7 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this {@linkplain Ref} object has yet been set to a
-     * value.
+     * Check to see if this Ref object has not yet been set to a value.
      *
      * @return {@code true} if it hasn't been set to a value, {@code false}
      *         otherwise.
@@ -118,7 +119,7 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this {@linkplain Ref} object has been set to a value.
+     * Check to see if this Ref object has been set to a value.
      *
      * @return {@code true} if it has been set to a value, {@code false}
      *         otherwise.
@@ -133,15 +134,15 @@ public final class Ref<T>
      *
      * @implSpec
      * This implementation returns a string consisting of the default conversion
-     * to a string, of the object held in {@code val}. This is achieved by calling
-     * its {@code toString()} method. If {@code val} is empty, then the empty string
-     * is returned: "".
+     * to a string, of the object held in {@code val}. This is achieved by
+     * calling its {@code toString()} method. If {@code val} is empty, then the
+     * empty string is returned: "".
      *
      * @return a string representation of the object.
      */
     @Override
     public String toString()
     {
-        return isPresent() ? this.val.toString() : "";
+        return "" + this.val;
     }
 }

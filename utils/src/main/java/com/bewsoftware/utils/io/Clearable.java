@@ -1,8 +1,8 @@
 /*
- *  File Name:    package-info.java
+ *  File Name:    Clearable.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2020, 2021, 2023 Bradley Willcott
+ *  Copyright (c) 2023 Bradley Willcott
  *
  *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,25 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package com.bewsoftware.utils.io;
+
+import java.io.IOException;
+
 /**
- * These classes provide a simplified means of user interface.
+ * The Clearable interface provides a single method used to empty out an output
+ * stream/writer.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0.7
+ * @since 3.0.0
  * @version 3.0.0
  */
-package com.bewsoftware.utils.io;
+public interface Clearable
+{
+    /**
+     * Clear the output stream/writer.
+     *
+     * @throws IOException if output is closed.
+     */
+    void clear() throws IOException;
+}

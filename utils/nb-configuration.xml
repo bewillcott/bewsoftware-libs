@@ -19,6 +19,6 @@
         Any value defined here will override the pom.xml file value but is only applicable to the current project.
         -->
         <netbeans.hint.license>gpl30_for_Generic</netbeans.hint.license>
-        <netbeans.hint.jdkPlatform>JDK_19</netbeans.hint.jdkPlatform>
+        <netbeans.hint.jdkPlatform>JDK_20</netbeans.hint.jdkPlatform>
     </properties>
 </project-shared-configuration>

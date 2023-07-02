@@ -22,6 +22,8 @@ package com.bewsoftware.utils.string;
 
 import java.util.Formatter;
 
+import static java.lang.String.format;
+
 /**
  * The MessageBuilder class is a simplified version of the {@link StringBuilder}
  * class.
@@ -87,9 +89,9 @@ public final class MessageBuilder
      *
      * @implNote
      * This method is equivalent to appending the result of
-     * {@linkplain  String#format(String, Object...) String.format(format, args)}.
+     * {@link  String#format(String, Object...) String.format(format, args)}.
      *
-     * @param format {@linkplain  Formatter "Format String Syntax"}
+     * @param format {@link  Formatter "Format String Syntax"}
      * @param args   Arguments referenced by the format specifiers in the format
      *               string.
      *
@@ -97,7 +99,25 @@ public final class MessageBuilder
      */
     public MessageBuilder append(final String format, final Object... args)
     {
-        return append(Strings.sprintf(format, args));
+        return append(format(format, args));
+    }
+
+    /**
+     * Append this formatted text and a line-terminator.
+     *
+     * @implNote
+     * This method is equivalent to appending the result of
+     * {@link  String#format(String, Object...) String.format(format, args)}.
+     *
+     * @param format {@link  Formatter "Format String Syntax"}
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return a reference to this object
+     */
+    public MessageBuilder appendln(final String format, final Object... args)
+    {
+        return append(format(format, args)).appendln();
     }
 
     /**
@@ -132,6 +152,17 @@ public final class MessageBuilder
     public MessageBuilder appendln(final Object obj)
     {
         return append(obj).appendln();
+    }
+
+    /**
+     * Clear out the contents of this MessageBuilder.
+     *
+     * @return a reference to this object
+     */
+    public MessageBuilder clear()
+    {
+        sb.setLength(0);
+        return this;
     }
 
     /**
