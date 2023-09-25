@@ -19,12 +19,17 @@
  */
 
 /**
- * BEWSoftwareAnnotationsLibrary module description.
+ * BEWSoftware Annotations Library was created by copying the annotation code
+ * from the project file: jcip-annotations-1.0.jar.
+ * <p>
+ * The reason for this, is to provide this module-info.java file, which makes
+ * it safe to include in other projects intended to be published to the Maven
+ * Repository.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 2.1.0
- * @version 2.1.0
+ * @since 3.0.0
+ * @version 3.0.0
  */
 module bewsoftware.annotations {
     exports com.bewsoftware.annotations;

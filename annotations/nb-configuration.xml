@@ -15,4 +15,7 @@ Any value defined here will override the pom.xml file value but is only applicab
 -->
         <netbeans.hint.license>gpl30_for_Generic</netbeans.hint.license>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>jcip</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

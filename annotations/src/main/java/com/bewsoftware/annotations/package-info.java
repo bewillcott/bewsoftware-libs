@@ -21,6 +21,8 @@
 /**
  * All of the interfaces in this package were copied out of the Maven plugin:
  * <code><b>net.jcip:jcip-annotations:1.0</b></code>.
+ * <p>
+ * The original package was: {@code net.jcip.annotations}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
