@@ -1,5 +1,5 @@
 
-package com.bewsoftware.annotations;
+package com.bewsoftware.annotations.jcip;
 
 import java.lang.annotation.*;
 
@@ -19,9 +19,7 @@ import java.lang.annotation.*;
  * that it is a bad idea to assume a class is thread-safe without good reason.
  *
  * @see ThreadSafe
- * @deprecated Moved to {@link com.bewsoftware.annotations.jcip.NotThreadSafe}.
  */
-@Deprecated(forRemoval = true)
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

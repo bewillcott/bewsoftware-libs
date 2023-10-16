@@ -1,5 +1,5 @@
 
-package com.bewsoftware.annotations;
+package com.bewsoftware.annotations.jcip;
 
 import java.lang.annotation.*;
 
@@ -29,10 +29,7 @@ import java.lang.annotation.*;
  * <p>
  * Immutable objects are inherently thread-safe; they may be passed between
  * threads or published without synchronization.
- *
- * @deprecated Moved to {@link com.bewsoftware.annotations.jcip.Immutable}.
  */
-@Deprecated(forRemoval = true)
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

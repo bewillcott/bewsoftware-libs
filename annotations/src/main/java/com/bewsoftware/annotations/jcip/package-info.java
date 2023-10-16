@@ -28,6 +28,5 @@
  *
  * @since 3.0.0
  * @version 3.0.0
- * @deprecated Moved to {@link com.bewsoftware.annotations.jcip}.
  */
-package com.bewsoftware.annotations;
+package com.bewsoftware.annotations.jcip;

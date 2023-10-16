@@ -8,7 +8,7 @@
  * must include this copyright and license notice.
  */
 
-package com.bewsoftware.annotations;
+package com.bewsoftware.annotations.jcip;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -52,10 +52,7 @@ import java.lang.annotation.Target;
  * should be used as the lock object.
  * </li>
  * </ul>
- *
- * @deprecated Moved to {@link com.bewsoftware.annotations.jcip.GuardedBy}.
  */
-@Deprecated(forRemoval = true)
 @Target(
         {
             ElementType.FIELD, ElementType.METHOD
