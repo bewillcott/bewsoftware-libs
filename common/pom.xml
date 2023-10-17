@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-pom</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0</version>
         <relativePath>../pom/pom.xml</relativePath>
     </parent>
 
@@ -17,4 +17,13 @@
         This library contains classes that are not of any specific type,
         and they are used by classes from various modules.
     </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bewsoftware-utils</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 </project>

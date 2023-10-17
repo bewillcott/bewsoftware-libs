@@ -1,7 +1,7 @@
 /*
  * This file is part of the BEW Common Library (aka: BEWCommon).
  *
- * Copyright (C) 2020 Bradley Willcott
+ * Copyright (C) 2020, 2023 Bradley Willcott
  *
  * BEWCommon is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.0.0
  */
 module bewsoftware.common {
     exports com.bewsoftware.common;
