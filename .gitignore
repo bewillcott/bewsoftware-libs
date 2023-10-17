@@ -1,13 +1,2 @@
-target/
-common/nbproject/
-common/target/
-files/nbproject/
-files/target/
-property/target/
-property/nbproject/
-utils/docs/
-utils/target/
-utils/nbproject/
-pom/target/
-optional/target/
-optional/nbproject/
+/docs/
+/target/
