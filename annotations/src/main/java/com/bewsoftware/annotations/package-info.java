@@ -19,15 +19,12 @@
  */
 
 /**
- * All of the interfaces in this package were copied out of the Maven plugin:
- * <code><b>net.jcip:jcip-annotations:1.0</b></code>.
- * <p>
- * The original package was: {@code net.jcip.annotations}.
+ * The interfaces in this package are for enhancing the level of documentation
+ * of various API components.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.0.0
  * @version 3.0.0
- * @deprecated Moved to {@link com.bewsoftware.annotations.jcip}.
  */
 package com.bewsoftware.annotations;
