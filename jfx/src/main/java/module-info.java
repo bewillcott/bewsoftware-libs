@@ -29,7 +29,7 @@
 module bewsoftware.jfx {
     requires transitive bewsoftware.utils;
     requires transitive javafx.base;
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.graphics;
     requires bewsoftware.annotations;
 
