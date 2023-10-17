@@ -1,5 +1,6 @@
-testdb/
-target/
 docs/
 nbproject/
+target/
+testdb/
+
 **/*.log
