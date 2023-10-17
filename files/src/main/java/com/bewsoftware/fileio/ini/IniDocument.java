@@ -18,7 +18,7 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.common.InvalidParameterValueException;
+import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.property.IniProperty;
 import com.bewsoftware.property.MutableIniProperty;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0.12
+ * @version 3.0.0
  */
 public interface IniDocument
 {
@@ -279,18 +279,6 @@ public interface IniDocument
     List<IniProperty<String>> getSection(final String section);
 
     /**
-     * Create an empty section with no comment.
-     *
-     * @param section New section.
-     *
-     * @since 1.0
-     */
-    default void setSection(final String section)
-    {
-        setSection(section, null);
-    }
-
-    /**
      * Get the {@code comment} for this {@code section}.
      * <p>
      * Will also return {@code null} if there is no section by that name.
@@ -444,7 +432,7 @@ public interface IniDocument
     default Boolean setBoolean(final String section, final String key, final boolean value)
     {
         String rtn = setString(section, key, Boolean.toString(value));
-        return rtn != null ? Boolean.parseBoolean(rtn) : null;
+        return rtn != null ? Boolean.valueOf(rtn) : null;
     }
 
     /**
@@ -458,16 +446,16 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Boolean setBoolean(final String section, final String key, final boolean value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = setString(section, key, Boolean.toString(value), comment);
-        return rtn != null ? Boolean.parseBoolean(rtn) : null;
+        return rtn != null ? Boolean.valueOf(rtn) : null;
     }
 
     /**
@@ -486,7 +474,7 @@ public interface IniDocument
     default Boolean setBooleanG(final String key, final boolean value)
     {
         String rtn = setStringG(key, Boolean.toString(value));
-        return rtn != null ? Boolean.parseBoolean(rtn) : null;
+        return rtn != null ? Boolean.valueOf(rtn) : null;
     }
 
     /**
@@ -501,16 +489,16 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Boolean setBooleanG(final String key, final boolean value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = setStringG(key, Boolean.toString(value), comment);
-        return rtn != null ? Boolean.parseBoolean(rtn) : null;
+        return rtn != null ? Boolean.valueOf(rtn) : null;
     }
 
     /**
@@ -524,14 +512,14 @@ public interface IniDocument
      * @return The previous comment of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
-     * @throws NullPointerException           If {@code key} is {@code null}.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
+     * @throws NullPointerException      If {@code key} is {@code null}.
      * @since 1.0
      */
     String setComment(final String section, final String key, final String comment)
-            throws InvalidParameterValueException;
+            throws InvalidParameterException;
 
     /**
      * Set the {@code comment} for this {@code key} in the global section.
@@ -543,13 +531,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default String setCommentG(final String key, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         return setComment(null, key, comment);
     }
@@ -569,7 +557,7 @@ public interface IniDocument
     default Double setDouble(final String section, final String key, final double value)
     {
         String rtn = setString(section, key, Double.toString(value));
-        return rtn != null ? Double.parseDouble(rtn) : null;
+        return rtn != null ? Double.valueOf(rtn) : null;
     }
 
     /**
@@ -584,16 +572,16 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Double setDouble(final String section, final String key, final double value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = setString(section, key, Double.toString(value), comment);
-        return rtn != null ? Double.parseDouble(rtn) : null;
+        return rtn != null ? Double.valueOf(rtn) : null;
     }
 
     /**
@@ -612,7 +600,7 @@ public interface IniDocument
     default Double setDoubleG(final String key, final double value)
     {
         String rtn = setStringG(key, Double.toString(value));
-        return rtn != null ? Double.parseDouble(rtn) : null;
+        return rtn != null ? Double.valueOf(rtn) : null;
     }
 
     /**
@@ -627,16 +615,16 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Double setDoubleG(final String key, final double value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = setStringG(key, Double.toString(value), comment);
-        return rtn != null ? Double.parseDouble(rtn) : null;
+        return rtn != null ? Double.valueOf(rtn) : null;
     }
 
     /**
@@ -655,7 +643,7 @@ public interface IniDocument
     default Float setFloat(final String section, final String key, final float value)
     {
         String rtn = setString(section, key, Float.toString(value));
-        return rtn != null ? Float.parseFloat(rtn) : null;
+        return rtn != null ? Float.valueOf(rtn) : null;
     }
 
     /**
@@ -670,16 +658,16 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Float setFloat(final String section, final String key, final float value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = setString(section, key, Float.toString(value), comment);
-        return rtn != null ? Float.parseFloat(rtn) : null;
+        return rtn != null ? Float.valueOf(rtn) : null;
     }
 
     /**
@@ -698,7 +686,7 @@ public interface IniDocument
     default Float setFloatG(final String key, final float value)
     {
         String rtn = setStringG(key, Float.toString(value));
-        return rtn != null ? Float.parseFloat(rtn) : null;
+        return rtn != null ? Float.valueOf(rtn) : null;
     }
 
     /**
@@ -715,16 +703,16 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Float setFloatG(final String key, final Float value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = setStringG(key, Float.toString(value), comment);
-        return rtn != null ? Float.parseFloat(rtn) : null;
+        return rtn != null ? Float.valueOf(rtn) : null;
     }
 
     /**
@@ -743,7 +731,7 @@ public interface IniDocument
     default Integer setInt(final String section, final String key, final int value)
     {
         String rtn = setString(section, key, Integer.toString(value));
-        return rtn != null ? Integer.parseInt(rtn) : null;
+        return rtn != null ? Integer.valueOf(rtn) : null;
     }
 
     /**
@@ -760,16 +748,16 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Integer setInt(final String section, final String key, final int value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = setString(section, key, Integer.toString(value), comment);
-        return rtn != null ? Integer.parseInt(rtn) : null;
+        return rtn != null ? Integer.valueOf(rtn) : null;
     }
 
     /**
@@ -788,7 +776,7 @@ public interface IniDocument
     default Integer setIntG(final String key, final int value)
     {
         String rtn = setStringG(key, Integer.toString(value));
-        return rtn != null ? Integer.parseInt(rtn) : null;
+        return rtn != null ? Integer.valueOf(rtn) : null;
     }
 
     /**
@@ -805,16 +793,16 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Integer setIntG(final String key, final int value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = setStringG(key, Integer.toString(value), comment);
-        return rtn != null ? Integer.parseInt(rtn) : null;
+        return rtn != null ? Integer.valueOf(rtn) : null;
     }
 
     /**
@@ -833,7 +821,7 @@ public interface IniDocument
     default Long setLong(final String section, final String key, final long value)
     {
         String rtn = setString(section, key, Long.toString(value));
-        return rtn != null ? Long.parseLong(rtn) : null;
+        return rtn != null ? Long.valueOf(rtn) : null;
     }
 
     /**
@@ -850,16 +838,16 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Long setLong(final String section, final String key, final long value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = setString(section, key, Long.toString(value), comment);
-        return rtn != null ? Long.parseLong(rtn) : null;
+        return rtn != null ? Long.valueOf(rtn) : null;
     }
 
     /**
@@ -878,7 +866,7 @@ public interface IniDocument
     default Long setLongG(final String key, final long value)
     {
         String rtn = setStringG(key, Long.toString(value));
-        return rtn != null ? Long.parseLong(rtn) : null;
+        return rtn != null ? Long.valueOf(rtn) : null;
     }
 
     /**
@@ -895,16 +883,28 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default Long setLongG(final String key, final long value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = setStringG(key, Long.toString(value), comment);
-        return rtn != null ? Long.parseLong(rtn) : null;
+        return rtn != null ? Long.valueOf(rtn) : null;
+    }
+
+    /**
+     * Create an empty section with no comment.
+     *
+     * @param section New section.
+     *
+     * @since 1.0
+     */
+    default void setSection(final String section)
+    {
+        setSection(section, null);
     }
 
     /**
@@ -939,7 +939,7 @@ public interface IniDocument
         try
         {
             return setString(section, key, value, null);
-        } catch (InvalidParameterValueException ex)
+        } catch (InvalidParameterException ex)
         {
             // Ignore exception, as it won't ever be thrown.
         }
@@ -959,13 +959,13 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     String setString(final String section, final String key, final String value,
-            final String comment) throws InvalidParameterValueException;
+            final String comment) throws InvalidParameterException;
 
     /**
      * Set a property with a value of type: <i>String</i>.The key is
@@ -997,13 +997,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     default String setStringG(final String key, final String value, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         return setString(null, key, value, comment);
     }

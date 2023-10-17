@@ -18,9 +18,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.fileio.derby;
+package com.bewsoftware.fileio.derby.test;
 
+import com.bewsoftware.common.InvalidParameterException;
+import com.bewsoftware.fileio.derby.Database;
 import com.bewsoftware.fileio.derby.Database.DbOpenResult;
+import com.bewsoftware.fileio.derby.ResultSetPrinter;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
 import java.sql.ResultSet;
@@ -85,7 +88,7 @@ public class DatabaseTest
     }
 
     @BeforeAll
-    public static void setUpClass() throws SQLException
+    public static void setUpClass() throws SQLException, InvalidParameterException
     {
         DISPLAY.println("setUp()");
 
@@ -136,6 +139,7 @@ public class DatabaseTest
         }
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private boolean executeQueries()
     {
         boolean rtn = true;

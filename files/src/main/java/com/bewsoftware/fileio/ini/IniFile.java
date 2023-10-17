@@ -18,7 +18,7 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.common.InvalidParameterValueException;
+import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.property.IniProperty;
 import com.bewsoftware.property.MutableIniProperty;
 import java.io.BufferedReader;
@@ -180,20 +180,20 @@ public class IniFile
      *
      * @param path The <b>Path</b> object to use.
      *
-     * @throws NullPointerException           If the path parameter is
-     *                                        {@code null}.
-     * @throws InvalidParameterValueException If path.toString().isBlank().
+     * @throws NullPointerException      If the path parameter is
+     *                                   {@code null}.
+     * @throws InvalidParameterException If path.toString().isBlank().
      * @since 1.0
      */
     public IniFile(final Path path)
-            throws NullPointerException, InvalidParameterValueException
+            throws NullPointerException, InvalidParameterException
     {
         if (path == null)
         {
             throw new NullPointerException("path is null");
         } else if (path.toString().isBlank())
         {
-            throw new InvalidParameterValueException("path is blank");
+            throw new InvalidParameterException("path is blank");
         } else
         {
             this.path = path;
@@ -220,6 +220,7 @@ public class IniFile
      * @throws FileNotFoundException If test files not found.
      * @since 1.0
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public static void main(final String[] args) throws FileNotFoundException
     {
         final URL fileUrl = IniFile.class.getResource("/Test.ini");
@@ -332,7 +333,7 @@ public class IniFile
             }
 
         } catch (NullPointerException | IOException
-                | IniFileFormatException | InvalidParameterValueException ex)
+                | IniFileFormatException | InvalidParameterException ex)
         {
             System.err.println(IniFile.class.getName() + ".main():\n" + ex);
             exit(1);
@@ -355,19 +356,17 @@ public class IniFile
      *
      * @return this instance for chaining.
      *
-     * @throws FileAlreadyLoadedException     The file cannot be reloaded.
-     * @throws IniFileFormatException         The format of the <u>ini</u> file
-     *                                        is non-conforming.
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
-     * @throws IOException                    An I/O error occurs opening the
-     *                                        file
+     * @throws FileAlreadyLoadedException The file cannot be reloaded.
+     * @throws IniFileFormatException     The format of the <u>ini</u> file is
+     *                                    non-conforming.
+     * @throws InvalidParameterException  If the {@code comment} is not a
+     *                                    valid <u>ini</u> file format comment.
+     * @throws IOException                An I/O error occurs opening the file
      * @since 1.0
      */
     public IniFile loadFile()
             throws FileAlreadyLoadedException, IniFileFormatException,
-            InvalidParameterValueException, IOException
+            InvalidParameterException, IOException
     {
 
         if (fileIsLoaded)
@@ -389,13 +388,16 @@ public class IniFile
      *
      * @return this instance for chaining.
      *
-     * @throws IOException            if an I/O error occurs opening the file.
-     * @throws IniFileFormatException If the format of the supplied ini file
-     *                                does
-     *                                not conform to the general standard.
+     * @throws IOException               if an I/O error occurs opening the
+     *                                   file.
+     * @throws IniFileFormatException    If the format of the supplied ini file
+     *                                   does
+     *                                   not conform to the general standard.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format comment.
      */
     public IniFile mergeFile(final Path file)
-            throws IOException, IniFileFormatException
+            throws IOException, IniFileFormatException, InvalidParameterException
     {
         try (BufferedReader in = Files.newBufferedReader(file))
         {
@@ -479,13 +481,14 @@ public class IniFile
      *
      * @param reader The ini file to be parsed.
      *
-     * @throws IOException            If an I/O error occurs.
-     * @throws IniFileFormatException If the format of the supplied ini file
-     *                                does
-     *                                not conform to the general standard.
+     * @throws IOException               If an I/O error occurs.
+     * @throws IniFileFormatException    If the format of the supplied ini file
+     *                                   does not conform to the general standard.
+     * @throws InvalidParameterException If the comment is not a valid ini file
+     *                                   format comment.
      */
     private boolean parseINI(final BufferedReader reader)
-            throws IOException, IniFileFormatException
+            throws IOException, IniFileFormatException, InvalidParameterException
     {
         Pattern p = Pattern.compile(IniDocumentImpl.INI_PATTERN);
         String line;

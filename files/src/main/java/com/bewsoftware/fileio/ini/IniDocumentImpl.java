@@ -18,7 +18,7 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.common.InvalidParameterValueException;
+import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.property.IniProperty;
 import com.bewsoftware.property.MutableIniProperty;
 import java.util.ArrayList;
@@ -341,22 +341,22 @@ public class IniDocumentImpl implements IniDocument
      * @return The previous comment of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
-     * @throws NullPointerException           If {@code key} is {@code null}.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
+     * @throws NullPointerException      If {@code key} is {@code null}.
      * @since 1.0
      */
     @Override
     public String setComment(final String section, final String key, final String comment)
-            throws InvalidParameterValueException
+            throws InvalidParameterException
     {
         String rtn = null;
         Objects.requireNonNull(key, NULL_KEY_MSG);
 
         if (!validateComment(comment))
         {
-            throw new InvalidParameterValueException(
+            throw new InvalidParameterException(
                     "section=" + section + "key=" + key + "\ncomment=" + comment
                     + "\nThe comment text is not a valid 'ini' file format comment.");
         }
@@ -421,21 +421,21 @@ public class IniDocumentImpl implements IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterValueException If the {@code comment} is not a
-     *                                        valid <u>ini</u> file format
-     *                                        comment.
+     * @throws InvalidParameterException If the {@code comment} is not a
+     *                                   valid <u>ini</u> file format
+     *                                   comment.
      * @since 1.0
      */
     @Override
     public String setString(final String section, final String key, final String value,
-            final String comment) throws InvalidParameterValueException
+            final String comment) throws InvalidParameterException
     {
         String rtn = null;
         Objects.requireNonNull(key, NULL_KEY_MSG);
 
         if (!validateComment(comment))
         {
-            throw new InvalidParameterValueException(
+            throw new InvalidParameterException(
                     "section=" + section + "key=" + key + "\ncomment=" + comment
                     + "\nThe comment text is not a valid 'ini' file format comment.");
         }

@@ -19,7 +19,7 @@
  */
 package com.bewsoftware.fileio.derby;
 
-import com.bewsoftware.common.InvalidParameterValueException;
+import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.fileio.BEWFiles;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
@@ -75,17 +75,17 @@ public class Database implements AutoCloseable
      *
      * @param dbName name and location of database file.
      *
-     * @throws InvalidParameterValueException if 'dbFilename' is either
+     * @throws InvalidParameterException if 'dbFilename' is either
      *                                        null or blank.
      */
-    public Database(final String dbName) throws InvalidParameterValueException
+    public Database(final String dbName) throws InvalidParameterException
     {
         if (dbName == null)
         {
-            throw new InvalidParameterValueException("dbName: is null");
+            throw new InvalidParameterException("dbName: is null");
         } else if (dbName.isBlank())
         {
-            throw new InvalidParameterValueException("dbName: is blank");
+            throw new InvalidParameterException("dbName: is blank");
         }
 
         this.dbPath = of(dbName);
@@ -148,6 +148,7 @@ public class Database implements AutoCloseable
      *
      * @return <b>True</b> if the statement is successfully executed.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean execute(final String sql)
     {
         boolean rtn;
@@ -220,6 +221,7 @@ public class Database implements AutoCloseable
      *
      * @return <b>True</b> if ALL statements are successfully executed.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public boolean executeUpdate(final String[] arraySQL)
     {
         boolean rtn = false;
@@ -310,7 +312,8 @@ public class Database implements AutoCloseable
      *
      * @return
      */
-    public DbOpenResult open(DbOpen dbOpen)
+    @SuppressWarnings("CallToPrintStackTrace")
+    public DbOpenResult open(final DbOpen dbOpen)
     {
         DbOpenResult rtn = FAILED;
         boolean fileExists;
