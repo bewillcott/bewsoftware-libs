@@ -28,10 +28,12 @@
  */
 module bewsoftware.jfx {
     requires transitive bewsoftware.utils;
-    requires javafx.base;
+    requires transitive javafx.base;
     requires javafx.controls;
     requires javafx.graphics;
     requires bewsoftware.annotations;
 
     exports com.bewsoftware.jfx;
+    exports com.bewsoftware.jfx.beans.property;
+    exports com.bewsoftware.jfx.util;
 }

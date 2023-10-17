@@ -20,8 +20,8 @@
 
 package com.bewsoftware.jfx.beans.property;
 
-import com.bewsoftware.annotations.GuardedBy;
-import com.bewsoftware.annotations.ThreadSafe;
+import com.bewsoftware.annotations.jcip.GuardedBy;
+import com.bewsoftware.annotations.jcip.ThreadSafe;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.util.Formatter;
 import javafx.beans.property.SimpleStringProperty;

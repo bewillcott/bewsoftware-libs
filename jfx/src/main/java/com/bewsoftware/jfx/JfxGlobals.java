@@ -20,7 +20,7 @@
 
 package com.bewsoftware.jfx;
 
-import com.bewsoftware.annotations.GuardedBy;
+import com.bewsoftware.annotations.jcip.GuardedBy;
 import com.bewsoftware.utils.io.DisplayDebugLevel;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
