@@ -1,6 +1,6 @@
-docs/
-nbproject/
-target/
-testdb/
+/docs/
+/nbproject/
+/target/
+/testdb/
 
 **/*.log
