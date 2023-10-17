@@ -25,8 +25,8 @@ import java.lang.annotation.*;
 /**
  * The methods to which this annotation is applied are Unsupported.
  * <p>
- * This annotation has a string-valued element {@code reason}. The value of this
- * element is the reason that the method is unsupported.
+ * This annotation has a string-valued argument. The value of this
+ * argument is the <i>reason</i> that the method is unsupported.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -38,5 +38,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.CLASS)
 public @interface Unsupported
 {
-    String reason() default "";
+
+    /**
+     * Returns the text explaining the reason for the lack of support.
+     *
+     * @return the reason.
+     */
+    String value();
 }
