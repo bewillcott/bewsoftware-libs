@@ -47,7 +47,7 @@ package com.bewsoftware.utils.struct;
  * @deprecated Will be removed from a later version. Use
  * {@linkplain com.bewsoftware.utils.Ref}
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "3.0.0")
 @SuppressWarnings("PublicField")
 public final class Ref<T>
 {

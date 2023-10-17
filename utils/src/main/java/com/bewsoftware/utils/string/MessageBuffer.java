@@ -20,7 +20,7 @@
 
 package com.bewsoftware.utils.string;
 
-import com.bewsoftware.annotations.ThreadSafe;
+import com.bewsoftware.annotations.jcip.ThreadSafe;
 import java.util.Formatter;
 
 import static java.lang.String.format;

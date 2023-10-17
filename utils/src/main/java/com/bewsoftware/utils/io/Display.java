@@ -172,7 +172,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String).
+     * @see #append(java.lang.String)
      */
     default Display append(final int number)
     {
@@ -190,7 +190,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String).
+     * @see #append(java.lang.String)
      */
     default Display append(final Object obj)
     {
@@ -225,7 +225,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String).
+     * @see #append(java.lang.String)
      */
     default Display appendln()
     {
@@ -242,7 +242,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String).
+     * @see #appendln(java.lang.String)
      */
     default Display appendln(final boolean value)
     {
@@ -260,8 +260,8 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String).
-     * @see java.lang.System#lineSeparator().
+     * @see #appendln(java.lang.String)
+     * @see java.lang.System#lineSeparator()
      */
     default Display appendln(final int number)
     {
@@ -280,7 +280,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #appendln(java.lang.String).
+     * @see #appendln(java.lang.String)
      */
     default Display appendln(final Object obj)
     {
@@ -295,8 +295,8 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String).
-     * @see #appendln().
+     * @see #append(java.lang.String)
+     * @see #appendln()
      */
     default Display appendln(final String text)
     {
@@ -313,7 +313,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @return this Display for chaining purposes.
      *
-     * @see #append(java.lang.String, java.lang.Object...).
+     * @see #append(java.lang.String, java.lang.Object...)
      */
     default Display appendln(String format, Object... args)
     {
@@ -358,7 +358,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param value to print.
      *
-     * @see #print(java.lang.String).
+     * @see #print(java.lang.String)
      */
     default void print(final boolean value)
     {
@@ -373,7 +373,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param number to print.
      *
-     * @see #print(java.lang.String).
+     * @see #print(java.lang.String)
      */
     default void print(final int number)
     {
@@ -389,7 +389,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param obj to print.
      *
-     * @see #print(java.lang.String).
+     * @see #print(java.lang.String)
      */
     default void print(final Object obj)
     {
@@ -401,8 +401,8 @@ public interface Display extends Closeable, Exceptions
      *
      * @param text to print.
      *
-     * @see #append(java.lang.String).
-     * @see #flush().
+     * @see #append(java.lang.String)
+     * @see #flush()
      */
     default void print(final String text)
     {
@@ -459,7 +459,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param value to print.
      *
-     * @see #println(java.lang.String).
+     * @see #println(java.lang.String)
      */
     default void println(final boolean value)
     {
@@ -475,7 +475,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param number to print.
      *
-     * @see #println(java.lang.String).
+     * @see #println(java.lang.String)
      */
     default void println(final int number)
     {
@@ -492,7 +492,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @param obj to print.
      *
-     * @see #println(java.lang.String).
+     * @see #println(java.lang.String)
      */
     default void println(final Object obj)
     {
@@ -505,8 +505,8 @@ public interface Display extends Closeable, Exceptions
      *
      * @param text to print.
      *
-     * @see #appendln(java.lang.String).
-     * @see #flush().
+     * @see #appendln(java.lang.String)
+     * @see #flush()
      */
     default void println(final String text)
     {

@@ -19,7 +19,7 @@
  */
 package com.bewsoftware.utils.io;
 
-import com.bewsoftware.annotations.GuardedBy;
+import com.bewsoftware.annotations.jcip.GuardedBy;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
