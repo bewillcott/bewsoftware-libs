@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-libs</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>bewsoftware-pom</artifactId>
@@ -17,6 +17,7 @@
     <properties>
         <manual.source>src/docs/manual</manual.source>
         <manual.target>docs</manual.target>
+        <spotbugs.skip>true</spotbugs.skip>
         <skip.version.build>true</skip.version.build>
     </properties>
 
@@ -545,6 +546,7 @@
         <profile>
             <id>test</id>
             <properties>
+                <spotbugs.skip>false</spotbugs.skip>
                 <unit.tests.skip>false</unit.tests.skip>
             </properties>
         </profile>
@@ -762,18 +764,6 @@
                         </tag>
                     </tags>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>javadoc</id>
-                        <goals>
-                            <goal>javadoc-no-fork</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <quiet>true</quiet>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -798,9 +788,34 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>4.7.3</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <skip>${spotbugs.skip}</skip>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
-
+    <!--
     <reporting>
         <plugins>
             <plugin>
@@ -815,6 +830,6 @@
                 </reportSets>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting>-->
 
 </project>
