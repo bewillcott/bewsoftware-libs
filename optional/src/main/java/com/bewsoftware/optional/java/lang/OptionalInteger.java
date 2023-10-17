@@ -43,7 +43,7 @@ public class OptionalInteger
 
         try
         {
-            rtn = Optional.of(Integer.parseInt(s));
+            rtn = Optional.of(Integer.valueOf(s));
         } catch (NumberFormatException e)
         {
             rtn = Optional.empty();
