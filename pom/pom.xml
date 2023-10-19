@@ -367,7 +367,7 @@
             </properties>
             <build>
                 <plugins>
-                    <plugin>
+                    <!--                    <plugin>
                         <groupId>com.bewsoftware.mojo</groupId>
                         <artifactId>bewsoftware-version-plugin</artifactId>
                         <executions>
@@ -381,7 +381,7 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>

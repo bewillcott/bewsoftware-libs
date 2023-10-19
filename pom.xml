@@ -90,7 +90,7 @@
     </modules>
 
     <profiles>
-        <profile>
+        <!--        <profile>
             <id>release-profile</id>
             <properties>
                 <skip.version.build>true</skip.version.build>
@@ -115,7 +115,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile>-->
 
         <profile>
             <id>test</id>
@@ -131,7 +131,27 @@
         <dependencies>
             <dependency>
                 <groupId>com.bewsoftware</groupId>
+                <artifactId>bewsoftware-annotations</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bewsoftware</groupId>
                 <artifactId>bewsoftware-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bewsoftware</groupId>
+                <artifactId>bewsoftware-files</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bewsoftware</groupId>
+                <artifactId>bewsoftware-jfx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bewsoftware</groupId>
+                <artifactId>bewsoftware-optional</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -187,11 +207,11 @@
                     <artifactId>bewsoftware-mdj-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
-                <plugin>
+                <!--                <plugin>
                     <groupId>com.bewsoftware.mojo</groupId>
                     <artifactId>bewsoftware-version-plugin</artifactId>
                     <version>1.2.0</version>
-                </plugin>
+                </plugin>-->
 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -300,7 +320,7 @@
             </plugins>
         </pluginManagement>
 
-        <plugins>
+        <!--        <plugins>
             <plugin>
                 <groupId>com.bewsoftware.mojo</groupId>
                 <artifactId>bewsoftware-version-plugin</artifactId>
@@ -317,6 +337,6 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+        </plugins>-->
     </build>
 </project>

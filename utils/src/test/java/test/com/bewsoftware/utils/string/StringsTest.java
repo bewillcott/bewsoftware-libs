@@ -342,9 +342,9 @@ public class StringsTest
                 "", "  "
             })
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonBlank_String_IllegalArgumentException(String text)
     {
         assertThrows(
@@ -368,9 +368,9 @@ public class StringsTest
     @ParameterizedTest
     @NullSource
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonBlank_String_NullPointerException(String text)
     {
         assertThrows(
@@ -419,9 +419,9 @@ public class StringsTest
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_IllegalArgumentException")
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonBlank_String_String_IllegalArgumentException(String text, String msg)
     {
         assertThrows(
@@ -446,9 +446,9 @@ public class StringsTest
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_NullPointerException")
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonBlank_String_String_NullPointerException(String text, String msg)
     {
         assertThrows(
@@ -500,9 +500,9 @@ public class StringsTest
                 ""
             })
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonEmpty_String_IllegalArgumentException(String text)
     {
         assertThrows(
@@ -526,9 +526,9 @@ public class StringsTest
     @ParameterizedTest
     @NullSource
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonEmpty_String_NullPointerException(String text)
     {
         assertThrows(
@@ -577,9 +577,9 @@ public class StringsTest
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_IllegalArgumentException")
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonEmpty_String_String_IllegalArgumentException(String text, String msg)
     {
         assertThrows(
@@ -604,9 +604,9 @@ public class StringsTest
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_NullPointerException")
     @SuppressWarnings(
-    {
-        "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-    })
+            {
+                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
+            })
     public void testRequireNonEmpty_String_String_NullPointerException(String text, String msg)
     {
         assertThrows(
