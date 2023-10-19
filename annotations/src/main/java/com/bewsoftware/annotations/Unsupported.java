@@ -20,7 +20,12 @@
 
 package com.bewsoftware.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  * The methods to which this annotation is applied are Unsupported.
@@ -34,8 +39,8 @@ import java.lang.annotation.*;
  * @version 3.0.0
  */
 @Documented
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.CLASS)
+@Target(METHOD)
+@Retention(CLASS)
 public @interface Unsupported
 {
 

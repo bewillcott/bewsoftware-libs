@@ -1,8 +1,3 @@
-
-package com.bewsoftware.annotations.jcip;
-
-import java.lang.annotation.*;
-
 /*
  * Copyright (c) 2005 Brian Goetz and Tim Peierls
  * Released under the Creative Commons Attribution License
@@ -12,6 +7,16 @@ import java.lang.annotation.*;
  * Any republication or derived work distributed in source code form
  * must include this copyright and license notice.
  */
+
+package com.bewsoftware.annotations.jcip;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * The class to which this annotation is applied is not thread-safe.
  * This annotation primarily exists for clarifying the non-thread-safety of a
@@ -21,8 +26,8 @@ import java.lang.annotation.*;
  * @see ThreadSafe
  */
 @Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
+@Target(TYPE)
+@Retention(RUNTIME)
 public @interface NotThreadSafe
 {
 }

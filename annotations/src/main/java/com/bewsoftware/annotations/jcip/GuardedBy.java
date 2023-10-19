@@ -10,10 +10,12 @@
 
 package com.bewsoftware.annotations.jcip;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * The field or method to which this annotation is applied can only be accessed
@@ -55,10 +57,16 @@ import java.lang.annotation.Target;
  */
 @Target(
         {
-            ElementType.FIELD, ElementType.METHOD
+            FIELD, METHOD
         })
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RUNTIME)
 public @interface GuardedBy
 {
+
+    /**
+     * Get the name of the 'lock' that guards this member.
+     *
+     * @return the name of the 'lock'.
+     */
     String value();
 }
