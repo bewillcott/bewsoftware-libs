@@ -18,12 +18,12 @@
         and they are used by classes from various modules.
     </description>
 
-    <dependencies>
+    <!--    <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bewsoftware-utils</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-    </dependencies>
+    </dependencies>-->
 </project>
