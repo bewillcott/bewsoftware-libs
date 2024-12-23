@@ -39,7 +39,7 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
     /**
      * @serial serial
      */
-    private static final long serialVersionUID = -5343636338811996888L;
+    private static final long serialVersionUID = 2694715794259739060L;
 
     /**
      * The internal date field;

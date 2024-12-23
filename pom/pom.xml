@@ -645,8 +645,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
