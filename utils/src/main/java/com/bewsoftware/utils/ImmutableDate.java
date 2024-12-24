@@ -19,69 +19,116 @@
  */
 package com.bewsoftware.utils;
 
+import com.bewsoftware.annotations.jcip.Immutable;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
- * This class stores a copy an initial Date instance. This Date once created, is
- * never modified.
+ * The class ImmutableDate represents a specific instant in time, with
+ * millisecond precision.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.0
+ * @version 3.0.1
  */
-public final class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
+@Immutable
+public class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
 {
+    private static final long serialVersionUID = 5239153880709366361L;
 
     /**
-     * @serial serial
+     * The day of the month between 1-31.
      */
-    private static final long serialVersionUID = 2694715794259739060L;
+    public final int dom;
 
     /**
-     * The internal date field;
+     * The month between 0-11. January = 0.
      */
-    private Date date;
+    public final int month;
 
     /**
-     * Allocates a {@code Date} object and initializes it so that
-     * it represents the time at which it was allocated, measured to the
-     * nearest millisecond.
+     * The year.
+     */
+    public final int year;
+
+    /**
+     * The milliseconds since January 1, 1970, 00:00:00 GMT (Gregorian).
+     */
+    private final long millis;
+
+    /**
+     * Constructs a default {@code ImmutableDate} using the current time in the
+     * default time zone with the default
+     * {@linkplain Locale.Category#FORMAT FORMAT} locale.
      *
-     * @see java.lang.System#currentTimeMillis()
+     * @see GregorianCalendar
      */
     public ImmutableDate()
     {
-        this.date = new Date();
+        this(new GregorianCalendar());
     }
 
     /**
-     * Creates a new {@code ImmutableDate} object, and stores a copy of the
-     * Date passed in.
+     * Initializes a new instance of {@code ImmutableDate} to represent the
+     * specified number of milliseconds since the standard base time known as
+     * "the epoch", namely January 1, 1970, 00:00:00 GMT.
      *
-     * @param date Date object to copy from.
-     */
-    public ImmutableDate(Date date)
-    {
-        this.date = new Date(date.getTime());
-    }
-
-    /**
-     * Allocates a {@code Date} object and initializes it to
-     * represent the specified number of milliseconds since the
-     * standard base time known as "the epoch", namely January 1,
-     * 1970, 00:00:00 GMT.
-     *
-     * @param date the milliseconds since January 1, 1970, 00:00:00 GMT.
+     * @param millis the milliseconds since January 1, 1970, 00:00:00 GMT
+     *               (Gregorian).
      *
      * @see java.lang.System#currentTimeMillis()
      */
-    public ImmutableDate(long date)
+    public ImmutableDate(final long millis)
     {
-        this.date = new Date(date);
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(millis);
+        this(cal);
+    }
+
+    /**
+     * Initializes a new instance of {@code ImmutableDate} setting its values to
+     * those in the {@code date} object.
+     *
+     * @param date Date object to copy from.
+     */
+    public ImmutableDate(final Date date)
+    {
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(date.getTime());
+        this(cal);
+    }
+
+    /**
+     * Allocates an ImmutableDate object and initializes it so that it
+     * represents midnight, local time, at the beginning of the day specified by
+     * the year, month, and dom arguments.
+     *
+     * @param year  the year beginning at 1900.
+     * @param month the month between 0-11. January = 0.
+     * @param dom   the day of the month between 1-31.
+     */
+    public ImmutableDate(final int year, final int month, final int dom)
+    {
+        this(new GregorianCalendar(year, month, dom));
+    }
+
+    /**
+     * This constructor is called by all the {@code public} constructors, to
+     * finish the initialization process.
+     *
+     * @param cal The calendar with required information.
+     */
+    private ImmutableDate(final Calendar cal)
+    {
+        year = cal.isSet(Calendar.YEAR) ? cal.get(Calendar.YEAR) : 1970;
+        month = cal.isSet(Calendar.MONTH) ? cal.get(Calendar.MONTH) : 0;
+        dom = cal.isSet(Calendar.DAY_OF_MONTH) ? cal.get(Calendar.DAY_OF_MONTH) : 1;
+        millis = cal.getTimeInMillis();
     }
 
     /**
@@ -106,11 +153,11 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
      *                                     represent as a {@code Date}
      * @since 1.8
      */
-    public static Date from(Instant instant)
+    public static ImmutableDate from(final Instant instant)
     {
         try
         {
-            return new Date(instant.toEpochMilli());
+            return new ImmutableDate(instant.toEpochMilli());
         } catch (ArithmeticException ex)
         {
             throw new IllegalArgumentException(ex);
@@ -120,165 +167,97 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
     /**
      * Tests if this date is after the specified date.
      *
-     * @param when a date.
+     * @param when the object to be compared.
      *
      * @return {@code true} if and only if the instant represented
-     *         by this {@code Date} object is strictly later than the
+     *         by this {@code ImmutableDate} object is strictly later than the
      *         instant represented by {@code when};
      *         {@code false} otherwise.
      *
      * @exception NullPointerException if {@code when} is null.
      */
-    public boolean after(Date when)
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public boolean after(final ImmutableDate when)
     {
-        return date.after(when);
+        return this.millis > when.millis;
     }
 
     /**
      * Tests if this date is before the specified date.
      *
-     * @param when a date.
+     * @param when the object to be compared.
      *
      * @return {@code true} if and only if the instant of time
-     *         represented by this {@code Date} object is strictly
+     *         represented by this {@code ImmutableDate} object is strictly
      *         earlier than the instant represented by {@code when};
      *         {@code false} otherwise.
      *
      * @exception NullPointerException if {@code when} is null.
      */
-    public boolean before(Date when)
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public boolean before(final ImmutableDate when)
     {
-        return date.before(when);
+        return this.millis < when.millis;
     }
 
-    /**
-     * @return a copy of this object.
-     */
     @Override
-    @SuppressWarnings(
-            {
-                "CloneDeclaresCloneNotSupported",
-                "AccessingNonPublicFieldOfAnotherObject"
-            })
-    public Object clone()
+    public Object clone() throws CloneNotSupportedException
     {
-        ImmutableDate id = null;
-
-        try
-        {
-            id = (ImmutableDate) super.clone();
-
-            if (date != null)
-            {
-                id.date = (Date) date.clone();
-            }
-
-        } catch (CloneNotSupportedException ex)
-        {
-            // Never happen
-        }
-
-        return id;
+        return super.clone();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-    public int compareTo(ImmutableDate other)
+    public int compareTo(final ImmutableDate other)
     {
-        return date.compareTo(other.date);
+        return Long.compare(this.millis, other.millis);
     }
 
-    /**
-     * Compares two dates for equality.
-     * You can compare this object to either another {@code ImmutableDate},
-     * or a {@link java.util.Date}.
-     * <p>
-     * The result is {@code true} if and only if the argument is
-     * not {@code null} and is a {@code Date} object that
-     * represents the same point in time, to the millisecond, as this object.
-     * <p>
-     * Thus, two {@code Date} objects are equal if and only if the
-     * {@code getTime} method returns the same {@code long}
-     * value for both.
-     *
-     * @param obj the object to compare with.
-     *
-     * @return {@code true} if the objects are the same;
-     *         {@code false} otherwise.
-     *
-     * @see java.util.Date#getTime()
-     */
     @Override
-    @SuppressWarnings(
-            {
-                "AccessingNonPublicFieldOfAnotherObject",
-                "EqualsWhichDoesntCheckParameterClass"
-            })
-    public boolean equals(Object obj)
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public boolean equals(final Object obj)
     {
-        return switch (obj)
-        {
-            case Date lDate ->
-            {
-                yield date.getTime() == lDate.getTime();
-            }
-
-            case ImmutableDate iDate ->
-            {
-                yield date.getTime() == iDate.date.getTime();
-            }
-
-            default ->
-            {
-                yield false;
-            }
-        };
+        return obj instanceof ImmutableDate other && this.millis == other.millis;
     }
 
     /**
      * Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT
-     * represented by this {@code Date} object.
+     * represented by this {@code ImmutableDate} object.
      *
      * @return the number of milliseconds since January 1, 1970, 00:00:00 GMT
      *         represented by this date.
      */
     public long getTime()
     {
-        return date.getTime();
+        return this.millis;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode()
     {
         int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.date);
+        hash = 89 * hash + (int) (this.millis ^ (this.millis >>> 32));
         return hash;
     }
 
     /**
-     * Converts this {@code Date} object to an {@code Instant}.
+     * Converts this {@code ImmutableDate} object to an {@code Instant}.
      * <p>
      * The conversion creates an {@code Instant} that represents the same
-     * point on the time-line as this {@code Date}.
+     * point on the time-line as this {@code ImmutableDate}.
      *
      * @return an instant representing the same point on the time-line as
-     *         this {@code Date} object
+     *         this {@code ImmutableDate} object
      *
      * @since 1.8
      */
     public Instant toInstant()
     {
-        return date.toInstant();
+        return Instant.ofEpochMilli(getTime());
     }
 
     /**
-     * Converts this {@code Date} object to a {@code String}
+     * Converts this {@code ImmutableDate} object to a {@code String}
      * of the form:
      * <blockquote><pre>
      * dow mon dd hh:mm:ss zzz yyyy</pre></blockquote>
@@ -311,6 +290,6 @@ public final class ImmutableDate implements Serializable, Cloneable, Comparable<
     @Override
     public String toString()
     {
-        return date.toString();
+        return new Date(millis).toString();
     }
 }

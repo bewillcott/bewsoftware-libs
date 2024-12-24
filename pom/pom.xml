@@ -648,7 +648,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
-                        <arg>-Xlint:all</arg>
+                        <!--<arg>-Xlint:all</arg>-->
                     </compilerArgs>
                 </configuration>
             </plugin>
