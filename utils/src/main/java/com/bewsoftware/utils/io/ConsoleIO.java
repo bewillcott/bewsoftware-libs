@@ -44,7 +44,7 @@ import static java.lang.String.format;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 3.0.0
+ * @version 3.0.1
  *
  * @see Strings
  */
@@ -62,8 +62,6 @@ public final class ConsoleIO implements Display, Input
     private static final List<WriterInstance> writers = Collections.synchronizedList(new ArrayList<>());
 
     private final boolean blank;
-
-    private final Console console;
 
     @GuardedBy("this")
     private DisplayDebugLevel debugLevel = DEFAULT;
@@ -104,7 +102,6 @@ public final class ConsoleIO implements Display, Input
         open = true;
         blank = true;
         filename = null;
-        console = null;
     }
 
     /**
@@ -122,17 +119,7 @@ public final class ConsoleIO implements Display, Input
         open = true;
         file = null;
         filename = null;
-
-        console = System.console();
-
-        if (console != null)
-        {
-            out = console.writer();
-        } else
-        {
-            out = new PrintWriter(System.out);
-        }
-
+        out = new PrintWriter(System.out);
         this.linePrefix = linePrefix;
         sb = new StringBuilder();
         lines = new Lines();
@@ -166,21 +153,11 @@ public final class ConsoleIO implements Display, Input
 
         if (withConsole)
         {
-            console = System.console();
-
-            if (console != null)
-            {
-                out = this.console.writer();
-            } else
-            {
-                out = new PrintWriter(System.out);
-            }
-
+            out = new PrintWriter(System.out);
             this.linePrefix = linePrefix;
             lBlank = false;
         } else
         {
-            console = null;
             out = null;
             this.linePrefix = "";
             lBlank = true;
@@ -251,21 +228,11 @@ public final class ConsoleIO implements Display, Input
 
         if (withConsole)
         {
-            console = System.console();
-
-            if (console != null)
-            {
-                out = this.console.writer();
-            } else
-            {
-                out = new PrintWriter(System.out);
-            }
-
+            out = new PrintWriter(System.out);
             this.linePrefix = linePrefix;
             lBlank = false;
         } else
         {
-            console = null;
             out = null;
             this.linePrefix = "";
             lBlank = true;
@@ -288,7 +255,7 @@ public final class ConsoleIO implements Display, Input
 
                     if (idx == -1)
                     {
-                        writers.add(new WriterInstance(writer, filename));
+                        writers.add(new WriterInstance(filename, writer));
                         idx = indexOfWriters(filename);
                     }
 
@@ -511,6 +478,12 @@ public final class ConsoleIO implements Display, Input
         return debugLevel;
     }
 
+    /**
+     * @todo
+     * I need to rethink this one.
+     *
+     * @return
+     */
     @GuardedBy("this")
     @Override
     public synchronized boolean displayOK()
@@ -524,45 +497,42 @@ public final class ConsoleIO implements Display, Input
     {
         if (open)
         {
-            if (displayOK())
+            if (out != null || file != null)
             {
-                if (out != null || file != null)
+                if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
                 {
-                    if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
-                    {
-                        sb.setLength(0);
+                    sb.setLength(0);
 
-                        for (Line line : lines.getLines())
+                    for (Line line : lines.getLines())
+                    {
+                        sb.append(linePrefix);
+
+                        if (line.getLevel().value > DEFAULT.value)
                         {
-                            sb.append(linePrefix);
-
-                            if (line.getLevel().value > DEFAULT.value)
-                            {
-                                sb.append("[").append(line.getLevel().label).append("] ");
-                            }
-
-                            sb.append(line.getText());
-
+                            sb.append("[").append(line.getLevel().label).append("] ");
                         }
-                    } else if (!lines.isEmpty())
-                    {
-                        sb.append(lines.getText());
-                    }
 
-                    if (out != null)
-                    {
-                        out.print(sb);
-                        out.flush();
-                    }
+                        sb.append(line.getText());
 
-                    if (file != null)
-                    {
-                        file.print(sb);
-                        file.flush();
                     }
-
-                    clear();
+                } else if (!lines.isEmpty())
+                {
+                    sb.append(lines.getText());
                 }
+
+                if (out != null)
+                {
+                    out.print(sb);
+                    out.flush();
+                }
+
+                if (file != null)
+                {
+                    file.print(sb);
+                    file.flush();
+                }
+
+                clear();
             }
         } else
         {
@@ -591,13 +561,7 @@ public final class ConsoleIO implements Display, Input
 
         if (open)
         {
-            if (console != null)
-            {
-                rtn = new Scanner(console.reader());
-            } else
-            {
-                rtn = new Scanner(System.in);
-            }
+            rtn = new Scanner(System.in);
         } else
         {
             exception = new IOException(CLOSED);
@@ -621,20 +585,13 @@ public final class ConsoleIO implements Display, Input
 
         if (open)
         {
-            if (console != null)
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in)))
             {
-                rtn = console.readLine();
-            } else
+                rtn = reader.readLine();
+            } catch (IOException ex)
             {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(System.in));
-                try
-                {
-                    rtn = reader.readLine();
-                } catch (IOException ex)
-                {
-                    exception = ex;
-                }
+                exception = ex;
             }
         } else
         {
@@ -651,21 +608,15 @@ public final class ConsoleIO implements Display, Input
 
         if (open)
         {
-            if (console != null)
+            println(String.format(fmt, args));
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in)))
             {
-                rtn = console.readLine(fmt, args);
-            } else
+                rtn = reader.readLine();
+            } catch (IOException ex)
             {
-                println(String.format(fmt, args));
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(System.in));
-                try
-                {
-                    rtn = reader.readLine();
-                } catch (IOException ex)
-                {
-                    exception = ex;
-                }
+                exception = ex;
             }
         } else
         {
@@ -682,14 +633,8 @@ public final class ConsoleIO implements Display, Input
 
         if (open)
         {
-            if (console != null)
-            {
-                rtn = console.readPassword();
-            } else
-            {
-                String input = readLine();
-                rtn = input != null ? input.toCharArray() : null;
-            }
+            String input = readLine();
+            rtn = input != null ? input.toCharArray() : null;
         } else
         {
             exception = new IOException(CLOSED);
@@ -705,14 +650,8 @@ public final class ConsoleIO implements Display, Input
 
         if (open)
         {
-            if (console != null)
-            {
-                rtn = console.readPassword(fmt, args);
-            } else
-            {
-                String input = readLine(fmt, args);
-                rtn = input != null ? input.toCharArray() : null;
-            }
+            String input = readLine(fmt, args);
+            rtn = input != null ? input.toCharArray() : null;
         } else
         {
             exception = new IOException(CLOSED);
@@ -1014,7 +953,6 @@ public final class ConsoleIO implements Display, Input
      */
     private static final class WriterInstance implements Closeable
     {
-
         /**
          * Number of references of this instance of {@link PrintWriter} that are
          * still active.
@@ -1027,9 +965,14 @@ public final class ConsoleIO implements Display, Input
         private final String filename;
 
         /**
+         * state variable : true if this instance is open.
+         */
+        private boolean open;
+
+        /**
          * The single instance of this {@link PrintWriter}.
          */
-        private PrintWriter printWriter;
+        private final PrintWriter printWriter;
 
         /**
          * Will only be instantiated by parent class.
@@ -1041,27 +984,28 @@ public final class ConsoleIO implements Display, Input
          *                               new regular file of that name cannot be
          *                               created, or if some other error occurs
          *                               while opening or creating the file
-         *
          */
         private WriterInstance(final String filename) throws FileNotFoundException
         {
             this.filename = filename;
             printWriter = new PrintWriter(filename);
             count = 1;
+            open = true;
         }
 
         /**
          * Will only be instantiated by parent class.
          *
-         * @param writer where to write output
          * @param ident  String to identify this Writer in internal data store.
+         * @param writer where to write output
          */
-        private WriterInstance(final Writer writer, final String ident)
+        private WriterInstance(final String ident, final Writer writer)
         {
             Objects.requireNonNull(writer);
             printWriter = new PrintWriter(writer);
             this.filename = ident;
             count = 1;
+            open = true;
         }
 
         /**
@@ -1072,7 +1016,7 @@ public final class ConsoleIO implements Display, Input
          *
          * @throws IOException if any
          */
-        public PrintWriter addUsage() throws IOException
+        PrintWriter addUsage() throws IOException
         {
             if (isOpen())
             {
@@ -1087,10 +1031,12 @@ public final class ConsoleIO implements Display, Input
         @Override
         public void close()
         {
-            count = 0;
-            printWriter.flush();
-            printWriter.close();
-            printWriter = null;
+            try (printWriter)
+            {
+                count = 0;
+                printWriter.flush();
+                open = false;
+            }
         }
 
         /**
@@ -1106,25 +1052,10 @@ public final class ConsoleIO implements Display, Input
 
         @Override
         @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
-        public boolean equals(Object obj)
+        public boolean equals(final Object obj)
         {
-            if (this == obj)
-            {
-                return true;
-            }
-
-            if (obj == null)
-            {
-                return false;
-            }
-
-            if (getClass() != obj.getClass())
-            {
-                return this.filename.equals(obj);
-            }
-
-            final WriterInstance other = (WriterInstance) obj;
-            return Objects.equals(this.filename, other.filename);
+            return (obj instanceof WriterInstance other)
+                    && (Objects.equals(this.filename, other.filename));
         }
 
         /**
@@ -1140,7 +1071,9 @@ public final class ConsoleIO implements Display, Input
         @Override
         public int hashCode()
         {
-            return Objects.hashCode(this.filename);
+            int hash = 7;
+            hash = 59 * hash + Objects.hashCode(this.filename);
+            return hash;
         }
 
         /**
@@ -1149,7 +1082,7 @@ public final class ConsoleIO implements Display, Input
          */
         public boolean isOpen()
         {
-            return printWriter != null;
+            return open;
         }
 
         /**
