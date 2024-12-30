@@ -19,10 +19,14 @@
  */
 package com.bewsoftware.utils.io;
 
-import com.bewsoftware.annotations.jcip.GuardedBy;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static java.lang.String.format;
@@ -50,29 +54,27 @@ import static java.lang.String.format;
  */
 public final class ConsoleIO implements Display, Input
 {
+    private static final int CLOSED = 0;
 
-    private static final String CLOSED = "ConsoleIO is closed.";
+    private static final String CLOSED_MSG = "ConsoleIO is closed.";
+
+    private static final int OPEN = 1;
 
     /**
      * Stores the singleton of each {@link Writer} object related to each
      * specific instance of {@link PrintWriter} associated with a
      * {@code filename}.
      */
-    @GuardedBy("ConsoleIO.writers")
-    private static final List<WriterInstance> writers = Collections.synchronizedList(new ArrayList<>());
+    private static final ConcurrentMap<String, WriterInstance> writers = new ConcurrentHashMap<>();
 
     private final boolean blank;
 
-    @GuardedBy("this")
-    private DisplayDebugLevel debugLevel = DEFAULT;
+    private final AtomicReference<DisplayDebugLevel> debugLevel = new AtomicReference<>(DEFAULT);
 
-    @GuardedBy("this")
-    private DisplayDebugLevel displayLevel = DEFAULT;
+//    private final AtomicReference<DisplayDebugLevel> displayLevel = new AtomicReference<>(DEFAULT);
+    private final AtomicReference<Exception> exception = new AtomicReference<>();
 
-    @GuardedBy("this")
-    private Exception exception;
-
-    private PrintWriter file;
+    private final AtomicReference<PrintWriter> file = new AtomicReference<>();
 
     private final String filename;
 
@@ -80,12 +82,14 @@ public final class ConsoleIO implements Display, Input
 
     private Lines lines;
 
-    @GuardedBy("this")
-    private boolean open;
-
     private PrintWriter out;
 
-    private StringBuilder sb;
+    private StringBuffer sb;
+
+    /**
+     * state variable : true if this instance is open.
+     */
+    private final AtomicInteger status = new AtomicInteger(CLOSED);
 
     /**
      * Instantiates a "blank console".
@@ -96,12 +100,12 @@ public final class ConsoleIO implements Display, Input
      */
     private ConsoleIO()
     {
-        file = null;
         out = null;
         linePrefix = "";
-        open = true;
+        status.set(OPEN);
         blank = true;
         filename = null;
+        lines = null;
     }
 
     /**
@@ -116,12 +120,11 @@ public final class ConsoleIO implements Display, Input
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix)
     {
-        open = true;
-        file = null;
+        status.set(OPEN);
         filename = null;
         out = new PrintWriter(System.out);
         this.linePrefix = linePrefix;
-        sb = new StringBuilder();
+        sb = new StringBuffer();
         lines = new Lines();
         blank = false;
     }
@@ -148,8 +151,9 @@ public final class ConsoleIO implements Display, Input
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole)
     {
-        open = true;
+        status.set(OPEN);
         boolean lBlank;
+        String fname = null;
 
         if (withConsole)
         {
@@ -163,39 +167,31 @@ public final class ConsoleIO implements Display, Input
             lBlank = true;
         }
 
-        sb = new StringBuilder();
-        lines = new Lines();
+        sb = new StringBuffer();
 
         if (filename != null && !filename.isBlank())
         {
-            this.filename = filename;
+            fname = filename;
 
             try
             {
-                synchronized (writers)
+                if (!writers.containsKey(filename))
                 {
-                    int idx = writers.indexOf(filename);
-
-                    if (idx == -1)
-                    {
-                        writers.add(new WriterInstance(filename));
-                        idx = indexOfWriters(filename);
-                    }
-
-                    this.file = writers.get(idx).addUsage();
-                    lBlank = false;
+                    writers.put(filename, new WriterInstance(filename));
                 }
+
+                file.compareAndSet(null, writers.get(filename).addUsage());
+                lBlank = false;
+
             } catch (IOException ex)
             {
-                exception = ex;
+                exception.compareAndSet(null, ex);
             }
-        } else
-        {
-            file = null;
-            this.filename = null;
         }
 
         blank = lBlank;
+        this.filename = fname;
+        lines = new Lines();
     }
 
     /**
@@ -212,19 +208,20 @@ public final class ConsoleIO implements Display, Input
      * For use by factory method.
      *
      * @param linePrefix  text to prepend to each line.
-     * @param writer      Where to send the output.
      * @param ident       String to identify this Writer in internal data store.
+     * @param writer      Where to send the output.
      * @param withConsole whether or not to output to the console, if any.
      */
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(
             final String linePrefix,
-            final Writer writer,
             final String ident,
+            final Writer writer,
             final boolean withConsole)
     {
-        open = true;
+        status.set(OPEN);
         boolean lBlank;
+        String fname = null;
 
         if (withConsole)
         {
@@ -238,41 +235,38 @@ public final class ConsoleIO implements Display, Input
             lBlank = true;
         }
 
-        sb = new StringBuilder();
-        lines = new Lines();
+        sb = new StringBuffer();
 
         if (writer != null)
         {
-            filename = ident != null && !ident.isBlank()
-                    ? ident
-                    : writer.getClass().getName();
-
             try
             {
-                synchronized (writers)
+                if (ident != null && !ident.isBlank())
                 {
-                    int idx = writers.indexOf(filename);
+                    fname = ident;
 
-                    if (idx == -1)
+                    if (!writers.containsKey(fname))
                     {
-                        writers.add(new WriterInstance(filename, writer));
-                        idx = indexOfWriters(filename);
+                        writers.put(fname, new WriterInstance(fname, writer));
                     }
 
-                    this.file = writers.get(idx).addUsage();
+                    file.compareAndSet(null, writers.get(fname).addUsage());
                     lBlank = false;
+
+                } else
+                {
+                    throw new NullPointerException("ident - must not be 'null' or blank.");
                 }
-            } catch (IOException ex)
+
+            } catch (IOException | NullPointerException ex)
             {
-                exception = ex;
+                exception.compareAndSet(null, ex);
             }
-        } else
-        {
-            file = null;
-            this.filename = null;
         }
 
         blank = lBlank;
+        filename = fname;
+        lines = new Lines();
     }
 
     /**
@@ -330,7 +324,7 @@ public final class ConsoleIO implements Display, Input
             final String ident)
     {
 
-        return new ConsoleIO(linePrefix, writer, ident, true);
+        return new ConsoleIO(linePrefix, ident, writer, true);
     }
 
     /**
@@ -366,28 +360,28 @@ public final class ConsoleIO implements Display, Input
             final String ident)
     {
 
-        return new ConsoleIO(linePrefix, writer, ident, false);
+        return new ConsoleIO(linePrefix, ident, writer, false);
     }
 
     @Override
-    @GuardedBy("this")
-    public synchronized Display append(final String text)
+    public Display append(final DisplayDebugLevel level, final String text)
     {
-        if (open)
+        if (isOpen())
         {
-            if (!blank && displayOK())
+            if (!blank && displayOK(level))
             {
-                lines.append(displayLevel, text);
+                lines.append(level, text);
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return this;
     }
 
     /**
+     * @param level  {@inheritDoc}
      * @param format This implementation uses
      *               {@link Formatter#format(java.lang.String, java.lang.Object...)
      *               Formatter.format(String format, Object... args)}
@@ -396,18 +390,17 @@ public final class ConsoleIO implements Display, Input
      * @see java.util.Formatter - Format String Syntax
      */
     @Override
-    @GuardedBy("this")
-    public synchronized Display append(String format, Object... args)
+    public Display append(final DisplayDebugLevel level, String format, Object... args)
     {
-        if (open)
+        if (isOpen())
         {
-            if (!blank && displayOK())
+            if (!blank && displayOK(level))
             {
-                lines.append(displayLevel, format(format, args));
+                lines.append(level, format(format, args));
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return this;
@@ -416,7 +409,7 @@ public final class ConsoleIO implements Display, Input
     @Override
     public Display clear()
     {
-        if (open)
+        if (isOpen())
         {
             if (!blank)
             {
@@ -435,10 +428,10 @@ public final class ConsoleIO implements Display, Input
     @Override
     public void clearExceptions()
     {
-        exception = null;
+        @SuppressWarnings("ThrowableResultIgnored")
+        Exception ignored = exception.getAndSet(null);
     }
 
-    @GuardedBy("ConsoleIO.writers")
     @Override
     public void close() throws IOException
     {
@@ -450,54 +443,55 @@ public final class ConsoleIO implements Display, Input
             out = null;
         }
 
-        if (file != null)
+        if (file.get() != null)
         {
-            synchronized (writers)
-            {
-                writers.get(writers.indexOf(filename)).removeUsage();
-            }
-
-            file = null;
+            writers.get(filename).removeUsage();
+            file.set(null);
         }
 
-        open = false;
+        status.set(CLOSED);
         clear();
     }
 
     @Override
-    @GuardedBy("this")
-    public synchronized void debugLevel(DisplayDebugLevel level)
+    public void debugLevel(final DisplayDebugLevel level)
     {
-        debugLevel = level;
+        debugLevel.set(level);
     }
 
     @Override
-    @GuardedBy("this")
-    public synchronized DisplayDebugLevel debugLevel()
+    public DisplayDebugLevel debugLevel()
     {
-        return debugLevel;
+        return debugLevel.get();
+    }
+
+    @Override
+    @Deprecated
+    public boolean displayOK()
+    {
+        throw new UnsupportedOperationException("Deprecated.");
     }
 
     /**
-     * @todo
-     * I need to rethink this one.
+     * Determine if the current text will be displayed, by comparing the current
+     * debug level to the supplied display level.
      *
-     * @return
+     * @param level The display level to compare with.
+     *
+     * @return {@code true} if it will be, {@code false} otherwise.
      */
-    @GuardedBy("this")
     @Override
-    public synchronized boolean displayOK()
+    public boolean displayOK(final DisplayDebugLevel level)
     {
-        return debugLevel.value >= displayLevel.value;
+        return debugLevel.get().value >= level.value;
     }
 
     @Override
-    @GuardedBy("this")
-    public synchronized void flush()
+    public void flush()
     {
-        if (open)
+        if (isOpen())
         {
-            if (out != null || file != null)
+            if (out != null || file.get() != null)
             {
                 if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
                 {
@@ -526,17 +520,17 @@ public final class ConsoleIO implements Display, Input
                     out.flush();
                 }
 
-                if (file != null)
+                if (file.get() != null)
                 {
-                    file.print(sb);
-                    file.flush();
+                    file.get().print(sb);
+                    file.get().flush();
                 }
 
                 clear();
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
     }
 
@@ -547,11 +541,10 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    @GuardedBy("this")
-    public synchronized Display level(DisplayDebugLevel level)
+    @Deprecated
+    public Display level(final DisplayDebugLevel level)
     {
-        displayLevel = level;
-        return this;
+        throw new UnsupportedOperationException("Deprecated.");
     }
 
     @Override
@@ -559,12 +552,12 @@ public final class ConsoleIO implements Display, Input
     {
         Scanner rtn = null;
 
-        if (open)
+        if (isOpen())
         {
             rtn = new Scanner(System.in);
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return rtn;
@@ -573,7 +566,7 @@ public final class ConsoleIO implements Display, Input
     @Override
     public Exception popException()
     {
-        Exception rtn = exception;
+        final Exception rtn = exception.get();
         clearExceptions();
         return rtn;
     }
@@ -583,7 +576,7 @@ public final class ConsoleIO implements Display, Input
     {
         String rtn = null;
 
-        if (open)
+        if (isOpen())
         {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in)))
@@ -591,11 +584,11 @@ public final class ConsoleIO implements Display, Input
                 rtn = reader.readLine();
             } catch (IOException ex)
             {
-                exception = ex;
+                exception.compareAndSet(null, ex);
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return rtn;
@@ -606,7 +599,7 @@ public final class ConsoleIO implements Display, Input
     {
         String rtn = null;
 
-        if (open)
+        if (isOpen())
         {
             println(String.format(fmt, args));
 
@@ -616,11 +609,11 @@ public final class ConsoleIO implements Display, Input
                 rtn = reader.readLine();
             } catch (IOException ex)
             {
-                exception = ex;
+                exception.compareAndSet(null, ex);
             }
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return rtn;
@@ -631,13 +624,13 @@ public final class ConsoleIO implements Display, Input
     {
         char[] rtn = null;
 
-        if (open)
+        if (isOpen())
         {
             String input = readLine();
             rtn = input != null ? input.toCharArray() : null;
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return rtn;
@@ -648,50 +641,22 @@ public final class ConsoleIO implements Display, Input
     {
         char[] rtn = null;
 
-        if (open)
+        if (isOpen())
         {
             String input = readLine(fmt, args);
             rtn = input != null ? input.toCharArray() : null;
         } else
         {
-            exception = new IOException(CLOSED);
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
 
         return rtn;
 
     }
 
-    /**
-     * Find the index of the required WriterInstance.
-     *
-     * @param filename to find
-     *
-     * @return index of WriterInstance
-     */
-    @GuardedBy("ConsoleIO.writers")
-    @SuppressWarnings("IncompatibleEquals")
-    private int indexOfWriters(final String filename)
+    private boolean isOpen()
     {
-        int rtn = -1;
-
-        synchronized (writers)
-        {
-            if (!writers.isEmpty() && filename != null && !filename.isBlank())
-            {
-                for (int i = 0; i < writers.size(); i++)
-                {
-                    WriterInstance wi = writers.get(i);
-
-                    if (wi.equals(filename))
-                    {
-                        rtn = i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return rtn;
+        return status.get() == OPEN;
     }
 
     /**
@@ -703,7 +668,7 @@ public final class ConsoleIO implements Display, Input
 
         private boolean terminated;
 
-        private String text = "";
+        private final StringBuffer text;
 
         /**
          * Only accessible by the enclosing class.
@@ -714,7 +679,8 @@ public final class ConsoleIO implements Display, Input
         private Line(final DisplayDebugLevel level, final String text)
         {
             this.level = level;
-            append(text);
+            this.text = new StringBuffer();
+            this.append(text);
         }
 
         /**
@@ -730,7 +696,7 @@ public final class ConsoleIO implements Display, Input
          */
         public String getText()
         {
-            return text;
+            return text.toString();
         }
 
         /**
@@ -762,7 +728,7 @@ public final class ConsoleIO implements Display, Input
 
             if (text != null)
             {
-                this.text += text;
+                this.text.append(text);
                 this.terminated = text.endsWith("\n");
                 rtn = true;
             }
@@ -776,16 +742,16 @@ public final class ConsoleIO implements Display, Input
      */
     private static final class Lines
     {
-        private Line lastUnterminated = null;
+        private final AtomicReference<Line> lastUnterminated = new AtomicReference<>();
 
-        private final List<Line> lines;
+        private final Queue<Line> lines;
 
         /**
          * Only accessible by the enclosing class.
          */
         private Lines()
         {
-            lines = Collections.synchronizedList(new ArrayList<>());
+            lines = new ConcurrentLinkedQueue<>();
         }
 
         /**
@@ -804,33 +770,35 @@ public final class ConsoleIO implements Display, Input
 
             if (level != null && text != null)
             {
-                if (lastUnterminated != null)
-                {
-                    if (lastUnterminated.getLevel() == level)
-                    {
-                        rtn = lastUnterminated.append(text);
+                final Line lu;
 
-                        if (lastUnterminated.isTerminated())
+                if ((lu = lastUnterminated.get()) != null)
+                {
+                    if (lu.getLevel() == level)
+                    {
+                        rtn = lu.append(text);
+
+                        if (lu.isTerminated())
                         {
-                            lastUnterminated = null;
+                            lastUnterminated.compareAndSet(lu, null);
                         }
 
                         done = true;
                     } else
                     {
-                        rtn = lastUnterminated.append("\n");
-                        lastUnterminated = null;
+                        rtn = lu.append("\n");
+                        lastUnterminated.compareAndSet(lu, null);
                     }
                 }
 
                 if (!done)
                 {
-                    Line line = new Line(level, text);
+                    final Line line = new Line(level, text);
                     rtn = lines.add(line);
 
                     if (!line.isTerminated())
                     {
-                        lastUnterminated = line;
+                        lastUnterminated.compareAndSet(null, line);
                     }
                 }
             }
@@ -855,37 +823,26 @@ public final class ConsoleIO implements Display, Input
          */
         public List<Line> getLines()
         {
-            List<Line> list = new ArrayList<>();
+            final List<Line> list = new ArrayList<>();
+            final Line lu;
 
-            int len1 = lines.size();
-
-            for (int i = 0; i < len1; i++)
+            if ((lu = lastUnterminated.get()) != null
+                    && lastUnterminated.compareAndSet(lu, null))
             {
-                Line line = lines.get(i);
+                lu.append("\n");
+            }
 
+            for (Line line : lines)
+            {
                 String[] textArr = line.getText().replace("\n", " \n").split("\n");
 
                 if (textArr.length > 1)
                 {
-                    int len2 = textArr.length;
-
-                    for (int j = 0; j < len2; j++)
+                    for (String text : textArr)
                     {
-                        Line line2 = new Line(line.getLevel(), Strings.rTrim(textArr[j]));
-
-                        if (lastUnterminated == null)
-                        {
-                            line2.append("\n");
-                        } else if (i == len1 - 1 && j == len2 - 1)
-                        {
-                            lastUnterminated = null;
-                        } else
-                        {
-                            line2.append("\n");
-                        }
-
+                        final Line line2 = new Line(line.getLevel(), Strings.rTrim(text));
+                        line2.append("\n");
                         list.add(line2);
-
                     }
                 } else
                 {
@@ -897,28 +854,36 @@ public final class ConsoleIO implements Display, Input
         }
 
         /**
-         * Returns a text string representation of all the lines being stored.
+         * Returns a text string representation of all the lines being
+         * stored.
          * <p>
-         * If there is an unterminated line, it will be terminate, and cleared.
+         * If there is an unterminated line, it will be terminate, and
+         * cleared.
          *
-         * @return a text string representation of all the lines being stored.
+         * @return a text string representation of all the lines currently
+         *         stored.
          */
         public String getText()
         {
-            StringBuilder sb = new StringBuilder();
+            final StringBuffer sb;
+            final Line lu;
+            String rtn = "";
 
             if (!lines.isEmpty())
             {
-                if (lastUnterminated != null)
+                sb = new StringBuffer();
+
+                if ((lu = lastUnterminated.get()) != null
+                        && lastUnterminated.compareAndSet(lu, null))
                 {
-                    lastUnterminated.append("\n");
-                    lastUnterminated = null;
+                    lu.append("\n");
                 }
 
                 lines.forEach(line -> sb.append(line.getText()));
+                rtn = sb.toString();
             }
 
-            return sb.toString();
+            return rtn;
         }
 
         /**
@@ -953,11 +918,15 @@ public final class ConsoleIO implements Display, Input
      */
     private static final class WriterInstance implements Closeable
     {
+        private static final int CLOSED = 0;
+
+        private static final int OPEN = 1;
+
         /**
          * Number of references of this instance of {@link PrintWriter} that are
          * still active.
          */
-        private int count;
+        private final AtomicInteger count = new AtomicInteger(1);
 
         /**
          * The filename associated with the {@link #printWriter}.
@@ -965,14 +934,14 @@ public final class ConsoleIO implements Display, Input
         private final String filename;
 
         /**
-         * state variable : true if this instance is open.
-         */
-        private boolean open;
-
-        /**
          * The single instance of this {@link PrintWriter}.
          */
         private final PrintWriter printWriter;
+
+        /**
+         * state variable : true if this instance is open.
+         */
+        private final AtomicInteger status = new AtomicInteger(CLOSED);
 
         /**
          * Will only be instantiated by parent class.
@@ -989,8 +958,7 @@ public final class ConsoleIO implements Display, Input
         {
             this.filename = filename;
             printWriter = new PrintWriter(filename);
-            count = 1;
-            open = true;
+            status.set(OPEN);
         }
 
         /**
@@ -1004,28 +972,7 @@ public final class ConsoleIO implements Display, Input
             Objects.requireNonNull(writer);
             printWriter = new PrintWriter(writer);
             this.filename = ident;
-            count = 1;
-            open = true;
-        }
-
-        /**
-         * Increments the usage counter and provides a reference to the single
-         * instance of {@link PrintWriter} stored internally.
-         *
-         * @return reference to {@link PrintWriter}
-         *
-         * @throws IOException if any
-         */
-        PrintWriter addUsage() throws IOException
-        {
-            if (isOpen())
-            {
-                count++;
-                return printWriter;
-            } else
-            {
-                throw new IOException("PrintWriter closed.");
-            }
+            status.set(OPEN);
         }
 
         @Override
@@ -1033,9 +980,11 @@ public final class ConsoleIO implements Display, Input
         {
             try (printWriter)
             {
-                count = 0;
-                printWriter.flush();
-                open = false;
+                if (status.compareAndSet(OPEN, CLOSED))
+                {
+                    count.set(0);
+                    printWriter.flush();
+                }
             }
         }
 
@@ -1047,7 +996,7 @@ public final class ConsoleIO implements Display, Input
          */
         public int count()
         {
-            return count;
+            return count.get();
         }
 
         @Override
@@ -1082,7 +1031,7 @@ public final class ConsoleIO implements Display, Input
          */
         public boolean isOpen()
         {
-            return open;
+            return status.get() == OPEN;
         }
 
         /**
@@ -1095,12 +1044,32 @@ public final class ConsoleIO implements Display, Input
         {
             if (isOpen())
             {
-                --count;
+                count.addAndGet(-1);
 
-                if (count == 0)
+                if (count.get() == 0)
                 {
                     close();
                 }
+            }
+        }
+
+        /**
+         * Increments the usage counter and provides a reference to the single
+         * instance of {@link PrintWriter} stored internally.
+         *
+         * @return reference to {@link PrintWriter}
+         *
+         * @throws IOException if any
+         */
+        PrintWriter addUsage() throws IOException
+        {
+            if (isOpen())
+            {
+                count.addAndGet(1);
+                return printWriter;
+            } else
+            {
+                throw new IOException("PrintWriter closed.");
             }
         }
     }
