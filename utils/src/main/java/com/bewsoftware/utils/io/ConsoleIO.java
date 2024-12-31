@@ -19,6 +19,7 @@
  */
 package com.bewsoftware.utils.io;
 
+import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class implements a console with benefits.
@@ -60,6 +62,18 @@ public final class ConsoleIO implements Display, Input
 
     private static final int OPEN = 1;
 
+    private static final AtomicReference<PrintWriter> file = new AtomicReference<>();
+
+    private static final AtomicReference<String> filename = new AtomicReference<>();
+
+    private static final AtomicReference<String> linePrefix =new AtomicReference<>("");
+
+    private static final AtomicReference<Lines> lines = new AtomicReference<>();
+
+    private static final AtomicReference<PrintWriter> out = new AtomicReference<>();
+
+    private static final AtomicReference<StringBuffer> sb = new AtomicReference<>();
+
     /**
      * Stores the singleton of each {@link Writer} object related to each
      * specific instance of {@link PrintWriter} associated with a
@@ -71,20 +85,7 @@ public final class ConsoleIO implements Display, Input
 
     private final AtomicReference<DisplayDebugLevel> debugLevel = new AtomicReference<>(DEFAULT);
 
-//    private final AtomicReference<DisplayDebugLevel> displayLevel = new AtomicReference<>(DEFAULT);
-    private final AtomicReference<Exception> exception = new AtomicReference<>();
-
-    private final AtomicReference<PrintWriter> file = new AtomicReference<>();
-
-    private final String filename;
-
-    private final String linePrefix;
-
-    private Lines lines;
-
-    private PrintWriter out;
-
-    private StringBuffer sb;
+    private final AtomicReference<Exception> exception = new AtomicReference<>();// ???
 
     /**
      * state variable : true if this instance is open.
@@ -100,12 +101,8 @@ public final class ConsoleIO implements Display, Input
      */
     private ConsoleIO()
     {
-        out = null;
-        linePrefix = "";
         status.set(OPEN);
         blank = true;
-        filename = null;
-        lines = null;
     }
 
     /**
@@ -121,11 +118,10 @@ public final class ConsoleIO implements Display, Input
     private ConsoleIO(final String linePrefix)
     {
         status.set(OPEN);
-        filename = null;
-        out = new PrintWriter(System.out);
-        this.linePrefix = linePrefix;
-        sb = new StringBuffer();
-        lines = new Lines();
+        out.set(new PrintWriter(System.out));
+        ConsoleIO.linePrefix.set(linePrefix);
+        sb.set(new StringBuffer());
+        lines.set(new Lines());
         blank = false;
     }
 
@@ -157,17 +153,15 @@ public final class ConsoleIO implements Display, Input
 
         if (withConsole)
         {
-            out = new PrintWriter(System.out);
-            this.linePrefix = linePrefix;
+            out.set(new PrintWriter(System.out));
+            ConsoleIO.linePrefix.set(linePrefix);
             lBlank = false;
         } else
         {
-            out = null;
-            this.linePrefix = "";
             lBlank = true;
         }
 
-        sb = new StringBuffer();
+        sb.set(new StringBuffer());
 
         if (filename != null && !filename.isBlank())
         {
@@ -180,18 +174,18 @@ public final class ConsoleIO implements Display, Input
                     writers.put(filename, new WriterInstance(filename));
                 }
 
-                file.compareAndSet(null, writers.get(filename).addUsage());
+                file.set(writers.get(filename).addUsage());
                 lBlank = false;
 
-            } catch (IOException ex)
+            } catch (NullPointerException | InvalidParameterException | IOException ex)
             {
                 exception.compareAndSet(null, ex);
             }
         }
 
         blank = lBlank;
-        this.filename = fname;
-        lines = new Lines();
+        ConsoleIO.filename.set(fname);
+        lines.set(new Lines());
     }
 
     /**
@@ -211,6 +205,8 @@ public final class ConsoleIO implements Display, Input
      * @param ident       String to identify this Writer in internal data store.
      * @param writer      Where to send the output.
      * @param withConsole whether or not to output to the console, if any.
+     *
+     * @since 3.0.1
      */
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(
@@ -225,17 +221,15 @@ public final class ConsoleIO implements Display, Input
 
         if (withConsole)
         {
-            out = new PrintWriter(System.out);
-            this.linePrefix = linePrefix;
+            out.set(new PrintWriter(System.out));
+            ConsoleIO.linePrefix.set(linePrefix);
             lBlank = false;
         } else
         {
-            out = null;
-            this.linePrefix = "";
             lBlank = true;
         }
 
-        sb = new StringBuffer();
+        sb.set(new StringBuffer());
 
         if (writer != null)
         {
@@ -250,7 +244,7 @@ public final class ConsoleIO implements Display, Input
                         writers.put(fname, new WriterInstance(fname, writer));
                     }
 
-                    file.compareAndSet(null, writers.get(fname).addUsage());
+                    file.set(writers.get(fname).addUsage());
                     lBlank = false;
 
                 } else
@@ -258,15 +252,16 @@ public final class ConsoleIO implements Display, Input
                     throw new NullPointerException("ident - must not be 'null' or blank.");
                 }
 
-            } catch (IOException | NullPointerException ex)
+            } catch (IOException | NullPointerException | InvalidParameterException ex)
             {
                 exception.compareAndSet(null, ex);
             }
+
         }
 
         blank = lBlank;
-        filename = fname;
-        lines = new Lines();
+        ConsoleIO.filename.set(fname);
+        lines.set(new Lines());
     }
 
     /**
@@ -313,15 +308,18 @@ public final class ConsoleIO implements Display, Input
      * the designated file.
      *
      * @param linePrefix text to prepend to each line
-     * @param writer     where to write output
      * @param ident      String to identify this Writer in internal data store.
+     * @param writer     where to write output
      *
      * @return new Display
+     *
+     * @since 3.0.1
      */
     public static Display consoleWriterDisplay(
             final String linePrefix,
-            final Writer writer,
-            final String ident)
+            final String ident,
+            final Writer writer
+    )
     {
 
         return new ConsoleIO(linePrefix, ident, writer, true);
@@ -349,15 +347,16 @@ public final class ConsoleIO implements Display, Input
      * {@code writer}.
      *
      * @param linePrefix text to prepend to each line
-     * @param writer     where to write output
      * @param ident      String to identify this Writer in internal data store.
+     * @param writer     where to write output
      *
      * @return new Display
      */
     public static Display writerDisplay(
             final String linePrefix,
-            final Writer writer,
-            final String ident)
+            final String ident,
+            final Writer writer
+    )
     {
 
         return new ConsoleIO(linePrefix, ident, writer, false);
@@ -370,7 +369,7 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank && displayOK(level))
             {
-                lines.append(level, text);
+                lines.get().append(level, text);
             }
         } else
         {
@@ -396,7 +395,7 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank && displayOK(level))
             {
-                lines.append(level, format(format, args));
+                lines.get().append(level, format(format, args));
             }
         } else
         {
@@ -413,13 +412,13 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank)
             {
-                sb.setLength(0);
-                lines.clear();
+                sb.get().setLength(0);
+                lines.get().clear();
             }
         } else
         {
-            sb = null;
-            lines = null;
+            sb.set(null);
+            lines.set(null);
         }
 
         return this;
@@ -439,13 +438,13 @@ public final class ConsoleIO implements Display, Input
 
         if (out != null)
         {
-            out.close();
-            out = null;
+            out.get().close();
+            out.set(null);
         }
 
         if (file.get() != null)
         {
-            writers.get(filename).removeUsage();
+            writers.get(filename.get()).removeUsage();
             file.set(null);
         }
 
@@ -493,31 +492,31 @@ public final class ConsoleIO implements Display, Input
         {
             if (out != null || file.get() != null)
             {
-                if (linePrefix != null && linePrefix.length() > 0 && !lines.isEmpty())
+                if (linePrefix != null && linePrefix.get().length() > 0 && !lines.get().isEmpty())
                 {
-                    sb.setLength(0);
+                    sb.get().setLength(0);
 
-                    for (Line line : lines.getLines())
+                    for (Line line : lines.get().getLines())
                     {
-                        sb.append(linePrefix);
+                        sb.get().append(linePrefix);
 
                         if (line.getLevel().value > DEFAULT.value)
                         {
-                            sb.append("[").append(line.getLevel().label).append("] ");
+                            sb.get().append("[").append(line.getLevel().label).append("] ");
                         }
 
-                        sb.append(line.getText());
+                        sb.get().append(line.getText());
 
                     }
-                } else if (!lines.isEmpty())
+                } else if (!lines.get().isEmpty())
                 {
-                    sb.append(lines.getText());
+                    sb.get().append(lines.get().getText());
                 }
 
                 if (out != null)
                 {
-                    out.print(sb);
-                    out.flush();
+                    out.get().print(sb);
+                    out.get().flush();
                 }
 
                 if (file.get() != null)
@@ -537,7 +536,7 @@ public final class ConsoleIO implements Display, Input
     @Override
     public boolean isException()
     {
-        return exception != null;
+        return exception.get() != null;
     }
 
     @Override
@@ -948,14 +947,25 @@ public final class ConsoleIO implements Display, Input
          *
          * @param filename name of file to create/open
          *
-         * @throws FileNotFoundException If the given string does not denote an
-         *                               existing, writable regular file and a
-         *                               new regular file of that name cannot be
-         *                               created, or if some other error occurs
-         *                               while opening or creating the file
+         * @throws FileNotFoundException     If the given string does not denote
+         *                                   an
+         *                                   existing, writable regular file and a
+         *                                   new regular file of that name cannot be
+         *                                   created, or if some other error occurs
+         *                                   while opening or creating the file.
+         * @throws NullPointerException      if {@code filename} is
+         *                                   {@code null}.
+         * @throws InvalidParameterException if {@code filename}
+         *                                   {@link String#isBlank() isBlank()}.
          */
-        private WriterInstance(final String filename) throws FileNotFoundException
+        private WriterInstance(final String filename)
+                throws FileNotFoundException, NullPointerException, InvalidParameterException
         {
+            if (requireNonNull(filename).isBlank())
+            {
+                throw new InvalidParameterException(filename);
+            }
+
             this.filename = filename;
             printWriter = new PrintWriter(filename);
             status.set(OPEN);
@@ -966,12 +976,22 @@ public final class ConsoleIO implements Display, Input
          *
          * @param ident  String to identify this Writer in internal data store.
          * @param writer where to write output
+         *
+         * @throws NullPointerException      if either {@code indent} or
+         *                                   {@code writer} are {@code null}.
+         * @throws InvalidParameterException if {@code indent}
+         *                                   {@linkplain String#isBlank() isBlank()}.
          */
         private WriterInstance(final String ident, final Writer writer)
+                throws NullPointerException, InvalidParameterException
         {
-            Objects.requireNonNull(writer);
-            printWriter = new PrintWriter(writer);
-            this.filename = ident;
+            if (requireNonNull(ident).isBlank())
+            {
+                throw new InvalidParameterException(ident);
+            }
+
+            filename = ident;
+            printWriter = new PrintWriter(requireNonNull(writer));
             status.set(OPEN);
         }
 

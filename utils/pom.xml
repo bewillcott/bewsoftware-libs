@@ -41,5 +41,10 @@
             <version>5.10.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bewsoftware-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

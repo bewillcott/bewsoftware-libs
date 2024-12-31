@@ -31,6 +31,7 @@ module bewsoftware.utils {
     requires transitive java.desktop;
     requires transitive java.sql;
     requires transitive bewsoftware.annotations;
+    requires transitive bewsoftware.common;
 
     exports com.bewsoftware.utils;
     exports com.bewsoftware.utils.crypto;
