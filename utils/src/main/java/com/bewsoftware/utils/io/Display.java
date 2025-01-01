@@ -23,6 +23,7 @@ import java.io.Closeable;
 import java.util.function.Supplier;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
+import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -61,9 +62,11 @@ import static java.lang.System.lineSeparator;
  */
 public interface Display extends Closeable, Exceptions
 {
+
     /**
      * Adds the text to the internal buffer.
      *
+     * @param flush the all text to outputs.
      * @param level The debug level in which to display this {@code text}.
      * @param text  to be added.
      *
@@ -71,22 +74,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @since 3.0.1
      */
-    public Display append(final DisplayDebugLevel level, final String text);
-
-    /**
-     * Adds a formatted string to the internal buffer using the specified
-     * format string and arguments.
-     *
-     * @param level  The debug level in which to display the text.
-     * @param format The syntax of this string is implementation specific.
-     * @param args   Arguments referenced by the format specifiers in the format
-     *               string.
-     *
-     * @return this Display for chaining purposes.
-     *
-     * @since 3.0.1
-     */
-    public Display append(final DisplayDebugLevel level, final String format, final Object... args);
+    public Display append(final boolean flush, final DisplayDebugLevel level, final String text);
 
     /**
      * Empties the internal buffer of all unflushed output.
@@ -128,7 +116,14 @@ public interface Display extends Closeable, Exceptions
 
     /**
      * Flushes all output from the internal buffer to the output destination(s).
+     *
+     * @deprecated No longer used. Functionality moved internally.
+     *
+     * @throws UnsupportedOperationException as this is deprecated.
+     *
+     * @since 3.0.1
      */
+    @Deprecated
     public void flush();
 
     /**
@@ -150,6 +145,39 @@ public interface Display extends Closeable, Exceptions
     public Display level(final DisplayDebugLevel level);
 
     /**
+     * Adds the text to the internal buffer.
+     *
+     * @param level The debug level in which to display this {@code text}.
+     * @param text  to be added.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @since 3.0.1
+     */
+    default Display append(final DisplayDebugLevel level, final String text)
+    {
+        return append(false, level, text);
+    }
+
+    /**
+     * Adds a formatted string to the internal buffer using the specified
+     * format string and arguments.
+     *
+     * @param level  The debug level in which to display the text.
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @since 3.0.1
+     */
+    default Display append(final DisplayDebugLevel level, final String format, final Object... args)
+    {
+        return append(false, level, format(format, args));
+    }
+
+    /**
      * Adds the text to the internal buffer, much like with
      * {@code StringBuilder}.
      *
@@ -159,7 +187,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final String text)
     {
-        return append(DEFAULT, text);
+        return append(false, DEFAULT, text);
     }
 
     /**
@@ -174,7 +202,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final String format, final Object... args)
     {
-        return append(DEFAULT, format, args);
+        return append(false, DEFAULT, format, args);
     }
 
     /**
@@ -191,13 +219,11 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final Supplier<String> supplier)
     {
-        return append(DEFAULT, supplier);
+        return append(false, DEFAULT, supplier);
     }
 
     /**
      * Adds the result of the supplier interface to the internal buffer.
-     *
-     * @param level    The debug level in which to display the text.
      *
      * @implNote
      * This is meant to be used to provide provisional processing of non-trivial
@@ -215,7 +241,7 @@ public interface Display extends Closeable, Exceptions
     {
         if (displayOK(level))
         {
-            return append(level, supplier.get());
+            return append(false, level, supplier.get());
         }
 
         return this;
@@ -254,7 +280,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final DisplayDebugLevel level, final boolean value)
     {
-        return append(level, value ? "true" : "false");
+        return append(false, level, value ? "true" : "false");
     }
 
     /**
@@ -290,7 +316,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final DisplayDebugLevel level, final int number)
     {
-        return append(level, Integer.toString(number));
+        return append(false, level, Integer.toString(number));
     }
 
     /**
@@ -309,26 +335,6 @@ public interface Display extends Closeable, Exceptions
     default Display append(final Object obj)
     {
         return append(obj != null ? obj.toString() : "null");
-    }
-
-    /**
-     * Adds the obj to the internal buffer.
-     *
-     * @implSpec
-     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
-     * String.
-     *
-     * @param level The debug level in which to display the text.
-     * @param obj   to print.
-     *
-     * @return this Display for chaining purposes.
-     *
-     * @see #append(java.lang.String)
-     * @since 3.0.1
-     */
-    default Display append(final DisplayDebugLevel level, final Object obj)
-    {
-        return append(level, obj != null ? obj.toString() : "null");
     }
 
     /**
@@ -538,7 +544,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display appendln(final DisplayDebugLevel level, final String text)
     {
-        return append(level, text + lineSeparator());
+        return append(false, level, text + lineSeparator());
     }
 
     /**
@@ -574,7 +580,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display appendln(final DisplayDebugLevel level, String format, Object... args)
     {
-        return append(level, format + lineSeparator(), args);
+        return append(false, level, format + lineSeparator(), args);
     }
 
     /**
@@ -650,7 +656,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final boolean value)
     {
-        print(value ? "true" : "false");
+        print(DEFAULT, value);
     }
 
     /**
@@ -683,7 +689,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final int number)
     {
-        print(Integer.toString(number));
+        print(DEFAULT, number);
     }
 
     /**
@@ -716,7 +722,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final Object obj)
     {
-        print(obj != null ? obj.toString() : "null");
+        print(DEFAULT, obj);
     }
 
     /**
@@ -747,11 +753,11 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final String text)
     {
-        append(text).flush();
+        print(DEFAULT, text);
     }
 
     /**
-     * Prints the text.After this returns, the internal buffer will be empty.
+     * Prints the text. After this returns, the internal buffer will be empty.
      *
      * @param level The debug level in which to display the text.
      * @param text  to print.
@@ -762,7 +768,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final DisplayDebugLevel level, final String text)
     {
-        append(level, text).flush();
+        print(true, level, text);
     }
 
     /**
@@ -775,7 +781,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final String format, final Object... args)
     {
-        append(format, args).flush();
+        print(DEFAULT, format, args);
     }
 
     /**
@@ -791,7 +797,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final DisplayDebugLevel level, final String format, final Object... args)
     {
-        append(level, format, args).flush();
+        append(true, level, format, args);
     }
 
     /**
@@ -839,7 +845,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println()
     {
-        println("");
+        println(DEFAULT);
     }
 
     /**
@@ -867,7 +873,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final boolean value)
     {
-        println(value ? "true" : "false");
+        println(DEFAULT, value);
     }
 
     /**
@@ -901,7 +907,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final int number)
     {
-        println(Integer.toString(number));
+        println(DEFAULT, number);
     }
 
     /**
@@ -936,7 +942,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final Object obj)
     {
-        println(obj != null ? obj.toString() : "null");
+        println(DEFAULT, obj);
     }
 
     /**
@@ -985,7 +991,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final DisplayDebugLevel level, final String text)
     {
-        appendln(level, text).flush();
+        appendln(true, level, text);
     }
 
     /**
@@ -999,7 +1005,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final String format, final Object... args)
     {
-        appendln(format, args).flush();
+        println(DEFAULT, format, args);
     }
 
     /**
@@ -1016,6 +1022,110 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final DisplayDebugLevel level, String format, Object... args)
     {
-        appendln(level, format, args).flush();
+        appendln(true, level, format, args);
+    }
+
+    /**
+     * Adds a formatted string to the internal buffer using the specified
+     * format string and arguments.
+     *
+     * @param flush  the all text to outputs.
+     * @param level  The debug level in which to display the text.
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @since 3.0.1
+     */
+    private Display append(
+            final boolean flush,
+            final DisplayDebugLevel level,
+            final String format,
+            final Object... args
+    )
+    {
+        return append(flush, level, format(format, args));
+    }
+
+    /**
+     * Adds the obj to the internal buffer.
+     *
+     * @implSpec
+     * Uses {@code obj != null ? obj.toString() : "null"} to convert obj to
+     * String.
+     *
+     * @param flush the all text to outputs.
+     * @param level The debug level in which to display the text.
+     * @param obj   to print.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @see #append(java.lang.String)
+     * @since 3.0.1
+     */
+    private Display append(final boolean flush, final DisplayDebugLevel level, final Object obj)
+    {
+        return append(flush, level, obj != null ? obj.toString() : "null");
+    }
+
+    /**
+     * Adds the text to the internal buffer, followed by the System line
+     * separator.
+     *
+     * @param flush the all text to outputs.
+     * @param level The debug level in which to display the text.
+     * @param text  to be added.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @see #append(java.lang.String)
+     * @since 3.0.1
+     */
+    private Display appendln(final boolean flush, final DisplayDebugLevel level, final String text)
+    {
+        return append(flush, level, text + lineSeparator());
+    }
+
+    /**
+     * Adds a formatted string to the internal buffer using the specified
+     * format string and arguments, followed by the System line separator.
+     *
+     * @param flush  the all text to outputs.
+     * @param level  The debug level in which to display the text.
+     * @param format The syntax of this string is implementation specific.
+     * @param args   Arguments referenced by the format specifiers in the format
+     *               string.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @see #append(java.lang.String, java.lang.Object...)
+     * @since 3.0.1
+     */
+    private Display appendln(
+            final boolean flush,
+            final DisplayDebugLevel level,
+            String format,
+            Object... args
+    )
+    {
+        return append(flush, level, format + lineSeparator(), args);
+    }
+
+    /**
+     * Prints the text. After this returns, the internal buffer will be empty.
+     *
+     * @param flush the all text to outputs.
+     * @param level The debug level in which to display the text.
+     * @param text  to print.
+     *
+     * @see #append(java.lang.String)
+     * @see #flush()
+     * @since 3.0.1
+     */
+    private void print(final boolean flush, final DisplayDebugLevel level, final String text)
+    {
+        append(flush, level, text);
     }
 }

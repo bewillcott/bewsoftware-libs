@@ -23,14 +23,11 @@ import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
-import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -39,13 +36,18 @@ import static java.util.Objects.requireNonNull;
  * Apart from writing to and reading from the console, you can also write to
  * a file.
  *
+ * @apiNote
+ * When using this in a multi-threaded application, it is highly recommended
+ * that the first instantiation be made within the {@code main(..)} class.
+ *
  * @implNote
  * Once the ConsolIO object is closed, any further calls to any of the methods:
  * append, appendln, print, println, flush, newScanner, readLine, or
  * readPassword, will cause an {@link IOException}.
  *
- * This file has been modified to be compatible with JDK 1.8, by using
- * {@link Strings} methods.
+ * This file has been modified:
+ * - to be compatible with JDK 1.8, by using {@link Strings} methods.
+ * - to be @ThreadSafe.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -60,19 +62,24 @@ public final class ConsoleIO implements Display, Input
 
     private static final String CLOSED_MSG = "ConsoleIO is closed.";
 
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    private static final int FLUSH_ALL = -1;
+
     private static final int OPEN = 1;
+
+    // This is to be used to determine if a thread is the parent one, when doing a 'flush(threadId)'.
+    private static final long PARENT_ID = Thread.currentThread().threadId();
 
     private static final AtomicReference<PrintWriter> file = new AtomicReference<>();
 
     private static final AtomicReference<String> filename = new AtomicReference<>();
 
-    private static final AtomicReference<String> linePrefix =new AtomicReference<>("");
+    private static final AtomicReference<String> linePrefix = new AtomicReference<>("");
 
     private static final AtomicReference<Lines> lines = new AtomicReference<>();
 
     private static final AtomicReference<PrintWriter> out = new AtomicReference<>();
-
-    private static final AtomicReference<StringBuffer> sb = new AtomicReference<>();
 
     /**
      * Stores the singleton of each {@link Writer} object related to each
@@ -120,7 +127,6 @@ public final class ConsoleIO implements Display, Input
         status.set(OPEN);
         out.set(new PrintWriter(System.out));
         ConsoleIO.linePrefix.set(linePrefix);
-        sb.set(new StringBuffer());
         lines.set(new Lines());
         blank = false;
     }
@@ -160,8 +166,6 @@ public final class ConsoleIO implements Display, Input
         {
             lBlank = true;
         }
-
-        sb.set(new StringBuffer());
 
         if (filename != null && !filename.isBlank())
         {
@@ -228,8 +232,6 @@ public final class ConsoleIO implements Display, Input
         {
             lBlank = true;
         }
-
-        sb.set(new StringBuffer());
 
         if (writer != null)
         {
@@ -363,39 +365,15 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    public Display append(final DisplayDebugLevel level, final String text)
+    public Display append(final boolean flush, final DisplayDebugLevel level, final String text)
     {
+//        System.out.println("append(flush: " + flush + ", level: " + level + ", text: " + text + ")");
+
         if (isOpen())
         {
             if (!blank && displayOK(level))
             {
-                lines.get().append(level, text);
-            }
-        } else
-        {
-            exception.compareAndSet(null, new IOException(CLOSED_MSG));
-        }
-
-        return this;
-    }
-
-    /**
-     * @param level  {@inheritDoc}
-     * @param format This implementation uses
-     *               {@link Formatter#format(java.lang.String, java.lang.Object...)
-     *               Formatter.format(String format, Object... args)}
-     *               as the work-horse.
-     *
-     * @see java.util.Formatter - Format String Syntax
-     */
-    @Override
-    public Display append(final DisplayDebugLevel level, String format, Object... args)
-    {
-        if (isOpen())
-        {
-            if (!blank && displayOK(level))
-            {
-                lines.get().append(level, format(format, args));
+                submitTask(flush, level, text);
             }
         } else
         {
@@ -412,12 +390,10 @@ public final class ConsoleIO implements Display, Input
         {
             if (!blank)
             {
-                sb.get().setLength(0);
                 lines.get().clear();
             }
         } else
         {
-            sb.set(null);
             lines.set(null);
         }
 
@@ -434,7 +410,8 @@ public final class ConsoleIO implements Display, Input
     @Override
     public void close() throws IOException
     {
-        flush();
+        EXEC.close();
+        flush(FLUSH_ALL);
 
         if (out != null)
         {
@@ -486,51 +463,10 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    @Deprecated
     public void flush()
     {
-        if (isOpen())
-        {
-            if (out != null || file.get() != null)
-            {
-                if (linePrefix != null && linePrefix.get().length() > 0 && !lines.get().isEmpty())
-                {
-                    sb.get().setLength(0);
-
-                    for (Line line : lines.get().getLines())
-                    {
-                        sb.get().append(linePrefix);
-
-                        if (line.getLevel().value > DEFAULT.value)
-                        {
-                            sb.get().append("[").append(line.getLevel().label).append("] ");
-                        }
-
-                        sb.get().append(line.getText());
-
-                    }
-                } else if (!lines.get().isEmpty())
-                {
-                    sb.get().append(lines.get().getText());
-                }
-
-                if (out != null)
-                {
-                    out.get().print(sb);
-                    out.get().flush();
-                }
-
-                if (file.get() != null)
-                {
-                    file.get().print(sb);
-                    file.get().flush();
-                }
-
-                clear();
-            }
-        } else
-        {
-            exception.compareAndSet(null, new IOException(CLOSED_MSG));
-        }
+        throw new UnsupportedOperationException("Deprecated.");
     }
 
     @Override
@@ -653,9 +589,105 @@ public final class ConsoleIO implements Display, Input
 
     }
 
+    private void flush(final long threadId)
+    {
+//        System.out.println("flush(" + threadId + ")");
+
+        if (isOpen())
+        {
+            final StringBuilder sb = new StringBuilder();
+
+            if (out != null || file.get() != null)
+            {
+                if (!lines.get().isEmpty())
+                {
+                    if (threadId == FLUSH_ALL)
+                    {
+                        lines.get().getThreadIds().forEach((tId) -> flushThreadId(tId, sb));
+                    } else
+                    {
+                        flushThreadId(threadId, sb);
+                    }
+                }
+
+                if (out != null)
+                {
+                    out.get().print(sb);
+                    out.get().flush();
+                }
+
+                if (file.get() != null)
+                {
+                    file.get().print(sb);
+                    file.get().flush();
+                }
+
+                clear();
+            }
+        } else
+        {
+            exception.compareAndSet(null, new IOException(CLOSED_MSG));
+        }
+    }
+
+    private void flushThreadId(final long threadId, final StringBuilder sb)
+    {
+        final String sThreadId = (threadId != PARENT_ID) ? "[" + threadId + "] " : "";
+
+        if (linePrefix != null && !linePrefix.get().isBlank())
+        {
+            for (Line line : lines.get().getLines(threadId))
+            {
+                sb.append(sThreadId).append(linePrefix);
+
+                final DisplayDebugLevel level = line.getLevel();
+
+                if (level.value > DEFAULT.value)
+                {
+                    sb.append("(").append(level.label).append(") ");
+                }
+
+                sb.append(line.getText());
+
+            }
+        } else
+        {
+            sb.append(sThreadId).append(lines.get().getText(threadId));
+        }
+    }
+
     private boolean isOpen()
     {
         return status.get() == OPEN;
+    }
+
+    /**
+     * Submit a new task to process the supplied text.
+     *
+     * @param flush the all text to outputs.
+     * @param level The debug level in which to display this text.
+     * @param text  to be processed.
+     */
+    private void submitTask(final boolean flush, final DisplayDebugLevel level, final String text)
+    {
+        final long threadId = Thread.currentThread().threadId();
+//        System.out.println("submitTask->threadId: " + threadId);
+
+        final Runnable task = () ->
+        {
+//            System.out.println("task->(flush: " + flush + ", level: " + level + ", text: " + text + ")");
+//            final long taskThreadId = Thread.currentThread().threadId();
+//            System.out.println("submitTask->taskThreadId: " + taskThreadId);
+
+            lines.get().append(threadId, level, text);
+
+            if (flush)
+            {
+                flush(threadId);
+            }
+        };
+
+        EXEC.execute(task);
     }
 
     /**
@@ -667,7 +699,7 @@ public final class ConsoleIO implements Display, Input
 
         private boolean terminated;
 
-        private final StringBuffer text;
+        private final StringBuilder text;
 
         /**
          * Only accessible by the enclosing class.
@@ -678,7 +710,7 @@ public final class ConsoleIO implements Display, Input
         private Line(final DisplayDebugLevel level, final String text)
         {
             this.level = level;
-            this.text = new StringBuffer();
+            this.text = new StringBuilder();
             this.append(text);
         }
 
@@ -741,28 +773,30 @@ public final class ConsoleIO implements Display, Input
      */
     private static final class Lines
     {
-        private final AtomicReference<Line> lastUnterminated = new AtomicReference<>();
+        private final ConcurrentMap<Long, Line> lastUnterminated;
 
-        private final Queue<Line> lines;
+        private final ConcurrentMap<Long, Queue<Line>> queues;
 
         /**
          * Only accessible by the enclosing class.
          */
         private Lines()
         {
-            lines = new ConcurrentLinkedQueue<>();
+            queues = new ConcurrentHashMap<>();
+            lastUnterminated = new ConcurrentHashMap<>();
         }
 
         /**
          * Append the text by either adding a new line, or appending it to a
          * previously added, unterminated line of the same 'level'.
          *
-         * @param level debug display level.
-         * @param text  to be stored.
+         * @param threadID Id of the thread associated with this {@code text}.
+         * @param level    debug display level.
+         * @param text     to be stored.
          *
          * @return {@code true} if successful, {@code false} otherwise.
          */
-        public boolean append(final DisplayDebugLevel level, final String text)
+        public boolean append(final long threadID, final DisplayDebugLevel level, final String text)
         {
             boolean rtn = false;
             boolean done = false;
@@ -771,7 +805,7 @@ public final class ConsoleIO implements Display, Input
             {
                 final Line lu;
 
-                if ((lu = lastUnterminated.get()) != null)
+                if ((lu = lastUnterminated.get(threadID)) != null)
                 {
                     if (lu.getLevel() == level)
                     {
@@ -779,25 +813,25 @@ public final class ConsoleIO implements Display, Input
 
                         if (lu.isTerminated())
                         {
-                            lastUnterminated.compareAndSet(lu, null);
+                            lastUnterminated.remove(threadID);
                         }
 
                         done = true;
                     } else
                     {
                         rtn = lu.append("\n");
-                        lastUnterminated.compareAndSet(lu, null);
+                        lastUnterminated.remove(threadID);
                     }
                 }
 
                 if (!done)
                 {
                     final Line line = new Line(level, text);
-                    rtn = lines.add(line);
+                    rtn = add(threadID, line);
 
                     if (!line.isTerminated())
                     {
-                        lastUnterminated.compareAndSet(null, line);
+                        lastUnterminated.put(threadID, line);
                     }
                 }
             }
@@ -810,75 +844,90 @@ public final class ConsoleIO implements Display, Input
          */
         public void clear()
         {
-            lines.clear();
+            queues.clear();
         }
 
         /**
-         * Get all of the lines currently being stored.
+         * Get all of the lines currently being stored for the requested
+         * {@code thread}.
          * <p>
          * If there is an unterminated line, it will be terminate, and cleared.
          *
+         * @param threadID Id of the thread.
+         *
          * @return a new list of terminated lines.
          */
-        public List<Line> getLines()
+        public List<Line> getLines(final long threadID)
         {
-            final List<Line> list = new ArrayList<>();
+            final List<Line> rtn = new ArrayList<>();
             final Line lu;
 
-            if ((lu = lastUnterminated.get()) != null
-                    && lastUnterminated.compareAndSet(lu, null))
+            if ((lu = lastUnterminated.get(threadID)) != null)
             {
                 lu.append("\n");
+                lastUnterminated.remove(threadID);
             }
 
-            for (Line line : lines)
+            final Queue<Line> queue;
+
+            if ((queue = queues.get(threadID)) != null)
             {
-                String[] textArr = line.getText().replace("\n", " \n").split("\n");
+                queue.forEach(line ->
+                {
+                    String[] textArr = line.getText().replace("\n", " \n").split("\n");
 
-                if (textArr.length > 1)
-                {
-                    for (String text : textArr)
+                    if (textArr.length > 1)
                     {
-                        final Line line2 = new Line(line.getLevel(), Strings.rTrim(text));
-                        line2.append("\n");
-                        list.add(line2);
+                        for (String text : textArr)
+                        {
+                            final Line line2 = new Line(line.getLevel(), Strings.rTrim(text));
+                            line2.append("\n");
+                            rtn.add(line2);
+                        }
+                    } else
+                    {
+                        rtn.add(line);
                     }
-                } else
-                {
-                    list.add(line);
-                }
+                });
             }
 
-            return list;
+            return Collections.unmodifiableList(rtn);
         }
 
         /**
-         * Returns a text string representation of all the lines being
-         * stored.
+         * Returns a text string representation of all the lines currently being
+         * stored for the requested {@code thread}.
          * <p>
          * If there is an unterminated line, it will be terminate, and
          * cleared.
          *
+         * @param threadId Id of the thread.
+         *
          * @return a text string representation of all the lines currently
          *         stored.
          */
-        public String getText()
+        public String getText(final long threadId)
         {
-            final StringBuffer sb;
-            final Line lu;
             String rtn = "";
 
-            if (!lines.isEmpty())
+            if (!queues.isEmpty())
             {
-                sb = new StringBuffer();
+                final StringBuilder sb = new StringBuilder();
+                final Line lu;
 
-                if ((lu = lastUnterminated.get()) != null
-                        && lastUnterminated.compareAndSet(lu, null))
+                if ((lu = lastUnterminated.get(threadId)) != null)
                 {
                     lu.append("\n");
+                    lastUnterminated.remove(threadId);
                 }
 
-                lines.forEach(line -> sb.append(line.getText()));
+                final Queue<Line> queue;
+
+                if ((queue = queues.get(threadId)) != null)
+                {
+                    queue.forEach(line -> sb.append(line.getText()));
+                }
+
                 rtn = sb.toString();
             }
 
@@ -886,11 +935,21 @@ public final class ConsoleIO implements Display, Input
         }
 
         /**
+         * Provide unmodifiable set of threadIds.
+         *
+         * @return set of threadIds.
+         */
+        public Set<Long> getThreadIds()
+        {
+            return Collections.unmodifiableSet(queues.keySet());
+        }
+
+        /**
          * @return {@code true} if no lines are being stored.
          */
         public boolean isEmpty()
         {
-            return lines.isEmpty();
+            return queues.isEmpty();
         }
 
         /**
@@ -898,13 +957,26 @@ public final class ConsoleIO implements Display, Input
          */
         public int size()
         {
-            return lines.size();
+            return queues.size();
         }
 
         @Override
         public String toString()
         {
-            return "Lines{" + "lines=" + lines + '}';
+            return "Lines{" + "lines=" + queues + '}';
+        }
+
+        private boolean add(final long threadId, final Line line)
+        {
+            Queue<Line> queue;
+
+            if ((queue = queues.get(threadId)) == null)
+            {
+                queue = new ConcurrentLinkedQueue<>();
+                queues.put(threadId, queue);
+            }
+
+            return queue.add(line);
         }
     }
 

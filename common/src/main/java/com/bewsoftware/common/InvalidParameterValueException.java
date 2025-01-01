@@ -26,11 +26,11 @@ import static java.lang.String.format;
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @since 1.0
- * @version 2.1.0
- *
  * @deprecated Use {@link InvalidParameterException} instead. Will be removed
  * in later version.
+ * 
+ * @since 2.1.0
+ * @version 2.1.0
  */
 @Deprecated
 public class InvalidParameterValueException extends RuntimeException
