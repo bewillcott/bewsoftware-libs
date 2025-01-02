@@ -59,7 +59,7 @@
         <javadoc.header>${javadoc.title}</javadoc.header>
         <javadoc.linksource>false</javadoc.linksource>
         <javadoc.link.url.jdk>https://docs.oracle.com/en/java/javase/${java.version}/docs/api/</javadoc.link.url.jdk>
-        <javadoc.outputDirectory>${project.reporting.outputDirectory}/apidocs</javadoc.outputDirectory>
+        <javadoc.outputDirectory>${project.reporting.outputEncoding}/apidocs</javadoc.outputDirectory>
         <javadoc.show>protected</javadoc.show>
         <javadoc.skip>true</javadoc.skip>
         <javadoc.source.version>${java.version}</javadoc.source.version>
@@ -87,44 +87,7 @@
         <module>jfx</module>
     </modules>
 
-    <profiles>
-        <!--        <profile>
-            <id>release-profile</id>
-            <properties>
-                <skip.version.build>true</skip.version.build>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.bewsoftware.mojo</groupId>
-                        <artifactId>bewsoftware-version-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Release</id>
-                                <goals>
-                                    <goal>release</goal>
-                                </goals>
-                                <configuration>
-                                    <keep>${keep.verion.number}</keep>
-                                    <finalBaseNamePropertyName>finalBaseName</finalBaseNamePropertyName>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>-->
-
-        <profile>
-            <id>test</id>
-            <properties>
-                <unit.tests.skip>false</unit.tests.skip>
-            </properties>
-        </profile>
-
-    </profiles>
-
-    <!-- Last updated: 22/12/2024 -->
+    <!-- Last updated: 2/1/2025 -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -176,22 +139,22 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>5.11.3</version>
+                <version>5.11.4</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.11.3</version>
+                <version>5.11.4</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>5.11.3</version>
+                <version>5.11.4</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.11.3</version>
+                <version>5.11.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -311,24 +274,5 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
-        <!--        <plugins>
-            <plugin>
-                <groupId>com.bewsoftware.mojo</groupId>
-                <artifactId>bewsoftware-version-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>Build</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <configuration>
-                            <keep>${keep.verion.number}</keep>
-                            <skip>${skip.version.build}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>-->
     </build>
 </project>
