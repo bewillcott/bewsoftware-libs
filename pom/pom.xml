@@ -19,6 +19,7 @@
         <manual.target>docs</manual.target>
         <spotbugs.skip>true</spotbugs.skip>
         <skip.version.build>true</skip.version.build>
+        <javadoc.attach></javadoc.attach>
     </properties>
 
     <profiles>
@@ -29,6 +30,7 @@
                 <javadoc.outputDirectory>${manual.source}/apidocs</javadoc.outputDirectory>
                 <javadoc.show>private</javadoc.show>
                 <javadoc.skip>false</javadoc.skip>
+                <javadoc.attach>false</javadoc.attach>
                 <manual>clean</manual>
             </properties>
             <build>
@@ -66,6 +68,40 @@
                             <execution>
                                 <id>Move module-info.java back</id>
                                 <phase>verify</phase>
+                                <configuration>
+                                    <target>
+                                        <move file="src/main/module-info.java" todir="src/main/java"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>Javadoc-std</id>
+            <properties>
+                <javadoc.linksource>true</javadoc.linksource>
+                <javadoc.outputDirectory>${manual.source}/apidocs</javadoc.outputDirectory>
+                <javadoc.attach>false</javadoc.attach>
+                <javadoc.skip>false</javadoc.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>developer-api-reset</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>Move module-info.java back</id>
+                                <phase>initialize</phase>
                                 <configuration>
                                     <target>
                                         <move file="src/main/module-info.java" todir="src/main/java"/>
@@ -363,25 +399,11 @@
         <profile>
             <id>release-profile</id>
             <properties>
+                <javadoc.goal>jar</javadoc.goal>
                 <javadoc.skip>false</javadoc.skip>
             </properties>
             <build>
                 <plugins>
-                    <!--                    <plugin>
-                        <groupId>com.bewsoftware.mojo</groupId>
-                        <artifactId>bewsoftware-version-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Release</id>
-                                <goals>
-                                    <goal>release</goal>
-                                </goals>
-                                <configuration>
-                                    <finalBaseNamePropertyName>finalBaseName</finalBaseNamePropertyName>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
@@ -690,6 +712,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <attach>${javadoc.attach}</attach>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>${javadoc.skip}</skip>
                     <show>${javadoc.show}</show>
