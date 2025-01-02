@@ -94,7 +94,8 @@ public final class PBKDF2
      *
      * @return a salted PBKDF2 hash of the password
      *
-     * @throws CannotPerformOperationException
+     * @throws CannotPerformOperationException if "no such algorithm" or
+     *                                         "invalid key spec".
      */
     public static String createHash(String password)
             throws CannotPerformOperationException
@@ -133,7 +134,7 @@ public final class PBKDF2
      *
      * @return generated secret key
      *
-     * @throws NoSuchAlgorithmException
+     * @throws NoSuchAlgorithmException if any.
      */
     public static SecretKey generateKey(int n) throws NoSuchAlgorithmException
     {
@@ -156,7 +157,8 @@ public final class PBKDF2
      *
      * @return generated secret key
      *
-     * @throws CannotPerformOperationException
+     * @throws CannotPerformOperationException if "no such algorithm" or
+     *                                         "invalid key spec".
      */
     public static SecretKey getKeyFromPassword(String password, String salt)
             throws CannotPerformOperationException
@@ -232,8 +234,8 @@ public final class PBKDF2
      *
      * @return {@code true} if the password is correct, {@code false} if not
      *
-     * @throws CannotPerformOperationException
-     * @throws InvalidHashException
+     * @throws CannotPerformOperationException if "Unsupported hash type".
+     * @throws InvalidHashException            for various reasons.
      */
     public static boolean verifyPassword(String password, String correctHash)
             throws CannotPerformOperationException, InvalidHashException
@@ -328,11 +330,12 @@ public final class PBKDF2
     /**
      * Convert a string of Base64 characters into byte array.
      *
-     * @param hex the Base64 text to convert
+     * @param hex the Base64 text to convert.
      *
-     * @return the decoded text
+     * @return the decoded text.
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if {@code hex} is not in valid Base64
+     *                                  scheme.
      */
     private static byte[] fromBase64(String hex)
             throws IllegalArgumentException
@@ -344,13 +347,14 @@ public final class PBKDF2
      * Computes the PBKDF2 hash of a password.
      *
      * @param password   the password to hash.
-     * @param salt       the salt
-     * @param iterations the iteration count (slowness factor)
-     * @param bytes      the length of the hash to compute in bytes
+     * @param salt       the salt.
+     * @param iterations the iteration count (slowness factor).
+     * @param bytes      the length of the hash to compute in bytes.
      *
-     * @return the PBDKF2 hash of the password
+     * @return the PBDKF2 hash of the password.
      *
-     * @throws CannotPerformOperationException
+     * @throws CannotPerformOperationException if "no such algorithm" or
+     *                                         "invalid key spec".
      */
     private static byte[] pbkdf2(char[] password, byte[] salt, int iterations, int bytes)
             throws CannotPerformOperationException
@@ -380,10 +384,11 @@ public final class PBKDF2
      * is used so that password hashes cannot be extracted from an on-line
      * system using a timing attack and then attacked off-line.
      *
-     * @param a the first byte array
-     * @param b the second byte array
+     * @param a the first byte array.
+     * @param b the second byte array.
      *
-     * @return true if both byte arrays are the same, false if not
+     * @return {@code true} if both byte arrays are the same, {@code false} if
+     *         not.
      */
     private static boolean slowEquals(byte[] a, byte[] b)
     {

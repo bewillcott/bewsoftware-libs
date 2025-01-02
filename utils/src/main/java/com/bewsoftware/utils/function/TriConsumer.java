@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.utils;
+package com.bewsoftware.utils.function;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -46,10 +46,8 @@ import java.util.function.Consumer;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.9
- * @version 1.0.9
- * @deprecated Class moved to: {@linkplain TriConsumer}.
+ * @version 3.0.1
  */
-@Deprecated(since = "3.0.1", forRemoval = true)
 @FunctionalInterface
 public interface TriConsumer<T, U, V>
 {

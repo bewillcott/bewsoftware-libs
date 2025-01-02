@@ -77,13 +77,6 @@ public interface Display extends Closeable, Exceptions
     public Display append(final boolean flush, final DisplayDebugLevel level, final String text);
 
     /**
-     * Empties the internal buffer of all unflushed output.
-     *
-     * @return this Display for chaining purposes.
-     */
-    public Display clear();
-
-    /**
      * Get the debug level for this run.
      *
      * @return Debug level currently set.
@@ -96,53 +89,6 @@ public interface Display extends Closeable, Exceptions
      * @param level Debug level to use.
      */
     public void debugLevel(final DisplayDebugLevel level);
-
-    /**
-     * Determine if the current text will be displayed, by comparing the current
-     * debug level to the DEFAULt display level.
-     *
-     * @return {@code true} if it will be, {@code false} otherwise.
-     *
-     * @deprecated Use
-     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}
-     * instead.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
-     */
-    @Deprecated
-    public boolean displayOK();
-
-    /**
-     * Flushes all output from the internal buffer to the output destination(s).
-     *
-     * @deprecated No longer used. Functionality moved internally.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
-     */
-    @Deprecated
-    public void flush();
-
-    /**
-     * Display all following text if the {@link #debugLevel()} is greater than
-     * or equal to the {@code level}.
-     *
-     * @param level The debug level at which to display the following text.
-     *
-     * @return this Display for chaining purposes.
-     *
-     * @deprecated No longer used. Refer to
-     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
-     */
-    @Deprecated
-    public Display level(final DisplayDebugLevel level);
 
     /**
      * Adds the text to the internal buffer.
@@ -394,7 +340,7 @@ public interface Display extends Closeable, Exceptions
      *
      * @since 3.0.1
      */
-    @Deprecated
+    @Deprecated(since = "3.0.1", forRemoval = true)
     default Display appendln()
     {
         throw new UnsupportedOperationException("Deprecated.");
@@ -584,6 +530,16 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
+     * Empties the internal buffer of all unflushed output.
+     *
+     * @return this Display for chaining purposes.
+     */
+    default Display clear()
+    {
+        throw new UnsupportedOperationException("Deprecated.");
+    }
+
+    /**
      * Obtain the text label for the current debug level.
      *
      * @return text label.
@@ -591,6 +547,26 @@ public interface Display extends Closeable, Exceptions
     default String debugLevelStr()
     {
         return debugLevel().label;
+    }
+
+    /**
+     * Determine if the current text will be displayed, by comparing the current
+     * debug level to the DEFAULt display level.
+     *
+     * @return {@code true} if it will be, {@code false} otherwise.
+     *
+     * @deprecated Use
+     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}
+     * instead.
+     *
+     * @throws UnsupportedOperationException as this is deprecated.
+     *
+     * @since 3.0.1
+     */
+    @Deprecated(since = "3.0.1", forRemoval = true)
+    default boolean displayOK()
+    {
+        throw new UnsupportedOperationException("Deprecated.");
     }
 
     /**
@@ -604,6 +580,42 @@ public interface Display extends Closeable, Exceptions
      * @since 3.0.1
      */
     boolean displayOK(final DisplayDebugLevel level);
+
+    /**
+     * Flushes all output from the internal buffer to the output destination(s).
+     *
+     * @deprecated No longer used. Functionality moved internally.
+     *
+     * @throws UnsupportedOperationException as this is deprecated.
+     *
+     * @since 3.0.1
+     */
+    @Deprecated(since = "3.0.1", forRemoval = true)
+    default void flush()
+    {
+        throw new UnsupportedOperationException("Deprecated.");
+    }
+
+    /**
+     * Display all following text if the {@link #debugLevel()} is greater than
+     * or equal to the {@code level}.
+     *
+     * @param level The debug level at which to display the following text.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @deprecated No longer used. Refer to
+     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}.
+     *
+     * @throws UnsupportedOperationException as this is deprecated.
+     *
+     * @since 3.0.1
+     */
+    @Deprecated(since = "3.0.1", forRemoval = true)
+    default Display level(final DisplayDebugLevel level)
+    {
+        throw new UnsupportedOperationException("Deprecated.");
+    }
 
     /**
      * Prints the internal buffer with the result of the supplier interface

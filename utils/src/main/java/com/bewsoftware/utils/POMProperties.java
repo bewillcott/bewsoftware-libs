@@ -28,7 +28,6 @@ import java.util.Properties;
  * <ol>
  * <li>Create a new file: "pom.properties" <br>
  * Location: "src/main/resources"
- * <p>
  * </li>
  * <li><p>
  * Place the following text into that file, and save it:</p>
@@ -82,7 +81,9 @@ import java.util.Properties;
  *
  * @since 0.1
  * @version 1.0
+ * @deprecated To be removed from future release.
  */
+@Deprecated(since = "3.0.1", forRemoval = true)
 public final class POMProperties
 {
 
@@ -106,7 +107,6 @@ public final class POMProperties
      * The filename of the binary output file.
      * <p>
      * This is usually a '.jar' file.
-     * </p>
      */
     public final String filename;
 

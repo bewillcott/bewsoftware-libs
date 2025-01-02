@@ -26,13 +26,16 @@ import java.net.URL;
  *
  * @since 1.0
  * @version 1.0
+ * @deprecated to be removed in a later release.
  */
-public interface PackageInterface {
-
+@Deprecated(since = "3.0.1", forRemoval = true)
+public interface PackageInterface
+{
     /**
      * Return the title of this package.
      *
-     * @return the title of the implementation, {@code null} is returned if it is not known.
+     * @return the title of the implementation, {@code null} is returned if it
+     *         is not known.
      */
     String getImplementationTitle();
 
@@ -52,14 +55,16 @@ public interface PackageInterface {
      * package version strings used for this implementation
      * by this vendor for this package.
      *
-     * @return the version of the implementation, {@code null} is returned if it is not known.
+     * @return the version of the implementation, {@code null} is returned if it
+     *         is not known.
      */
     String getImplementationVersion();
 
     /**
      * Return the name of this package.
      *
-     * @return The fully-qualified name of this package as defined in section 6.5.3 of
+     * @return The fully-qualified name of this package as defined in section
+     *         6.5.3 of
      * <cite>The Java&trade; Language Specification</cite>,
      * for example, {@code java.lang}
      */
@@ -68,7 +73,8 @@ public interface PackageInterface {
     /**
      * Return the title of the specification that this package implements.
      *
-     * @return the specification title, {@code null} is returned if it is not known.
+     * @return the specification title, {@code null} is returned if it is not
+     *         known.
      */
     String getSpecificationTitle();
 
@@ -77,7 +83,8 @@ public interface PackageInterface {
      * or company that owns and maintains the specification
      * of the classes that implement this package.
      *
-     * @return the specification vendor, {@code null} is returned if it is not known.
+     * @return the specification vendor, {@code null} is returned if it is not
+     *         known.
      */
     String getSpecificationVendor();
 
@@ -93,7 +100,8 @@ public interface PackageInterface {
      * Specification version numbers use a syntax that consists of non-negative
      * decimal integers separated by periods ".", for example "2.0" or
      * "1.2.3.4.5.6.7". This allows an extensible number to be used to represent
-     * major, minor, micro, etc. versions. The version specification is described
+     * major, minor, micro, etc. versions. The version specification is
+     * described
      * by the following formal grammar:
      * <blockquote>
      * <dl>
@@ -109,12 +117,14 @@ public interface PackageInterface {
      * <dd><i>Digits</i>
      * <p>
      * <dt><i>Digit:</i>
-     * <dd>any character for which {@link Character#isDigit} returns {@code true},
+     * <dd>any character for which {@link Character#isDigit} returns
+     * {@code true},
      * e.g. 0, 1, 2, ...
      * </dl>
      * </blockquote>
      *
-     * @return the specification version, {@code null} is returned if it is not known.
+     * @return the specification version, {@code null} is returned if it is not
+     *         known.
      */
     String getSpecificationVersion();
 
@@ -158,7 +168,8 @@ public interface PackageInterface {
     /**
      * @param url the code source URL
      *
-     * @return true if this package is sealed with respect to the given {@code url}
+     * @return true if this package is sealed with respect to the given
+     *         {@code url}
      */
     boolean isSealed(URL url);
 
@@ -173,5 +184,4 @@ public interface PackageInterface {
      */
     @Override
     String toString();
-
 }

@@ -563,7 +563,7 @@ public interface Strings
      * @deprecated Use String.format(String, Object...) instead.
      * @see String#format(String, Object...)
      */
-    @Deprecated
+    @Deprecated(since = "3.0.0", forRemoval = true)
     static String sprintf(final String format, Object... args)
     {
         return new Formatter().format(format, args).toString();

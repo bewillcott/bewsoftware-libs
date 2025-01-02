@@ -441,13 +441,6 @@ public final class ConsoleIO implements Display, Input
         return debugLevel.get();
     }
 
-    @Override
-    @Deprecated
-    public boolean displayOK()
-    {
-        throw new UnsupportedOperationException("Deprecated.");
-    }
-
     /**
      * Determine if the current text will be displayed, by comparing the current
      * debug level to the supplied display level.
@@ -463,23 +456,9 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
-    @Deprecated
-    public void flush()
-    {
-        throw new UnsupportedOperationException("Deprecated.");
-    }
-
-    @Override
     public boolean isException()
     {
         return exception.get() != null;
-    }
-
-    @Override
-    @Deprecated
-    public Display level(final DisplayDebugLevel level)
-    {
-        throw new UnsupportedOperationException("Deprecated.");
     }
 
     @Override
