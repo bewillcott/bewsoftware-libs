@@ -92,6 +92,13 @@
             </properties>
         </profile>
         <profile>
+            <id>Javadoc-std-attached</id>
+            <properties>
+                <javadoc.outputDirectory>${manual.source}/apidocs</javadoc.outputDirectory>
+                <javadoc.skip>false</javadoc.skip>
+            </properties>
+        </profile>
+        <profile>
             <id>developer-api-reset</id>
             <build>
                 <plugins>
@@ -401,6 +408,7 @@
             <properties>
                 <javadoc.goal>jar</javadoc.goal>
                 <javadoc.skip>false</javadoc.skip>
+                <finalBaseName>${project.build.finalName}</finalBaseName>
             </properties>
             <build>
                 <plugins>
@@ -742,7 +750,7 @@
                     <bottom>
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
-                    <reportOutputDirectory>${javadoc.outputDirectory}</reportOutputDirectory>
+                    <!--<reportOutputDirectory>${javadoc.outputDirectory}</reportOutputDirectory>-->
                     <tags>
                         <tag>
                             <name>Note</name>
