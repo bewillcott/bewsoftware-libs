@@ -130,22 +130,22 @@ public class BEWFiles
 
         processInList(srcPath, inList, destPath, outList, dirList, display);
 
-        display.level(DEBUG).appendln("Creating directories ...");
+        display.appendln(DEBUG, "Creating directories ...");
 
         for (Path dir : dirList)
         {
-            display.append("    ").appendln(dir);
+            display.append(DEBUG, "    ").appendln(DEBUG, dir);
             createDirectories(dir);
         }
 
         display.flush();
-        display.level(DEBUG).appendln("Copying files ...");
+        display.appendln(DEBUG, "Copying files ...");
 
         for (FileData fileData : outList)
         {
-            display.appendln(fileData.sourcePath)
-                    .append("    ")
-                    .appendln(fileData.destinationPath);
+            display.appendln(DEBUG, fileData.sourcePath)
+                    .append(DEBUG, "    ")
+                    .appendln(DEBUG, fileData.destinationPath);
 
             copy(fileData.sourcePath, fileData.destinationPath, options);
         }
@@ -272,7 +272,7 @@ public class BEWFiles
                         dirList.add(parent);
                     }
 
-                    display.level(DEBUG).println(outPath);
+                    display.println(DEBUG,outPath);
                 }
             }
         }
@@ -280,7 +280,6 @@ public class BEWFiles
 
     private static class FileData
     {
-
         public final Path destinationPath;
 
         public final Path sourcePath;

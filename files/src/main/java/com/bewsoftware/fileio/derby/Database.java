@@ -37,7 +37,6 @@ import static com.bewsoftware.fileio.derby.Database.DbOpenResult.NEW;
 import static com.bewsoftware.fileio.derby.Database.Status.OFF;
 import static com.bewsoftware.fileio.derby.Database.Status.ON;
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEBUG;
-import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static com.bewsoftware.utils.io.DisplayDebugLevel.INFO;
 import static java.nio.file.Path.of;
 
@@ -60,12 +59,7 @@ public class Database implements AutoCloseable
 
     private final Path dbPath;
 
-    private final ArrayList<Statement> stmts;
-
-
-    {   // Initialize the ArrayList
-        stmts = new ArrayList<>();
-    }
+    private final ArrayList<Statement> stmts = new ArrayList<>();
 
     /**
      * Instantiates a Database object for the database: dbFilename.
@@ -76,7 +70,7 @@ public class Database implements AutoCloseable
      * @param dbName name and location of database file.
      *
      * @throws InvalidParameterException if 'dbFilename' is either
-     *                                        null or blank.
+     *                                   null or blank.
      */
     public Database(final String dbName) throws InvalidParameterException
     {
@@ -155,7 +149,7 @@ public class Database implements AutoCloseable
 
         try (Statement st = conn.createStatement())
         {
-            DISPLAY.level(INFO).println("sql: " + sql);
+            DISPLAY.println(INFO, "sql: " + sql);
             st.execute(sql);
             rtn = true;
         } catch (SQLException ex)
@@ -234,7 +228,7 @@ public class Database implements AutoCloseable
             {
                 for (String sql : arraySQL)
                 {
-                    DISPLAY.level(INFO).println("sql: " + sql);
+                    DISPLAY.println(INFO, "sql: " + sql);
                     st.executeUpdate(sql);
                 }
 
@@ -288,13 +282,13 @@ public class Database implements AutoCloseable
             {
                 case 1 ->
                 {
-                    DISPLAY.level(DEBUG).println("'foreign_keys' constraint is set.");
+                    DISPLAY.println(DEBUG, "'foreign_keys' constraint is set.");
                     return ON;
                 }
 
                 case 0 ->
                 {
-                    DISPLAY.level(DEBUG).println("'foreign_keys' constraint is unset.");
+                    DISPLAY.println(DEBUG, "'foreign_keys' constraint is unset.");
                     return OFF;
                 }
 
@@ -426,10 +420,10 @@ public class Database implements AutoCloseable
 
             if (val == 1 && setting == ON)
             {
-                DISPLAY.level(DEBUG).println("'foreign_keys' constraint is set.");
+                DISPLAY.println(DEBUG, "'foreign_keys' constraint is set.");
             } else if (val == 0 && setting == OFF)
             {
-                DISPLAY.level(DEBUG).println("'foreign_keys' constraint is unset.");
+                DISPLAY.println(DEBUG, "'foreign_keys' constraint is unset.");
             } else
             {
                 throw new SQLException("'foreign_keys' constraint not being set.");
@@ -460,10 +454,10 @@ public class Database implements AutoCloseable
 
         if (!gotSQLExc)
         {
-            DISPLAY.level(DEFAULT).println("Database did not shut down normally");
+            DISPLAY.println("Database did not shut down normally");
         } else
         {
-            DISPLAY.level(DEFAULT).println("Database shut down normally");
+            DISPLAY.println("Database shut down normally");
         }
     }
 

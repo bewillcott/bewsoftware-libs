@@ -72,7 +72,7 @@ public class Finder extends SimpleFileVisitor<Path>
      */
     public SortedSet<Path> done()
     {
-        display.level(INFO).println("Matched: " + numMatches);
+        display.println(INFO,"Matched: " + numMatches);
         return Collections.unmodifiableSortedSet(filenames);
     }
 
@@ -118,7 +118,7 @@ public class Finder extends SimpleFileVisitor<Path>
     @Override
     public FileVisitResult visitFileFailed(final Path file, final IOException exc)
     {
-        display.level(DEBUG).println("visitFileFailed: " + exc);
+        display.println(DEBUG,"visitFileFailed: " + exc);
         return CONTINUE;
     }
 
@@ -134,7 +134,7 @@ public class Finder extends SimpleFileVisitor<Path>
         if (name != null && matcher.matches(name))
         {
             numMatches++;
-            display.level(DEBUG).println(file);
+            display.println(DEBUG,file);
             filenames.add(file);
         }
     }

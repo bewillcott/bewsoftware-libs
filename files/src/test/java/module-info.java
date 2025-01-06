@@ -29,4 +29,6 @@
 module BEWSoftwareFilesLibraryTest {
     requires transitive bewsoftware.files;
     requires transitive org.junit.jupiter.api;
+
+    exports com.bewsoftware.fileio.derby.test to org.junit.platform.commons;
 }
