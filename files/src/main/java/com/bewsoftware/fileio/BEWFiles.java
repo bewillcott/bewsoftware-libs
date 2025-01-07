@@ -69,6 +69,9 @@ public class BEWFiles
      *                  file.
      *
      * @throws IOException If an I/O error occurs.
+     * @throws InterruptedException If thread is interrupted.
+     *
+     * @since 3.0.1
      */
     public static void copyDirTree(
             final Display display,
@@ -76,7 +79,7 @@ public class BEWFiles
             final String destDir,
             final String pattern,
             final CopyOption... options
-    ) throws IOException
+    ) throws IOException, InterruptedException
     {
         Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
         Path destPath = (destDir != null ? of(destDir) : of(""));
@@ -101,6 +104,9 @@ public class BEWFiles
      *                 file.
      *
      * @throws IOException If an I/O error occurs.
+     * @throws InterruptedException If thread is interrupted.
+     *
+     * @since 3.0.1
      */
     public static void copyDirTree(
             final Display display,
@@ -108,7 +114,7 @@ public class BEWFiles
             final Path destPath,
             final String pattern,
             CopyOption... options
-    ) throws IOException
+    ) throws IOException, InterruptedException
     {
         // Can't be copying source onto itself.
         // No point.
