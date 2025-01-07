@@ -722,7 +722,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>javadocs</id>
+                        <id>javadocs-attach</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -736,12 +736,14 @@
                     <show>${javadoc.show}</show>
                     <doctitle>${javadoc.title}</doctitle>
                     <header>${javadoc.header}</header>
+                    <overview>${project.build.directory}/classes/javadoc/overview.html</overview>
                     <docfilessubdirs>true</docfilessubdirs>
                     <source>${javadoc.source.version}</source>
                     <links>
                         <link>${javadoc.link.url.jdk}</link>
                     </links>
                     <linksource>${javadoc.linksource}</linksource>
+                    <removeUnknownThrows>false</removeUnknownThrows>
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
                     <additionalOptions>
