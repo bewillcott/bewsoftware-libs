@@ -20,13 +20,10 @@
 
 package com.bewsoftware.utils.io;
 
-import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -61,42 +58,29 @@ public class ConsoleIOTest
 
 //        final Thread t = new Thread(() ->
 //        {
-            final Display display = ConsoleIO.consoleWriterDisplay("", "SW1", sw);
+        final Display display = ConsoleIO.consoleWriterDisplay("", "SW1", sw);
 
-            try (display)
+        try (display)
+        {
+            display.println(text1);
+            display.println(text2);
+        } finally
+        {
+            if (display.isException())
             {
-
-                display.println(text1);
-                display.println(text2);
-//                display.await();
-//                display.close();
-//            } catch (IOException ex)
-//            {
-//                fail("display.close():\n" + ex);
-
-//            } catch (InterruptedException ex)
-//            {
-//                fail("display.await():\n" + ex);
-            } finally
-            {
-                if (display.isException())
-                {
-                    System.err.println(display.popException());
-                }
+                System.err.println(display.popException());
             }
+        }
 //        });
 
 //        t.start();
 //        t.join(SECONDS.toMillis(5));
-
         String expResult = new StringBuffer()
                 .append(text1).append('\n')
                 .append(text2).append('\n')
                 .toString();
         String result = sw.toString();
 
-//        System.out.println("\n\nexpResult: [" + expResult + "]");
-//        System.out.println("   result: [" + result + "]");
         assertEquals(expResult, result);
     }
 }

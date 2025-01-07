@@ -436,7 +436,13 @@ public class SerialExecutor implements ExtendedExecutorService
     @Override
     public String toString()
     {
-        return new StringBuffer().append("SerialExecutor{\n").append("    status = ").append(status).append('\n').append("    tasks  =\n").append(tasks).append('\n').append("}\n").toString();
+        return new StringBuffer()
+                .append("SerialExecutor{\n")
+                .append("    status = ").append(status).append('\n')
+                .append("    tasks  =\n")
+                .append(tasks).append('\n')
+                .append("}\n")
+                .toString();
     }
 
     /**
@@ -477,6 +483,9 @@ public class SerialExecutor implements ExtendedExecutorService
         return new FutureTask<>(callable);
     }
 
+    /**
+     * Schedule the next task to be executed.
+     */
     protected void scheduleNext()
     {
         final long threadId = Thread.currentThread().threadId();
@@ -514,5 +523,4 @@ public class SerialExecutor implements ExtendedExecutorService
 
         System.out.println("SerialExecutor.scheduleNext(): completed.");
     }
-
 }
