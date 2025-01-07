@@ -34,6 +34,7 @@ module bewsoftware.utils {
     requires transitive bewsoftware.common;
 
     exports com.bewsoftware.utils;
+    exports com.bewsoftware.utils.concurrent;
     exports com.bewsoftware.utils.crypto;
     exports com.bewsoftware.utils.graphics;
     exports com.bewsoftware.utils.io;

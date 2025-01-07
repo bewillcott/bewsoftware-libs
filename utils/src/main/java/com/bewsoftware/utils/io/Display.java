@@ -20,11 +20,13 @@
 package com.bewsoftware.utils.io;
 
 import java.io.Closeable;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * This interface provides a means of displaying output in an abstract manner.
@@ -62,7 +64,6 @@ import static java.lang.System.lineSeparator;
  */
 public interface Display extends Closeable, Exceptions
 {
-
     /**
      * Adds the text to the internal buffer.
      *
@@ -77,6 +78,38 @@ public interface Display extends Closeable, Exceptions
     public Display append(final boolean flush, final DisplayDebugLevel level, final String text);
 
     /**
+     * Blocks until all lines are output, or the timeout occurs, or the current
+     * thread is interrupted, whichever happens first.
+     *
+     * @param timeout the maximum time to wait.
+     * @param unit    the time unit of the timeout argument.
+     *
+     * @throws InterruptedException if interrupted while waiting.
+     * @since 3.0.1
+     */
+    public void await(final long timeout, final TimeUnit unit) throws InterruptedException;
+
+    /**
+     * Blocks until all lines (submitted by this Thread) are output, or the
+     * timeout occurs, or the current thread is interrupted, whichever happens
+     * first.
+     *
+     * @param timeout the maximum time to wait.
+     * @param unit    the time unit of the timeout argument.
+     *
+     * @throws InterruptedException if interrupted while waiting.
+     * @since 3.0.1
+     */
+    public void awaitThread(final long timeout, final TimeUnit unit) throws InterruptedException;
+
+    /**
+     * Empties the internal buffer of all unflushed output.
+     *
+     * @return this Display for chaining purposes.
+     */
+    public Display clear();
+
+    /**
      * Get the debug level for this run.
      *
      * @return Debug level currently set.
@@ -89,6 +122,17 @@ public interface Display extends Closeable, Exceptions
      * @param level Debug level to use.
      */
     public void debugLevel(final DisplayDebugLevel level);
+
+    /**
+     * Flushes all output from the internal buffer (appended by current thread)
+     * to the output destination(s).
+     *
+     * @throws java.lang.InterruptedException if thread is interrupted during
+     *                                        processing.
+     *
+     * @since 3.0.1
+     */
+    public void flush() throws InterruptedException;
 
     /**
      * Adds the text to the internal buffer.
@@ -530,13 +574,27 @@ public interface Display extends Closeable, Exceptions
     }
 
     /**
-     * Empties the internal buffer of all unflushed output.
+     * Blocks until all lines are output or the current thread is interrupted,
+     * whichever happens first.
      *
-     * @return this Display for chaining purposes.
+     * @throws InterruptedException if interrupted while waiting.
+     * @since 3.0.1
      */
-    default Display clear()
+    default void await() throws InterruptedException
     {
-        throw new UnsupportedOperationException("Deprecated.");
+        await(0, MILLISECONDS);
+    }
+
+    /**
+     * Blocks until all lines (submitted by this Thread) are output or the
+     * current thread is interrupted, whichever happens first.
+     *
+     * @throws InterruptedException if interrupted while waiting.
+     * @since 3.0.1
+     */
+    default void awaitThread() throws InterruptedException
+    {
+        awaitThread(0, MILLISECONDS);
     }
 
     /**
@@ -560,8 +618,6 @@ public interface Display extends Closeable, Exceptions
      * instead.
      *
      * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
      */
     @Deprecated(since = "3.0.1", forRemoval = true)
     default boolean displayOK()
@@ -576,25 +632,8 @@ public interface Display extends Closeable, Exceptions
      * @param level The display level to compare with.
      *
      * @return {@code true} if it will be, {@code false} otherwise.
-     *
-     * @since 3.0.1
      */
     boolean displayOK(final DisplayDebugLevel level);
-
-    /**
-     * Flushes all output from the internal buffer to the output destination(s).
-     *
-     * @deprecated No longer used. Functionality moved internally.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
-     */
-    @Deprecated(since = "3.0.1", forRemoval = true)
-    default void flush()
-    {
-        throw new UnsupportedOperationException("Deprecated.");
-    }
 
     /**
      * Display all following text if the {@link #debugLevel()} is greater than
@@ -608,8 +647,6 @@ public interface Display extends Closeable, Exceptions
      * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}.
      *
      * @throws UnsupportedOperationException as this is deprecated.
-     *
-     * @since 3.0.1
      */
     @Deprecated(since = "3.0.1", forRemoval = true)
     default Display level(final DisplayDebugLevel level)

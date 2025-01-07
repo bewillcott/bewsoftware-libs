@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -40,7 +41,7 @@ public class ConsoleIOTest
 //    @Test
     public void multiThreadedTest()
     {
-        System.out.println("printlnTest\n-----------");
+        System.out.println("multiThreadedTest\n-----------");
 
 //        StringWriter sw1 = new StringWriter();
 //        TestingTask task1 = new TestingTask("[T1]", "t1", sw1, 1);
@@ -58,23 +59,35 @@ public class ConsoleIOTest
         String text2 = "7890";
         StringWriter sw = new StringWriter();
 
-        final Display display = ConsoleIO.consoleWriterDisplay("", "SW1", sw);
+//        final Thread t = new Thread(() ->
+//        {
+            final Display display = ConsoleIO.consoleWriterDisplay("", "SW1", sw);
 
-        try (display)
-        {
-            display.println(text1);
-            display.println(text2);
-
-        } catch (IOException ex)
-        {
-            fail("display.close():\n" + ex);
-        } finally
-        {
-            if (display.isException())
+            try (display)
             {
-                throw display.popException();
+
+                display.println(text1);
+                display.println(text2);
+//                display.await();
+//                display.close();
+//            } catch (IOException ex)
+//            {
+//                fail("display.close():\n" + ex);
+
+//            } catch (InterruptedException ex)
+//            {
+//                fail("display.await():\n" + ex);
+            } finally
+            {
+                if (display.isException())
+                {
+                    System.err.println(display.popException());
+                }
             }
-        }
+//        });
+
+//        t.start();
+//        t.join(SECONDS.toMillis(5));
 
         String expResult = new StringBuffer()
                 .append(text1).append('\n')
@@ -84,7 +97,6 @@ public class ConsoleIOTest
 
 //        System.out.println("\n\nexpResult: [" + expResult + "]");
 //        System.out.println("   result: [" + result + "]");
-
         assertEquals(expResult, result);
     }
 }

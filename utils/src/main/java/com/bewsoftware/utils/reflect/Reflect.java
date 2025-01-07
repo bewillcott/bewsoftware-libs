@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.5
- * @version 1.0.7
+ * @version 3.0.1
  */
 public final class Reflect
 {
@@ -94,7 +94,8 @@ public final class Reflect
      *                                      {@code name} are <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static Field getPrivateAttribute(Object instance, String name) throws ReflectiveOperationException
+    public static Field getPrivateAttribute(final Object instance, final String name)
+            throws ReflectiveOperationException
     {
         Field field = null;
 
@@ -177,7 +178,11 @@ public final class Reflect
      *                                      {@code name} are <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static Method getPrivateMethod(Object instance, String name, Object... sampleArgs) throws ReflectiveOperationException
+    public static Method getPrivateMethod(
+            final Object instance,
+            final String name,
+            final Object... sampleArgs
+    ) throws ReflectiveOperationException
     {
         Class<?>[] types = null;
         Method method = null;
@@ -265,7 +270,7 @@ public final class Reflect
      * @throws NullPointerException         if {@code clazz} is <i>null</i>.
      * @throws ReflectiveOperationException if a reflective operation failed.
      */
-    public static <T> T instantiatePrivateClass(Class<T> clazz, Object... args)
+    public static <T> T instantiatePrivateClass(final Class<T> clazz, final Object... args)
             throws ReflectiveOperationException
     {
         Class<?>[] types = null;
@@ -298,7 +303,8 @@ public final class Reflect
                 // the same number of parameters as 'args'.
                 if (Modifier.isPrivate(con.getModifiers()) && con.getParameterCount() == numParams)
                 {
-                    rtn = checkConstructorSignature(numParams, con, types, rtn, args);
+//                    rtn = checkConstructorSignature(numParams, con, types, rtn, args);
+                    rtn = checkConstructorSignature(numParams, con, types, args);
                 }
             }
         } catch (IllegalAccessException | IllegalArgumentException
@@ -317,7 +323,7 @@ public final class Reflect
      * @param numParams The number of required parameters.
      * @param con       The constructor to check.
      * @param types     Class types of the required parameters.
-     * @param rtn       Provides the return type reference.
+     *                  // * @param rType Provides the return type reference.
      * @param args      List of arguments to pass to the constructor on
      *                  instantiation.
      *
@@ -333,17 +339,19 @@ public final class Reflect
      *                                   abstract class.
      * @throws InvocationTargetException if the underlying constructor
      *                                   throws an exception.
+     * @since 3.0.1
      */
-    @SuppressWarnings(
-            {
-                "unchecked", "AssignmentToMethodParameter"
-            })
+    @SuppressWarnings("unchecked")
     private static <T> T checkConstructorSignature(
-            int numParams, Constructor<?> con, Class<?>[] types, T rtn, Object[] args
+            final int numParams,
+            final Constructor<?> con,
+            final Class<?>[] types,
+            //            final T rType,
+            final Object[] args
     )
             throws IllegalAccessException, InvocationTargetException, InstantiationException
     {
-
+        T rtn = null;
         int found = 0;
 
         // Make sure it has the right signature.
@@ -434,7 +442,7 @@ public final class Reflect
          * @throws IllegalArgumentException if either {@code primitive} or
          *                                  {@code className} are <i>blank</i>.
          */
-        public static boolean isWrapperFor(String primitive, String className)
+        public static boolean isWrapperFor(final String primitive, final String className)
         {
             requireNonBlank(primitive, "primitive");
             requireNonBlank(className, "className");

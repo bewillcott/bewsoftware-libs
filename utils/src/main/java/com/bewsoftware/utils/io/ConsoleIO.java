@@ -20,13 +20,23 @@
 package com.bewsoftware.utils.io;
 
 import com.bewsoftware.common.InvalidParameterException;
+import com.bewsoftware.utils.concurrent.PerThreadPoolExecutor;
+import com.bewsoftware.utils.concurrent.ThreadExecutorService;
 import com.bewsoftware.utils.string.Strings;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static com.bewsoftware.utils.io.ConsoleIO.Status.CLOSED;
+import static com.bewsoftware.utils.io.ConsoleIO.Status.CLOSING;
+import static com.bewsoftware.utils.io.ConsoleIO.Status.OPEN;
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static java.util.Objects.requireNonNull;
 
@@ -58,18 +68,18 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConsoleIO implements Display, Input
 {
-    private static final int CLOSED = 0;
 
     private static final String CLOSED_MSG = "ConsoleIO is closed.";
 
-    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
-
     private static final int FLUSH_ALL = -1;
 
-    private static final int OPEN = 1;
-
-    // This is to be used to determine if a thread is the parent one, when doing a 'flush(threadId)'.
+    /**
+     * This is to be used to determine if a thread is the parent one, when doing
+     * a 'flush(threadId)'.
+     */
     private static final long PARENT_ID = Thread.currentThread().threadId();
+
+    private static final ThreadExecutorService exec = new PerThreadPoolExecutor();
 
     private static final AtomicReference<PrintWriter> file = new AtomicReference<>();
 
@@ -95,9 +105,9 @@ public final class ConsoleIO implements Display, Input
     private final AtomicReference<Exception> exception = new AtomicReference<>();// ???
 
     /**
-     * state variable : true if this instance is open.
+     * This is the current 'state' of this ConsoleIO.
      */
-    private final AtomicInteger status = new AtomicInteger(CLOSED);
+    private final AtomicReference<Status> status = new AtomicReference<>(CLOSED);
 
     /**
      * Instantiates a "blank console".
@@ -367,7 +377,6 @@ public final class ConsoleIO implements Display, Input
     @Override
     public Display append(final boolean flush, final DisplayDebugLevel level, final String text)
     {
-//        System.out.println("append(flush: " + flush + ", level: " + level + ", text: " + text + ")");
 
         if (isOpen())
         {
@@ -384,9 +393,41 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    public void await(final long timeout, final TimeUnit unit) throws InterruptedException
+    {
+        if (isOpen() || isClosing())
+        {
+            if (timeout <= 0)
+            {
+                exec.awaitCompletion();
+            } else
+            {
+                exec.awaitCompletion(timeout, Objects.requireNonNull(unit, "'unit' is null"));
+            }
+        }
+    }
+
+    @Override
+    public void awaitThread(long timeout, TimeUnit unit) throws InterruptedException
+    {
+        if (isOpen() || isClosing())
+        {
+            final long threadId = Thread.currentThread().threadId();
+
+            if (timeout <= 0)
+            {
+                exec.awaitThreadCompletion(threadId);
+            } else
+            {
+                exec.awaitThreadCompletion(threadId, timeout, Objects.requireNonNull(unit, "'unit' is null"));
+            }
+        }
+    }
+
+    @Override
     public Display clear()
     {
-        if (isOpen())
+        if (isOpen() || isClosing())
         {
             if (!blank)
             {
@@ -408,25 +449,36 @@ public final class ConsoleIO implements Display, Input
     }
 
     @Override
+    @SuppressWarnings("ConvertToTryWithResources")
     public void close() throws IOException
     {
-        EXEC.close();
-        flush(FLUSH_ALL);
-
-        if (out != null)
+        if (status.compareAndSet(OPEN, CLOSING))
         {
-            out.get().close();
-            out.set(null);
-        }
+            try
+            {
+                await();
+                flush(FLUSH_ALL);
 
-        if (file.get() != null)
-        {
-            writers.get(filename.get()).removeUsage();
-            file.set(null);
-        }
+                if (out != null)
+                {
+                    out.get().close();
+                    out.set(null);
+                }
 
-        status.set(CLOSED);
-        clear();
+                if (file.get() != null)
+                {
+                    writers.get(filename.get()).removeUsage();
+                    file.set(null);
+                }
+
+                assert status.compareAndSet(CLOSING, CLOSED);
+                exec.close();
+                clear();
+            } catch (InterruptedException ex)
+            {
+                throw new IOException("exec.awaitCompletion()", ex);
+            }
+        }
     }
 
     @Override
@@ -453,6 +505,18 @@ public final class ConsoleIO implements Display, Input
     public boolean displayOK(final DisplayDebugLevel level)
     {
         return debugLevel.get().value >= level.value;
+    }
+
+    @Override
+    public void flush()
+    {
+        try
+        {
+            flush(Thread.currentThread().threadId());
+        } catch (InterruptedException ex)
+        {
+            Logger.getLogger(ConsoleIO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -568,15 +632,16 @@ public final class ConsoleIO implements Display, Input
 
     }
 
-    private void flush(final long threadId)
+    private void flush(final long threadId) throws InterruptedException
     {
-//        System.out.println("flush(" + threadId + ")");
+        System.out.printf("ConsoleIO.flush(threadId: %d)%n", threadId);
 
-        if (isOpen())
+        if (isOpen() || isClosing())
         {
+//            waitCompletion(threadId);
             final StringBuilder sb = new StringBuilder();
 
-            if (out != null || file.get() != null)
+            if (lines.get() != null && (out != null || file.get() != null))
             {
                 if (!lines.get().isEmpty())
                 {
@@ -607,6 +672,8 @@ public final class ConsoleIO implements Display, Input
         {
             exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
+
+        System.out.println("ConsoleIO.flush(...): completed.");
     }
 
     private void flushThreadId(final long threadId, final StringBuilder sb)
@@ -635,6 +702,11 @@ public final class ConsoleIO implements Display, Input
         }
     }
 
+    private boolean isClosing()
+    {
+        return status.get() == CLOSING;
+    }
+
     private boolean isOpen()
     {
         return status.get() == OPEN;
@@ -650,23 +722,49 @@ public final class ConsoleIO implements Display, Input
     private void submitTask(final boolean flush, final DisplayDebugLevel level, final String text)
     {
         final long threadId = Thread.currentThread().threadId();
-//        System.out.println("submitTask->threadId: " + threadId);
+        System.out.printf("ConsoleIO.submitTask(): threadId (%d), text (%s)%n", threadId, text);
 
         final Runnable task = () ->
         {
-//            System.out.println("task->(flush: " + flush + ", level: " + level + ", text: " + text + ")");
-//            final long taskThreadId = Thread.currentThread().threadId();
-//            System.out.println("submitTask->taskThreadId: " + taskThreadId);
-
+            System.out.printf("ConsoleIO.task: threadId (%d), text (%s)%n", threadId, text);
             lines.get().append(threadId, level, text);
 
             if (flush)
             {
-                flush(threadId);
+                try
+                {
+                    flush(threadId);
+                } catch (InterruptedException ignore)
+                {
+                }
             }
+
+            System.out.println("ConsoleIO.task: completed.");
         };
 
-        EXEC.execute(task);
+        exec.execute(task);
+    }
+
+    private void waitCompletion(final long threadId) throws InterruptedException
+    {
+        System.out.printf("ConsoleIO.waitCompletion(threadId: %d)%n", threadId);
+
+        if (threadId == FLUSH_ALL)
+        {
+            exec.awaitCompletion();
+        } else
+        {
+            exec.awaitThreadCompletion(threadId);
+        }
+    }
+
+    /**
+     * The options for the current status of this ConsoleIO.
+     */
+    @SuppressWarnings("PackageVisibleInnerClass")
+    static enum Status
+    {
+        OPEN, CLOSING, CLOSED
     }
 
     /**
@@ -932,11 +1030,31 @@ public final class ConsoleIO implements Display, Input
         }
 
         /**
+         * @param threadId Id of the thread.
+         *
+         * @return {@code true} if no lines are being stored.
+         */
+        public boolean isEmpty(final long threadId)
+        {
+            return queues.get(threadId).isEmpty();
+        }
+
+        /**
          * @return the number of lines being stored.
          */
         public int size()
         {
             return queues.size();
+        }
+
+        /**
+         * @param threadId Id of the thread.
+         *
+         * @return the number of lines being stored.
+         */
+        public int size(final long threadId)
+        {
+            return queues.get(threadId).size();
         }
 
         @Override
