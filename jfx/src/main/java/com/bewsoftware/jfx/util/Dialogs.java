@@ -59,8 +59,8 @@ public class Dialogs
 
     public static Alert setDefaultButton(final Alert alert, final ButtonType defBtn)
     {
-        DISPLAY.level(INFO).println("setDefaultButton(alert, defBtn)");
-        DISPLAY.level(TRACE).println(() -> format(
+        DISPLAY.println(INFO, "setDefaultButton(alert, defBtn)");
+        DISPLAY.println(TRACE, () -> format(
                 "  alert:\n%s\n"
                 + "  defBtn:\n%s",
                 indentLines(alert, 4),
@@ -74,7 +74,7 @@ public class Dialogs
             ((Button) pane.lookupButton(t)).setDefaultButton(t == defBtn);
         }
 
-        DISPLAY.level(DEBUG).println("setDefaultButton(...): done");
+        DISPLAY.println(DEBUG, "setDefaultButton(...): done");
         return alert;
     }
 }

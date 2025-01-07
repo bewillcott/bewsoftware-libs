@@ -112,8 +112,8 @@ public final class StringHolder implements IHolder
             final BiConsumer<StringHolder, Boolean> focusChanged
     )
     {
-        DISPLAY.level(INFO).println("StringHolder(name, control, validator, focusChanged)");
-        DISPLAY.level(TRACE).println(
+        DISPLAY.println(INFO,"StringHolder(name, control, validator, focusChanged)");
+        DISPLAY.println(TRACE,
                 "name:\n"
                 + "  %s\n"
                 + "control:\n"
@@ -134,13 +134,13 @@ public final class StringHolder implements IHolder
             focusChanged.accept(this, newValue);
         };
 
-        DISPLAY.level(DEBUG).println("StringHolder(): done");
+        DISPLAY.println(DEBUG,"StringHolder(): done");
     }
 
     @Override
     public void begin()
     {
-        DISPLAY.level(TRACE).println("%s->begin()", name);
+        DISPLAY.println(TRACE,"%s->begin()", name);
         control.focusedProperty().addListener(focusListener);
         snapshot();
         control.setEditable(true);
@@ -149,7 +149,7 @@ public final class StringHolder implements IHolder
     @Override
     public void checkIsValid()
     {
-        DISPLAY.level(TRACE).println("%s->checkIsValid()", name);
+        DISPLAY.println(TRACE,"%s->checkIsValid()", name);
 
         if (isValid())
         {
@@ -163,7 +163,7 @@ public final class StringHolder implements IHolder
     @Override
     public void finish()
     {
-        DISPLAY.level(TRACE).println("%s->finish()", name);
+        DISPLAY.println(TRACE,"%s->finish()", name);
 
         snapshot = null;
         control.focusedProperty().removeListener(focusListener);
@@ -174,7 +174,7 @@ public final class StringHolder implements IHolder
     public boolean isActive()
     {
         boolean rtn = snapshot != null;
-        DISPLAY.level(TRACE).println("%s->isActive(): %b", name, rtn);
+        DISPLAY.println(TRACE,"%s->isActive(): %b", name, rtn);
         return rtn;
     }
 
@@ -182,7 +182,7 @@ public final class StringHolder implements IHolder
     public boolean isDirty()
     {
         boolean rtn = isActive() && !snapshot.equals(control.getText());
-        DISPLAY.level(TRACE).println("%s->isDirty(): %b", name, rtn);
+        DISPLAY.println(TRACE,"%s->isDirty(): %b", name, rtn);
         return rtn;
     }
 
@@ -190,7 +190,7 @@ public final class StringHolder implements IHolder
     public boolean isValid()
     {
         boolean rtn = isActive() && validator.apply(control.getText());
-        DISPLAY.level(TRACE).println("%s->isValid(): %b", name, rtn);
+        DISPLAY.println(TRACE,"%s->isValid(): %b", name, rtn);
         return rtn;
     }
 
@@ -209,7 +209,7 @@ public final class StringHolder implements IHolder
     @Override
     public void snapshot()
     {
-        DISPLAY.level(TRACE).println("%s->snapshot()", name);
+        DISPLAY.println(TRACE,"%s->snapshot()", name);
         snapshot = control.getText();
     }
 
