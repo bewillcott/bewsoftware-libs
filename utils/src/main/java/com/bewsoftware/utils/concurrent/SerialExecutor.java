@@ -191,7 +191,6 @@ public class SerialExecutor implements ExtendedExecutorService
     public void execute(final Runnable command)
     {
         final long threadId = Thread.currentThread().threadId();
-        System.out.printf("SerialExecutor.execute(): threadId (%d), status (%s)%n", threadId, status);
 
         if (!(status == RUNNING || status == SHUTTING_DOWN))
         {
@@ -203,8 +202,6 @@ public class SerialExecutor implements ExtendedExecutorService
 
         tasks.add(() ->
         {
-            System.out.printf("SerialExecutor.task: threadId (%d)%n", threadId);
-
             try
             {
                 command.run();
@@ -213,8 +210,6 @@ public class SerialExecutor implements ExtendedExecutorService
                 activeTasks.decrementAndGet();
                 scheduleNext();
             }
-
-            System.out.println("SerialExecutor.task: completed.");
         });
 
         if (active.get() == null)
@@ -322,11 +317,9 @@ public class SerialExecutor implements ExtendedExecutorService
     public void shutdown()
     {
         final long threadId = Thread.currentThread().threadId();
-        System.out.printf("SerialExecutor.shutdown(): threadId (%d)%n", threadId);
 
         if (status == RUNNING)
         {
-            System.out.println("SerialExecutor.shutdown()");
             serialLock.lock();
 
             try
@@ -335,7 +328,6 @@ public class SerialExecutor implements ExtendedExecutorService
 
                 if (isCompleted())
                 {
-                    System.out.println("SerialExecutor.shutdown(): isComplete()");
                     status = SHUTDOWN;
                     termination.signalAll();
                 }
@@ -343,7 +335,6 @@ public class SerialExecutor implements ExtendedExecutorService
             {
                 serialLock.unlock();
             }
-            System.out.println("SerialExecutor.shutdown(): status = " + status);
         }
     }
 
@@ -489,7 +480,6 @@ public class SerialExecutor implements ExtendedExecutorService
     protected void scheduleNext()
     {
         final long threadId = Thread.currentThread().threadId();
-        System.out.printf("SerialExecutor.scheduleNext(): status (%s), threadId (%d)%n", status, threadId);
 
         if (status == RUNNING || status == SHUTTING_DOWN)
         {
@@ -500,7 +490,6 @@ public class SerialExecutor implements ExtendedExecutorService
                 final Runnable task = tasks.poll();
                 active.set(task);
 
-                System.out.printf("SerialExecutor.scheduleNext(): task == null (%b)%n", (task == null));
                 if (task != null)
                 {
                     executor.execute(task);
@@ -520,7 +509,5 @@ public class SerialExecutor implements ExtendedExecutorService
         {
             active.set(null);
         }
-
-        System.out.println("SerialExecutor.scheduleNext(): completed.");
     }
 }

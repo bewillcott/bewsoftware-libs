@@ -123,9 +123,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
             {
                 completion.await();
             }
-
-            System.out.printf("PerThreadPoolExecutor.awaitCompletion(): isCompleted (%b)%n", isCompleted());
-
         } finally
         {
             mainLock.unlock();
@@ -156,7 +153,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
                 nanos = completion.awaitNanos(nanos);
             }
 
-            System.out.printf("PerThreadPoolExecutor.awaitCompletion(...): isCompleted (%b)%n", isCompleted());
             return true;
         } finally
         {
@@ -225,7 +221,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
         {
             exec.awaitCompletion();
         }
-        System.out.printf("PerThreadPoolExecutor.awaitThreadCompletion(): isCompleted (%b)%n", exec.isCompleted());
     }
 
     @Override
@@ -244,7 +239,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
             rtn = exec.awaitCompletion(timeout, unit);
         }
 
-        System.out.printf("PerThreadPoolExecutor.awaitThreadCompletion(...): isCompleted (%b)%n", exec.isCompleted());
         return rtn;
     }
 
@@ -262,8 +256,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
     @Override
     public void execute(final Runnable command)
     {
-        System.out.printf("PerThreadPoolExecutor.execute(): status (%s)%n", status);
-
         if (status != RUNNING)
         {
             return;
@@ -271,7 +263,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
 
         Objects.requireNonNull(command, "command is null.");
         final long threadId = Thread.currentThread().threadId();
-        System.out.printf("PerThreadPoolExecutor.execute(): threadId (%d)%n", threadId);
         SerialExecutor exec;
 
         if ((exec = execs.get(threadId)) == null)
@@ -281,12 +272,10 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
         }
 
         activeTasks.incrementAndGet();
-        System.out.printf("PerThreadPoolExecutor.execute(): activeTasks (%d)%n", activeTasks.get());
 
         exec.execute(() ->
         {
             final long taskThreadId = Thread.currentThread().threadId();
-            System.out.printf("PerThreadPoolExecutor.exec.execute(task): taskThreadId (%d)%n", taskThreadId);
 
             try
             {
@@ -295,8 +284,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
             {
                 taskCompleted();
             }
-
-            System.out.println("PerThreadPoolExecutor.exec.execute(task): completed.");
         });
     }
 
@@ -603,7 +590,7 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
 
                 final Thread thread = new Thread(() ->
                 {
-                    execs.values().stream().takeWhile((value) -> ref.isEmpty()).forEachOrdered((exec) ->
+                    execs.values().stream().takeWhile((value) -> ref.isEmpty()).forEachOrdered((SerialExecutor exec) ->
                     {
                         if (!exec.isShutdown())
                         {
@@ -613,13 +600,7 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
                             {
                                 try
                                 {
-                                    //                                termination.await();
-                                    System.out.println("PerThreadPoolExecutor.shutdown(): exec.awaitTermination(1, SECONDS); >>");
-                                    boolean awaitTermination = exec.awaitTermination(1, SECONDS);
-                                    System.out.println("<< PerThreadPoolExecutor.shutdown(): exec.awaitTermination(1, SECONDS);");
-//                                    System.out.println("PerThreadPoolExecutor.shutdown(): exec.awaitCompletion(1, SECONDS); >>");
-//                                    boolean awaitTermination = exec.awaitCompletion(1, SECONDS);
-//                                    System.out.println("<< PerThreadPoolExecutor.shutdown(): exec.awaitCompletion(1, SECONDS);");
+                                    exec.awaitTermination(1, SECONDS);
                                 } catch (InterruptedException ex)
                                 {
                                     ref.val = new RuntimeException("exec.awaitTermination(...)", ex);
@@ -644,9 +625,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
                 {
                     Logger.getLogger(PerThreadPoolExecutor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//                awaitCompletion();
-                System.out.printf("PerThreadPoolExecutor.shutdown(): assert activeTasks.allTasksCompleted() == %b%n",
-                        activeTasks.allTasksCompleted());
 
                 assert activeTasks.allTasksCompleted();
 
@@ -661,8 +639,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
                 mainLock.unlock();
             }
         }
-
-        System.out.println("PerThreadPoolExecutor.shutdown(): exiting");
     }
 
     /**
@@ -975,7 +951,6 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
      */
     private void taskCompleted()
     {
-        System.out.println("PerThreadPoolExecutor.taskCompleted()");
         mainLock.lock();
 
         try
@@ -990,7 +965,5 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
         {
             mainLock.unlock();
         }
-
-        System.out.println("PerThreadPoolExecutor.taskCompleted(): completed.");
     }
 }

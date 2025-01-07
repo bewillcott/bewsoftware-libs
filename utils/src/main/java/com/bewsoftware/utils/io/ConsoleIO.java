@@ -133,6 +133,7 @@ public final class ConsoleIO implements Display, Input
      *
      * @param linePrefix text to prepend to each line
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix)
     {
         status.set(OPEN);
@@ -161,6 +162,7 @@ public final class ConsoleIO implements Display, Input
      * @param filename    the file to output to
      * @param withConsole whether or not to output to the console, if any
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(final String linePrefix, final String filename, final boolean withConsole)
     {
         status.set(OPEN);
@@ -222,6 +224,7 @@ public final class ConsoleIO implements Display, Input
      *
      * @since 3.0.1
      */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private ConsoleIO(
             final String linePrefix,
             final String ident,
@@ -458,14 +461,11 @@ public final class ConsoleIO implements Display, Input
     @SuppressWarnings("ConvertToTryWithResources")
     public void close() throws IOException
     {
-        System.out.println("ConsoleIO.close(): lock.tryLock() success.");
-
         if (status.compareAndSet(OPEN, CLOSING))
         {
             try
             {
                 await();
-                System.out.println("ConsoleIO.close(): await() done.");
                 flush(FLUSH_ALL);
 
                 if (out != null)
@@ -642,8 +642,6 @@ public final class ConsoleIO implements Display, Input
 
     private void flush(final long threadId)
     {
-        System.out.printf("ConsoleIO.flush(threadId: %d)%n", threadId);
-
         if (isOpen() || isClosing())
         {
             lock.lock();
@@ -688,8 +686,6 @@ public final class ConsoleIO implements Display, Input
         {
             exception.compareAndSet(null, new IOException(CLOSED_MSG));
         }
-
-        System.out.println("ConsoleIO.flush(...): completed.");
     }
 
     private void flushThreadId(final long threadId, final StringBuilder sb)
@@ -750,11 +746,9 @@ public final class ConsoleIO implements Display, Input
         try
         {
             final long threadId = Thread.currentThread().threadId();
-            System.out.printf("ConsoleIO.submitTask(): threadId (%d), text (%s)%n", threadId, text);
 
             final Runnable task = () ->
             {
-                System.out.printf("ConsoleIO.task: threadId (%d), text (%s)%n", threadId, text);
                 lines.get().append(threadId, level, text);
 
                 if (flush)
@@ -762,7 +756,6 @@ public final class ConsoleIO implements Display, Input
                     flush(threadId);
                 }
 
-                System.out.println("ConsoleIO.task: completed.");
             };
 
             exec.execute(task);
@@ -774,8 +767,6 @@ public final class ConsoleIO implements Display, Input
 
     private void waitCompletion(final long threadId) throws InterruptedException
     {
-        System.out.printf("ConsoleIO.waitCompletion(threadId: %d)%n", threadId);
-
         if (threadId == FLUSH_ALL)
         {
             exec.awaitCompletion();

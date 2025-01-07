@@ -19,7 +19,7 @@
  */
 
 /**
-* Utility classes commonly useful in concurrent programming.
+* Utility classes useful in concurrent programming.
 *
 * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
 *
