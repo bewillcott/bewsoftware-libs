@@ -577,7 +577,7 @@
             <id>test</id>
             <properties>
                 <spotbugs.skip>false</spotbugs.skip>
-                <unit.tests.skip>false</unit.tests.skip>
+                <maven.test.skip>false</maven.test.skip>
             </properties>
         </profile>
     </profiles>
@@ -697,8 +697,6 @@
                 <configuration>
                     <!-- Sets the VM argument line used when unit tests are run. -->
                     <argLine>${surefire.args}</argLine>
-                    <!-- Skips unit tests if the value of unit.tests.skip property is true -->
-                    <skip>${unit.tests.skip}</skip>
                 </configuration>
             </plugin>
             <plugin>
