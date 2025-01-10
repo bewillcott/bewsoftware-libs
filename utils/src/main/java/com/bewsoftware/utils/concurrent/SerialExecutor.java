@@ -20,6 +20,7 @@
 
 package com.bewsoftware.utils.concurrent;
 
+import com.bewsoftware.annotations.Unsupported;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -190,8 +191,6 @@ public class SerialExecutor implements ExtendedExecutorService
     @Override
     public void execute(final Runnable command)
     {
-        final long threadId = Thread.currentThread().threadId();
-
         if (!(status == RUNNING || status == SHUTTING_DOWN))
         {
             return;
@@ -223,6 +222,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
             throws InterruptedException
@@ -235,6 +235,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> clctn, long l, TimeUnit tu)
             throws InterruptedException
@@ -247,6 +248,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
             throws InterruptedException, ExecutionException
@@ -259,6 +261,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> clctn, long l, TimeUnit tu)
             throws InterruptedException, ExecutionException, TimeoutException
@@ -316,8 +319,6 @@ public class SerialExecutor implements ExtendedExecutorService
     @Override
     public void shutdown()
     {
-        final long threadId = Thread.currentThread().threadId();
-
         if (status == RUNNING)
         {
             serialLock.lock();
@@ -396,6 +397,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> Future<T> submit(Callable<T> clbl)
     {
@@ -407,6 +409,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public <T> Future<T> submit(Runnable r, T t)
     {
@@ -418,6 +421,7 @@ public class SerialExecutor implements ExtendedExecutorService
      *
      * @throws UnsupportedOperationException Not supported.
      */
+    @Unsupported("Not needed")
     @Override
     public Future<?> submit(Runnable r)
     {
@@ -479,8 +483,6 @@ public class SerialExecutor implements ExtendedExecutorService
      */
     protected void scheduleNext()
     {
-        final long threadId = Thread.currentThread().threadId();
-
         if (status == RUNNING || status == SHUTTING_DOWN)
         {
             serialLock.lock();
