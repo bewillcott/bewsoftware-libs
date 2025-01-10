@@ -19,7 +19,16 @@
  */
 package com.bewsoftware.utils;
 
+import com.bewsoftware.utils.io.ConsoleIO;
+import com.bewsoftware.utils.io.Display;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static java.lang.Integer.MAX_VALUE;
 
 /**
  * This is a Binary Search Tree with the default capability of being a Balanced
@@ -31,11 +40,10 @@ import java.util.*;
  * @param <E> type of item stored in this tree.
  *
  * @since 1.0.9
- * @version 3.0.0
+ * @version 3.0.2
  */
 public final class AvlTree<E extends Comparable<E>> implements Set<E>
 {
-
     /**
      * No nulls allowed string.
      */
@@ -45,32 +53,39 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * A value indicating whether this {@linkplain  AvlTree}{@literal <T>} is
      * balanced.
      */
-    private boolean balanced;
+    private final boolean balanced;
 
     /**
      * The number of elements in this tree.
      */
-    private int count;
+    private final AtomicInteger count = new AtomicInteger();
+
+    private final Display display = ConsoleIO.consoleDisplay("");
 
     /**
      * The version of data last indexed.
      */
-    private int lastIndexVersion;
+    private final AtomicInteger lastIndexVersion = new AtomicInteger();
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private final Lock r = lock.readLock();
 
     /**
      * The root node.
      */
-    private Node<E> root;
+    private final AtomicReference<Node<E>> root = new AtomicReference<>();
 
     /**
      * The version of the data.
      */
-    private int version;
+    private final AtomicInteger version = new AtomicInteger();
+
+    private final Lock w = lock.writeLock();
 
     /**
      * Initializes a new instance of the {@linkplain  AvlTree}{@literal <E>}
-     * class as a
-     * Balanced Binary Search Tree.
+     * class as a Balanced Binary Search Tree.
      */
     public AvlTree()
     {
@@ -79,26 +94,24 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
 
     /**
      * Initializes a new instance of the {@linkplain  AvlTree}{@literal <E>}
-     * class as a
-     * Binary Search Tree that will/will not be balanced based on the value of
-     * the
-     * parameter: {@code balanced}.
+     * class as a Binary Search Tree that will/will not be balanced based on the
+     * value of the parameter: {@code balanced}.
      *
      * @param balanced if {@code true} tree will be balanced
      */
-    public AvlTree(boolean balanced)
+    public AvlTree(final boolean balanced)
     {
         this.balanced = balanced;
     }
 
     /**
      * Initializes a new instance of the {@linkplain  AvlTree}{@literal <E>}
-     * class with the contents
-     * of the {@code list} as a Balanced Binary Search Tree.
+     * class with the contents of the {@code list} as a Balanced Binary Search
+     * Tree.
      *
      * @param list the list containing the items to add to this tree
      */
-    public AvlTree(List<E> list)
+    public AvlTree(final List<E> list)
     {
         this(list, true);
     }
@@ -113,7 +126,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @param list     the list containing the items to add to this tree
      * @param balanced if {@code true} tree will be balanced
      */
-    public AvlTree(List<E> list, boolean balanced)
+    public AvlTree(final List<E> list, final boolean balanced)
     {
         if (list == null)
         {
@@ -129,79 +142,137 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     }
 
     @Override
-    public boolean add(E e)
+    public boolean add(final E e)
     {
-        return internalAdd(e);
+        try
+        {
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+
+        try
+        {
+            return internalAdd(e);
+        } finally
+        {
+            w.unlock();
+        }
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c)
+    public boolean addAll(final Collection<? extends E> c)
     {
-        boolean rtn = false;
-
-        if (!Objects.requireNonNull(c).isEmpty())
+        try
         {
-            c.forEach(this::internalAdd);
-            rtn = true;
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
         }
 
-        return rtn;
+        try
+        {
+            final Ref<Boolean> rtn = Ref.val(false);
+
+            if (!Objects.requireNonNull(c).isEmpty())
+            {
+                rtn.val = true;
+
+                c.stream().takeWhile((t) -> rtn.val).forEach(item ->
+                {
+                    rtn.val = this.internalAdd(item);
+                });
+            }
+
+            return rtn.val;
+        } finally
+        {
+            w.unlock();
+        }
     }
 
     @Override
     public void clear()
     {
-        root = null;
-        count = 0;
-        version++;
+        try
+        {
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        try
+        {
+            root.set(null);
+            count.set(0);
+            version.getAndIncrement();
+        } finally
+        {
+            w.unlock();
+        }
     }
 
     @Override
-    public boolean contains(Object o)
+    public boolean contains(final Object o)
     {
-        @SuppressWarnings("unchecked")
-        E item = (E) Objects.requireNonNull(o, NO_NULLS);
-        return find(item) != null;
+        try
+        {
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+
+        try
+        {
+            @SuppressWarnings("unchecked")
+            final E item = (E) Objects.requireNonNull(o, NO_NULLS);
+            return find(item) != null;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     @Override
     @SuppressWarnings("element-type-mismatch")
-    public boolean containsAll(Collection<?> c)
+    public boolean containsAll(final Collection<?> c)
     {
-        boolean rtn = false;
-
-        for (Object object : Objects.requireNonNull(c))
+        try
         {
-            rtn = contains(object);
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
         }
 
-        return rtn;
-    }
-
-    /**
-     * Delete the {@code target} from the tree.
-     *
-     * @param target the element to delete
-     *
-     * @return {@code true} unless {@code target} is {@code null}, or
-     *         {@code target} is not found.
-     */
-    public boolean delete(E target)
-    {
-        Ref<Boolean> rtn = Ref.val(false);
-
-        if (target != null)
+        try
         {
-            root = deleteNode(root, target, rtn, balanced);
+            boolean rtn = false;
 
-            if (rtn.val)
+            for (Object object : Objects.requireNonNull(c))
             {
-                count--;
-                version++;
-            }
-        }
+                rtn = contains(object);
 
-        return rtn.val;
+                if (!rtn)
+                {
+                    break;
+                }
+            }
+
+            return rtn;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     /**
@@ -219,33 +290,47 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     /**
      * Display the data items in order.
      */
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void display()
     {
-        if (root == null)
+        if (root.get() == null)
         {
-            System.out.println("Tree is empty");
+            display.println("Tree is empty");
             return;
         }
 
-        System.out.println(displayInOrder(root));
+        display.println(displayInOrder(root.get()));
     }
 
     /**
      * Returns the element at the specified position in this list.
      *
-     * @param index index of the element to return
+     * @param index index of the element to return.
      *
-     * @return the element at the specified position in this list
+     * @return the element at the specified position in this list, if one
+     *         exists. {@code null} otherwise.
      *
      * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index {@literal < 0 || index >= } size())
+     *                                   (index {@literal < 0 || index >= } size()).
      */
-    //    @Override
-    public E get(int index)
+    public E get(final int index)
     {
-        Node<E> rtn = getNodeAt(index);
-        return rtn != null ? rtn.Value : null;
+        try
+        {
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return null;
+        }
+
+        try
+        {
+            final Node<E> rtn = getNodeAt(index);
+            return rtn != null ? rtn.value.get() : null;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     /**
@@ -253,26 +338,41 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * list does
      * not contain the element.
      *
-     * @param o element to search for
+     * @param o element to search for.
      *
      * @return the index of the specified element in this list, or -1 if this
-     *         list does
-     *         not contain the element
+     *         list does not contain the element.
      *
      * @throws ClassCastException   if the type of the specified element is
-     *                              incompatible with this list
+     *                              incompatible with this list.
      * @throws NullPointerException if the specified element is null as this
      *                              list does <b>not</b> permit null
-     *                              elements
+     *                              elements.
      */
-    //    @Override
-    public int indexOf(Object o)
+    public int indexOf(final Object o)
     {
-        @SuppressWarnings("unchecked")
-        E item = (E) o;
-        reIndex();
-        Node<E> node = find(item);
-        return node != null ? node.Index : -1;
+        try
+        {
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return -1;
+        }
+
+        try
+        {
+            @SuppressWarnings("unchecked")
+            final E item = (E) Objects.requireNonNull(o, NO_NULLS);
+
+            reIndex();
+            final Node<E> node = find(item);
+
+            return node != null ? node.index.get() : -1;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     /**
@@ -289,7 +389,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     @Override
     public boolean isEmpty()
     {
-        return count == 0;
+        return count.get() == 0;
     }
 
     @Override
@@ -302,81 +402,118 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean remove(Object o)
+    public boolean remove(final Object o)
     {
-        if (o == null)
-        {
-            throw new NullPointerException(NO_NULLS);
-        }
-
-        return delete((E) o);
+        return delete((E) Objects.requireNonNull(o, NO_NULLS));
     }
 
     @Override
     @SuppressWarnings("element-type-mismatch")
-    public boolean removeAll(Collection<?> c)
+    public boolean removeAll(final Collection<?> c)
     {
-        //
-        // Original code copied from: java.util.AbstractCollection
-        //
-        Objects.requireNonNull(c);
-        boolean modified = false;
+        try
+        {
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
+        }
 
-        if (size() > c.size())
+        try
         {
-            modified = c.stream().map(this::remove).reduce(modified, (accumulator, item) -> accumulator | item);
-        } else
-        {
-            for (Iterator<?> i = iterator(); i.hasNext();)
+            //
+            // Original code copied from: java.util.AbstractCollection
+            //
+            Objects.requireNonNull(c);
+            boolean modified = false;
+
+            if (size() > c.size())
             {
-                if (c.contains(i.next()))
+                modified = c.stream().map(this::remove).reduce(modified, (accumulator, item) -> accumulator | item);
+            } else
+            {
+                for (Iterator<?> i = iterator(); i.hasNext();)
+                {
+                    if (c.contains(i.next()))
+                    {
+                        i.remove();
+                        modified = true;
+                    }
+                }
+            }
+
+            return modified;
+        } finally
+        {
+            w.unlock();
+        }
+
+    }
+
+    @Override
+    public boolean retainAll(final Collection<?> c)
+    {
+        try
+        {
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+
+        try
+        {
+            Objects.requireNonNull(c);
+            boolean modified = false;
+
+            for (Iterator<?> i = descendingIterator(); i.hasNext();)
+            {
+                if (!c.contains(i.next()))
                 {
                     i.remove();
                     modified = true;
                 }
             }
-        }
 
-        return modified;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c)
-    {
-        //
-        // Code copied from: java.util.AbstractCollection
-        //
-        Objects.requireNonNull(c);
-        boolean modified = false;
-        Iterator<E> it = descendingIterator();
-
-        while (it.hasNext())
+            return modified;
+        } finally
         {
-            if (!c.contains(it.next()))
-            {
-                it.remove();
-                modified = true;
-            }
+            w.unlock();
         }
-
-        return modified;
     }
 
     @Override
     public int size()
     {
-        return count > Integer.MAX_VALUE ? Integer.MAX_VALUE : count;
+        return count.get();
     }
 
     @Override
     public Object[] toArray()
     {
-        Object[] rtn = new Object[count];
-        Ref<Integer> index = Ref.val(0);
+        try
+        {
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return new Object[0];
+        }
 
-        fillArray(root, rtn, index);
+        try
+        {
+            final Object[] rtn = new Object[count.get()];
+            final Ref<Integer> index = Ref.val(0);
 
-        return rtn;
+            fillArray(root.get(), rtn, index);
+
+            return rtn;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     @Override
@@ -386,22 +523,37 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
             })
     public <T> T[] toArray(T[] a)
     {
-        // Code from LinkedList class, with some mods
-        if (a.length < count)
+        try
         {
-            a = (T[]) java.lang.reflect.Array.newInstance(
-                    a.getClass().getComponentType(), count);
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return (T[]) new Object[0];
         }
 
-        Ref<Integer> index = Ref.val(0);
-        fillArray(root, a, index);
-
-        for (int i = count; i < a.length; i++)
+        try
         {
-            a[i] = null;
-        }
+            // Code from LinkedList class, with some mods
+            if (Objects.requireNonNull(a).length < count.get())
+            {
+                a = (T[]) java.lang.reflect.Array.newInstance(
+                        a.getClass().getComponentType(), count.get());
+            }
 
-        return a;
+            final Ref<Integer> index = Ref.val(0);
+            fillArray(root.get(), a, index);
+
+            for (int i = count.get(); i < a.length; i++)
+            {
+                a[i] = null;
+            }
+
+            return a;
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     @Override
@@ -413,7 +565,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
                 + "  lastIndexVersion = " + lastIndexVersion + ",\n"
                 + "  version = " + version + "\n"
                 + "\n"
-                + displayInOrder(root)
+                + displayInOrder(root.get())
                 + "\n}";
     }
 
@@ -428,20 +580,20 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @return replacement parent node
      */
     @SuppressWarnings("AssignmentToMethodParameter")
-    private Node<E> addRecursive(Node<E> current, Node<E> node, Ref<Boolean> added)
+    private Node<E> addRecursive(Node<E> current, final Node<E> node, final Ref<Boolean> added)
     {
         if (current == null)
         {
             current = node;
             added.val = true;
 
-        } else if (node.Value.compareTo(current.Value) < 0)
+        } else if (node.value.get().compareTo(current.value.get()) < 0)
         {
-            current.Left = addRecursive(current.Left, node, added);
+            current.left.set(addRecursive(current.left.get(), node, added));
 
-        } else if (node.Value.compareTo(current.Value) > 0)
+        } else if (node.value.get().compareTo(current.value.get()) > 0)
         {
-            current.Right = addRecursive(current.Right, node, added);
+            current.right.set(addRecursive(current.right.get(), node, added));
         }
 
         if (balanced && added.val)
@@ -459,10 +611,10 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the balance factor
      */
-    private int balanceFactor(Node<E> current)
+    private int balanceFactor(final Node<E> current)
     {
-        int l = getHeight(current.Left);
-        int r = getHeight(current.Right);
+        int l = getHeight(current.left.get());
+        int r = getHeight(current.right.get());
 
         return l - r;
     }
@@ -481,15 +633,56 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
 
         if (bFactor > 1)
         {
-            current = balanceFactor(current.Left) > 0
+            current = balanceFactor(current.left.get()) > 0
                     ? rotateLeftLeft(current) : rotateLeftRight(current);
         } else if (bFactor < -1)
         {
-            current = balanceFactor(current.Right) > 0
+            current = balanceFactor(current.right.get()) > 0
                     ? rotateRightLeft(current) : rotateRightRight(current);
         }
 
         return current;
+    }
+
+    /**
+     * Delete the {@code target} from the tree.
+     *
+     * @param target the element to delete
+     *
+     * @return {@code true} unless {@code target} is {@code null}, or
+     *         {@code target} is not found.
+     */
+    private boolean delete(final E target)
+    {
+        try
+        {
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+
+        try
+        {
+            final Ref<Boolean> rtn = Ref.val(false);
+
+            if (target != null)
+            {
+                root.set(deleteNode(root.get(), target, rtn, balanced));
+
+                if (rtn.val)
+                {
+                    count.getAndDecrement();
+                    version.getAndIncrement();
+                }
+            }
+
+            return rtn.val;
+        } finally
+        {
+            w.unlock();
+        }
     }
 
     /**
@@ -503,56 +696,56 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @return replacement parent Node
      */
     @SuppressWarnings("AssignmentToMethodParameter")
-    private Node<E> deleteNode(Node<E> current, E target, Ref<Boolean> found, boolean balanced)
+    private Node<E> deleteNode(Node<E> current, final E target, final Ref<Boolean> found, final boolean balanced)
     {
         Node<E> parent;
 
         if (current != null)
         {
             //left subtree
-            if (target.compareTo(current.Value) < 0)
+            if (target.compareTo(current.value.get()) < 0)
             {
-                current.Left = deleteNode(current.Left, target, found, balanced);
+                current.left.set(deleteNode(current.left.get(), target, found, balanced));
 
                 if (balanced && balanceFactor(current) == -2)//here
                 {
-                    current = balanceFactor(current.Right) <= 0
+                    current = balanceFactor(current.right.get()) <= 0
                             ? rotateRightRight(current) : rotateRightLeft(current);
                 }
             } //right subtree
-            else if (target.compareTo(current.Value) > 0)
+            else if (target.compareTo(current.value.get()) > 0)
             {
-                current.Right = deleteNode(current.Right, target, found, balanced);
+                current.right.set(deleteNode(current.right.get(), target, found, balanced));
 
                 if (balanced && balanceFactor(current) == 2)
                 {
-                    current = balanceFactor(current.Left) >= 0
+                    current = balanceFactor(current.left.get()) >= 0
                             ? rotateLeftLeft(current) : rotateLeftRight(current);
                 }
             } //if target is found
             else
             {
-                if (current.Right != null)
+                if (current.right != null)
                 {
                     //delete its in-order successor
-                    parent = current.Right;
+                    parent = current.right.get();
 
-                    while (parent.Left != null)
+                    while (parent.left != null)
                     {
-                        parent = parent.Left;
+                        parent = parent.left.get();
                     }
 
-                    current.Value = parent.Value;
-                    current.Right = deleteNode(current.Right, parent.Value, found, balanced);
+                    current.value.set(parent.value.get());
+                    current.right.set(deleteNode(current.right.get(), parent.value.get(), found, balanced));
 
                     if (balanced && balanceFactor(current) == 2)//re-balancing
                     {
-                        current = balanceFactor(current.Left) >= 0
+                        current = balanceFactor(current.left.get()) >= 0
                                 ? rotateLeftLeft(current) : rotateLeftRight(current);
                     }
                 } else
                 {   //if current.left != null
-                    current = current.Left;
+                    current = current.left.get();
                 }
 
                 found.val = true;
@@ -569,18 +762,34 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return built string
      */
-    private String displayInOrder(Node<E> current)
+    private String displayInOrder(final Node<E> current)
     {
-        StringBuilder rtn = new StringBuilder();
-
-        if (current != null)
+        try
         {
-            rtn.append(displayInOrder(current.Left));
-            rtn.append(current.Value).append(", ");
-            rtn.append(displayInOrder(current.Right));
+            r.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return "Thread interrupted!";
         }
 
-        return rtn.length() > 0 ? rtn.toString() : "";
+        try
+        {
+
+            final StringBuilder rtn = new StringBuilder();
+
+            if (current != null)
+            {
+                rtn.append(displayInOrder(current.left.get()));
+                rtn.append(current.value.get()).append(", ");
+                rtn.append(displayInOrder(current.right.get()));
+            }
+
+            return rtn.length() > 0 ? rtn.toString() : "";
+        } finally
+        {
+            r.unlock();
+        }
     }
 
     /**
@@ -591,13 +800,13 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @param index   the current index into the array
      */
     @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
-    private void fillArray(Node<E> current, Object[] array, Ref<Integer> index)
+    private void fillArray(final Node<E> current, final Object[] array, final Ref<Integer> index)
     {
         if (current != null)
         {
-            fillArray(current.Left, array, index);
-            array[index.val++] = current.Value;
-            fillArray(current.Right, array, index);
+            fillArray(current.left.get(), array, index);
+            array[index.val++] = current.value.get();
+            fillArray(current.right.get(), array, index);
         }
     }
 
@@ -609,14 +818,14 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @return the {@linkplain Node}{@literal <T>} if found, or {@code null}
      *         otherwise
      */
-    private Node<E> find(E key)
+    private Node<E> find(final E key)
     {
         Node<E> rtn = null;
 
         if (key != null)
         {
-            var node = findRecursive(key, root);
-            rtn = node != null && node.Value.equals(key) ? node : null;
+            var node = findRecursive(key, root.get());
+            rtn = node != null && node.value.equals(key) ? node : null;
         } else
         {
             throw new NullPointerException(NO_NULLS);
@@ -633,19 +842,19 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the Node if found, otherwise {@code null}
      */
-    private Node<E> findIndexRecursive(int index, Node<E> current)
+    private Node<E> findIndexRecursive(final int index, final Node<E> current)
     {
         Node<E> rtn = null;
 
         if (current != null)
         {
-            if (index == current.Index)
+            if (index == current.index.get())
             {
                 rtn = current;
             } else
             {
-                rtn = findIndexRecursive(index, index < current.Index
-                        ? current.Left : current.Right);
+                rtn = findIndexRecursive(index, index < current.index.get()
+                        ? current.left.get() : current.right.get());
             }
         }
 
@@ -661,19 +870,19 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the Node if found, otherwise {@code null}
      */
-    private Node<E> findRecursive(E target, Node<E> current)
+    private Node<E> findRecursive(final E target, final Node<E> current)
     {
         Node<E> rtn = null;
 
         if (current != null)
         {
-            if (target.equals(current.Value))
+            if (target.equals(current.value))
             {
                 rtn = current;
             } else
             {
-                rtn = findRecursive(target, target.compareTo(current.Value) < 0
-                        ? current.Left : current.Right);
+                rtn = findRecursive(target, target.compareTo(current.value.get()) < 0
+                        ? current.left.get() : current.right.get());
             }
         }
 
@@ -687,16 +896,15 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the height
      */
-    private int getHeight(Node<E> current)
+    private int getHeight(final Node<E> current)
     {
-        // (BW) Changed to 'var'
         int height = 0;
 
         if (current != null)
         {
-            int leftHeight = getHeight(current.Left);
-            int rightHeight = getHeight(current.Right);
-            int maxHeight = Math.max(leftHeight, rightHeight);
+            final int leftHeight = getHeight(current.left.get());
+            final int rightHeight = getHeight(current.right.get());
+            final int maxHeight = Math.max(leftHeight, rightHeight);
             height = maxHeight + 1;
         }
 
@@ -710,35 +918,15 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the Node if found, {@code null} otherwise
      */
-    private Node<E> getNodeAt(int index)
+    private Node<E> getNodeAt(final int index)
     {
-        if (index < 0 || index >= count)
+        if (index < 0 || index >= count.get())
         {
             throw new IndexOutOfBoundsException("index: " + index);
         }
 
         reIndex();
-        return findIndexRecursive(index, root);
-    }
-
-    /**
-     * Get the root Node.
-     *
-     * @return the root Node
-     */
-    private Node<E> getRoot()
-    {
-        return root;
-    }
-
-    /**
-     * Set the root Node.
-     *
-     * @param root the replacement Node
-     */
-    private void setRoot(Node<E> root)
-    {
-        this.root = root;
+        return findIndexRecursive(index, root.get());
     }
 
     /**
@@ -748,7 +936,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      */
     private boolean indexIsDirty()
     {
-        return lastIndexVersion != version;
+        return lastIndexVersion.get() != version.get();
     }
 
     /**
@@ -758,13 +946,13 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * @param index   the current index value
      */
     @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
-    private void indexRecursively(Node<E> current, Ref<Integer> index)
+    private void indexRecursively(final Node<E> current, final Ref<Integer> index)
     {
         if (current != null)
         {
-            indexRecursively(current.Left, index);
-            current.Index = ++index.val;
-            indexRecursively(current.Right, index);
+            indexRecursively(current.left.get(), index);
+            current.index.set(++index.val);
+            indexRecursively(current.right.get(), index);
         }
     }
 
@@ -780,25 +968,28 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return {@code true } if successful, {@code false } otherwise
      */
-    private boolean internalAdd(E item)
+    private boolean internalAdd(final E item)
     {
-        Ref<Boolean> rtn = Ref.val(false);
+        final Ref<Boolean> rtn = Ref.val(false);
 
-        Node<E> newItem = new Node<>(Objects.requireNonNull(item, NO_NULLS));
+        if (count.get() < MAX_VALUE)
+        {
+            final Node<E> newItem = new Node<>(Objects.requireNonNull(item, NO_NULLS));
 
-        if (root == null)
-        {
-            root = newItem;
-            rtn.val = true;
-        } else
-        {
-            root = addRecursive(root, newItem, rtn);
-        }
+            if (root.get() == null)
+            {
+                root.set(newItem);
+                rtn.val = true;
+            } else
+            {
+                root.set(addRecursive(root.get(), newItem, rtn));
+            }
 
-        if (rtn.val)
-        {
-            count++;
-            version++;
+            if (rtn.val)
+            {
+                count.getAndIncrement();
+                version.getAndIncrement();
+            }
         }
 
         return rtn.val;
@@ -809,19 +1000,34 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      */
     private void reIndex()
     {
-        Ref<Integer> index = Ref.val(-1);
-
-        if (count > 0 && indexIsDirty())
+        try
         {
-            indexRecursively(root, index);
-            lastIndexVersion = version;
+            w.lockInterruptibly();
+        } catch (InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+            return;
+        }
 
-            if (index.val != count - 1)
+        try
+        {
+            final Ref<Integer> index = Ref.val(-1);
+
+            if (count.get() > 0 && indexIsDirty())
             {
-                throw new ReindexFailedException(
-                        "Re-indexing has failed: count(" + count + "), index("
-                        + index + ")");
+                indexRecursively(root.get(), index);
+                lastIndexVersion.set(version.get());
+
+                if (index.val != count.get() - 1)
+                {
+                    throw new ReindexFailedException(
+                            "Re-indexing has failed: count(" + count + "), index("
+                            + index + ")");
+                }
             }
+        } finally
+        {
+            w.unlock();
         }
     }
 
@@ -832,11 +1038,11 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the pivot Node.
      */
-    private Node<E> rotateLeftLeft(Node<E> parent)
+    private Node<E> rotateLeftLeft(final Node<E> parent)
     {
-        Node<E> pivot = parent.Left;
-        parent.Left = pivot.Right;
-        pivot.Right = parent;
+        final Node<E> pivot = parent.left.get();
+        parent.left.set(pivot.right.get());
+        pivot.right.set(parent);
 
         return pivot;
     }
@@ -848,10 +1054,10 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the pivot Node.
      */
-    private Node<E> rotateLeftRight(Node<E> parent)
+    private Node<E> rotateLeftRight(final Node<E> parent)
     {
-        Node<E> pivot = parent.Left;
-        parent.Left = rotateRightRight(pivot);
+        final Node<E> pivot = parent.left.get();
+        parent.left.set(rotateRightRight(pivot));
 
         return rotateLeftLeft(parent);
     }
@@ -863,10 +1069,10 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the pivot Node.
      */
-    private Node<E> rotateRightLeft(Node<E> parent)
+    private Node<E> rotateRightLeft(final Node<E> parent)
     {
-        Node<E> pivot = parent.Right;
-        parent.Right = rotateLeftLeft(pivot);
+        final Node<E> pivot = parent.right.get();
+        parent.right.set(rotateLeftLeft(pivot));
 
         return rotateRightRight(parent);
     }
@@ -878,11 +1084,11 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *
      * @return the pivot Node.
      */
-    private Node<E> rotateRightRight(Node<E> parent)
+    private Node<E> rotateRightRight(final Node<E> parent)
     {
-        Node<E> pivot = parent.Right;
-        parent.Right = pivot.Left;
-        pivot.Left = parent;
+        final Node<E> pivot = parent.right.get();
+        parent.right.set(pivot.left.get());
+        pivot.left.set(parent);
 
         return pivot;
     }
@@ -901,13 +1107,13 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
         private ATDescItor()
         {
             super();
-            position = size();
+            position.set(size());
         }
 
         @Override
         public boolean hasNext()
         {
-            return isExpectedVersion() && position > 0;
+            return isExpectedVersion() && position.get() > 0;
         }
 
         @Override
@@ -922,13 +1128,13 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
                 throw new ConcurrentModificationException(CONCURRENT_MODIFICATION_EXCEPTION);
             }
 
-            if (--position < 0)
+            if (position.decrementAndGet() < 0)
             {
                 throw new NoSuchElementException();
             }
 
-            lastReturned = (T) get(position);
-            return lastReturned;
+            lastReturned.set((T) get(position.get()));
+            return lastReturned.get();
         }
     }
 
@@ -949,32 +1155,31 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
         /**
          * The expected version number.
          */
-        protected int expectedVersion;
+        protected final AtomicInteger expectedVersion = new AtomicInteger();
 
         /**
          * The last entry returned.
          */
-        protected T lastReturned;
+        protected final AtomicReference<T> lastReturned = new AtomicReference<>();
 
         /**
          * The current position within the list.
          */
-        protected int position;
+        protected final AtomicInteger position = new AtomicInteger();
 
         /**
          * Instantiates a new ATItor object.
          */
         private ATItor()
         {
-            position = -1;
-            expectedVersion = version;
-            lastReturned = null;
+            position.set(-1);
+            expectedVersion.set(version.get());
         }
 
         @Override
         public boolean hasNext()
         {
-            return isExpectedVersion() && position < count - 1;
+            return isExpectedVersion() && position.get() < count.get() - 1;
         }
 
         @Override
@@ -989,32 +1194,47 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
                 throw new ConcurrentModificationException(CONCURRENT_MODIFICATION_EXCEPTION);
             }
 
-            if (++position == count)
+            if (position.incrementAndGet() == count.get())
             {
                 throw new NoSuchElementException();
             }
 
-            lastReturned = (T) get(position);
-            return lastReturned;
+            lastReturned.set((T) get(position.get()));
+            return lastReturned.get();
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public void remove()
         {
-            if (!isExpectedVersion())
+            try
             {
-                throw new ConcurrentModificationException(CONCURRENT_MODIFICATION_EXCEPTION);
+                w.lockInterruptibly();
+            } catch (InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+                return;
             }
 
-            if (lastReturned == null)
+            try
             {
-                throw new IllegalStateException();
-            }
+                if (!isExpectedVersion())
+                {
+                    throw new ConcurrentModificationException(CONCURRENT_MODIFICATION_EXCEPTION);
+                }
 
-            delete((E) lastReturned);
-            lastReturned = null;
-            expectedVersion = version;
+                if (lastReturned.get() == null)
+                {
+                    throw new IllegalStateException();
+                }
+
+                delete((E) lastReturned.get());
+                lastReturned.set(null);
+                expectedVersion.set(version.get());
+            } finally
+            {
+                w.unlock();
+            }
         }
 
         /**
@@ -1024,7 +1244,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
          */
         protected boolean isExpectedVersion()
         {
-            return expectedVersion == version;
+            return expectedVersion.get() == version.get();
         }
     }
 
@@ -1040,31 +1260,31 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
         /**
          * List index position of this Node.
          */
-        public int Index;
+        public final AtomicInteger index = new AtomicInteger();
 
         /**
          * The attached Left child Node.
          */
-        public Node<T> Left;
+        public final AtomicReference<Node<T>> left = new AtomicReference<>();
 
         /**
          * The attached Right child Node.
          */
-        public Node<T> Right;
+        public final AtomicReference<Node<T>> right = new AtomicReference<>();
 
         /**
          * The value/item being stored in this Node.
          */
-        public T Value;
+        public final AtomicReference<T> value = new AtomicReference<>();
 
         /**
          * Initialize a new instance of the {@link Node Node&lt;E&gt;} class.
          *
          * @param value to store in this Node.
          */
-        private Node(T value)
+        private Node(final T value)
         {
-            this.Value = value;
+            this.value.set(value);
         }
     }
 }
