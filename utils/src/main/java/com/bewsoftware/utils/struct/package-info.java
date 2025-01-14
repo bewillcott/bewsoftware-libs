@@ -27,7 +27,8 @@
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
+ * @deprecated Will be removed from a later version. Use
  * @since 1.0.5
- * @version 1.0.5
+ * @version 3.0.2
  */
 package com.bewsoftware.utils.struct;

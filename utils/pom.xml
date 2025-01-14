@@ -14,8 +14,9 @@
 
     <name>BEWSoftware Utilities Library</name>
     <description>
-        This library contains classes whose packages are not yet large
-        enough, or important enough, to warrant their own modules.
+        This library is part of the BEWSoftware Libraries project, and contains
+        classes whose packages are not yet large enough, or important enough,
+        to warrant their own modules.
     </description>
 
     <dependencies>
@@ -24,24 +25,8 @@
             <artifactId>bewsoftware-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.bewsoftware</groupId>
             <artifactId>bewsoftware-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

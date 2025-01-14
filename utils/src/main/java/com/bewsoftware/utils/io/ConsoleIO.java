@@ -138,7 +138,7 @@ public final class ConsoleIO implements Display, Input
     {
         status.set(OPEN);
         out.set(new PrintWriter(System.out));
-        ConsoleIO.linePrefix.set(linePrefix);
+        ConsoleIO.linePrefix.set(linePrefix != null ? linePrefix : "");
         lines.set(new Lines());
         blank = false;
     }
@@ -172,7 +172,7 @@ public final class ConsoleIO implements Display, Input
         if (withConsole)
         {
             out.set(new PrintWriter(System.out));
-            ConsoleIO.linePrefix.set(linePrefix);
+            ConsoleIO.linePrefix.set(linePrefix != null ? linePrefix : "");
             lBlank = false;
         } else
         {
@@ -238,7 +238,7 @@ public final class ConsoleIO implements Display, Input
         if (withConsole)
         {
             out.set(new PrintWriter(System.out));
-            ConsoleIO.linePrefix.set(linePrefix);
+            ConsoleIO.linePrefix.set(linePrefix != null ? linePrefix : "");
             lBlank = false;
         } else
         {
@@ -453,8 +453,7 @@ public final class ConsoleIO implements Display, Input
     @Override
     public void clearExceptions()
     {
-        @SuppressWarnings("ThrowableResultIgnored")
-        Exception ignored = exception.getAndSet(null);
+        exception.set(null);
     }
 
     @Override

@@ -18,9 +18,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package test.com.bewsoftware.utils.string;
+package com.bewsoftware.utils.string;
 
-import com.bewsoftware.utils.string.Strings;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;

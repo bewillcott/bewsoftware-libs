@@ -40,7 +40,7 @@ public class ConsoleIOTest
     {
         System.out.println("multiThreadedTest\n-----------");
 
-//        StringWriter sw1 = new StringWriter();
+//        StringWriterPlus sw1 = new StringWriterPlus();
 //        TestingTask task1 = new TestingTask("[T1]", "t1", sw1, 1);
 //        Thread thread1 = new Thread(task1, "Thread-1");
 //        thread1.start();
@@ -54,7 +54,7 @@ public class ConsoleIOTest
         DisplayDebugLevel level = DEFAULT;
         String text1 = "123456";
         String text2 = "7890";
-        StringWriter sw = new StringWriter();
+        StringWriterPlus sw = new StringWriterPlus();
 
 //        final Thread t = new Thread(() ->
 //        {

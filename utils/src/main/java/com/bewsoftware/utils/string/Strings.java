@@ -182,7 +182,7 @@ public interface Strings
 
     /**
      * Process 'obj.toString()' (containing any number of lines), indenting or
-     * outdenting the lines by the number of 'spaces' required.
+     * out-denting the lines by the number of 'spaces' required.
      *
      * @param obj    to process
      * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
@@ -197,7 +197,7 @@ public interface Strings
 
     /**
      * Process the 'text' string (containing any number of lines), indenting or
-     * outdenting the lines by the number of 'spaces' required.
+     * out-denting the lines by the number of 'spaces' required.
      *
      * @param text   to process
      * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
