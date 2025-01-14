@@ -79,7 +79,7 @@
             <id>Javadoc-std</id>
             <properties>
                 <javadoc.linksource>true</javadoc.linksource>
-                <javadoc.outputDirectory></javadoc.outputDirectory>
+                <!--<javadoc.outputDirectory></javadoc.outputDirectory>-->
                 <javadoc.attach>false</javadoc.attach>
                 <javadoc.skip>false</javadoc.skip>
             </properties>
@@ -87,7 +87,7 @@
         <profile>
             <id>Javadoc-std-attached</id>
             <properties>
-                <javadoc.outputDirectory></javadoc.outputDirectory>
+                <!--<javadoc.outputDirectory></javadoc.outputDirectory>-->
                 <javadoc.skip>false</javadoc.skip>
             </properties>
         </profile>
@@ -934,7 +934,7 @@
                     <bottom>
                         Copyright © {currentYear} Bradley Willcott. All rights reserved.
                     </bottom>
-                    <outputDirectory>${javadoc.outputDirectory}</outputDirectory>
+                    <!--<outputDirectory>${javadoc.outputDirectory}</outputDirectory>-->
                     <tags>
                         <tag>
                             <name>Note</name>
