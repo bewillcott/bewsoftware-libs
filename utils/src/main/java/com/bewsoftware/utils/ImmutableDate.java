@@ -241,6 +241,41 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
     }
 
     /**
+     * Converts this {@code ImmutableDate} object to a
+     * {@code GregorianCalendar}.
+     * <p>
+     * The conversion creates a {@code GregorianCalendar} that represents the
+     * same point on the time-line as this {@code ImmutableDate}.
+     *
+     * @return a GregorianCalendar representing the same point on the time-line
+     *         as this {@code ImmutableDate} object.
+     *
+     * @since 3.0.2
+     */
+    public GregorianCalendar toCalendar()
+    {
+        final GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(millis);
+        return cal;
+    }
+
+    /**
+     * Converts this {@code ImmutableDate} object to a {@code Date}.
+     * <p>
+     * The conversion creates a {@code Date} that represents the same
+     * point on the time-line as this {@code ImmutableDate}.
+     *
+     * @return a date representing the same point on the time-line as
+     *         this {@code ImmutableDate} object.
+     *
+     * @since 3.0.2
+     */
+    public Date toDate()
+    {
+        return new Date(millis);
+    }
+
+    /**
      * Converts this {@code ImmutableDate} object to an {@code Instant}.
      * <p>
      * The conversion creates an {@code Instant} that represents the same
