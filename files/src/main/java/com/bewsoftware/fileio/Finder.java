@@ -76,30 +76,6 @@ public class Finder extends SimpleFileVisitor<Path>
         return Collections.unmodifiableSortedSet(filenames);
     }
 
-    /**
-     * {@inheritDoc }
-     *
-     * @param dir   {@inheritDoc }
-     * @param attrs {@inheritDoc }
-     *
-     * @return {@inheritDoc }
-     */
-    @Override
-    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs)
-    {
-        return CONTINUE;
-    }
-
-    /**
-     * {@inheritDoc }
-     * <p>
-     * Calls a pattern matching method on each file.
-     *
-     * @param file  {@inheritDoc }
-     * @param attrs {@inheritDoc }
-     *
-     * @return {@inheritDoc }
-     */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
     {
@@ -107,14 +83,6 @@ public class Finder extends SimpleFileVisitor<Path>
         return CONTINUE;
     }
 
-    /**
-     * {@inheritDoc }
-     *
-     * @param file {@inheritDoc }
-     * @param exc  {@inheritDoc }
-     *
-     * @return {@inheritDoc }
-     */
     @Override
     public FileVisitResult visitFileFailed(final Path file, final IOException exc)
     {
@@ -138,5 +106,4 @@ public class Finder extends SimpleFileVisitor<Path>
             filenames.add(file);
         }
     }
-
 }

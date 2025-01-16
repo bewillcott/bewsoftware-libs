@@ -68,7 +68,7 @@ public class BEWFiles
      * @param options   List of objects that configure how to copy or move a
      *                  file.
      *
-     * @throws IOException If an I/O error occurs.
+     * @throws IOException          If an I/O error occurs.
      * @throws InterruptedException If thread is interrupted.
      *
      * @since 3.0.1
@@ -81,8 +81,8 @@ public class BEWFiles
             final CopyOption... options
     ) throws IOException, InterruptedException
     {
-        Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
-        Path destPath = (destDir != null ? of(destDir) : of(""));
+        final Path srcPath = (sourceDir != null ? of(sourceDir) : of(""));
+        final Path destPath = (destDir != null ? of(destDir) : of(""));
 
         copyDirTree(display, srcPath, destPath, pattern, options);
     }
@@ -103,7 +103,7 @@ public class BEWFiles
      * @param options  List of objects that configure how to copy or move a
      *                 file.
      *
-     * @throws IOException If an I/O error occurs.
+     * @throws IOException          If an I/O error occurs.
      * @throws InterruptedException If thread is interrupted.
      *
      * @since 3.0.1
@@ -113,7 +113,7 @@ public class BEWFiles
             final Path srcPath,
             final Path destPath,
             final String pattern,
-            CopyOption... options
+            final CopyOption... options
     ) throws IOException, InterruptedException
     {
         // Can't be copying source onto itself.
@@ -124,15 +124,15 @@ public class BEWFiles
         }
 
         // Initialise and prepare finder...
-        Finder finder = new Finder(display, pattern != null ? pattern : "*");
+        final Finder finder = new Finder(display, pattern != null ? pattern : "*");
 
         // This is to let 'finder' collect relevant information.
         walkFileTree(srcPath, finder);
 
         // Process list of files/directories found...
-        SortedSet<Path> inList = finder.done();
-        List<FileData> outList = new ArrayList<>(inList.size());
-        Set<Path> dirList = new TreeSet<>();
+        final SortedSet<Path> inList = finder.done();
+        final List<FileData> outList = new ArrayList<>(inList.size());
+        final Set<Path> dirList = new TreeSet<>();
 
         processInList(srcPath, inList, destPath, outList, dirList, display);
 
@@ -161,6 +161,9 @@ public class BEWFiles
 
     /**
      * Delete the 'targetDir' directory and it's contents, recursively.
+     * <p>
+     * <b>WARNING:</b> <i>There is no recovery from this.</i> Once this method
+     * returns, the entire {@code targetDir} will be GONE!
      *
      * @param targetDir Directory to delete.
      *
@@ -168,15 +171,15 @@ public class BEWFiles
      */
     public static void deleteDirTree(final Path targetDir) throws IOException
     {
-        Files.walkFileTree(targetDir, new SimpleFileVisitor<Path>()
+        walkFileTree(targetDir, new SimpleFileVisitor<Path>()
         {
             @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException e)
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException e)
                     throws IOException
             {
                 if (e == null)
                 {
-                    Files.delete(dir);
+                    delete(dir);
                     return FileVisitResult.CONTINUE;
                 } else
                 {
@@ -186,17 +189,17 @@ public class BEWFiles
             }
 
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
                     throws IOException
             {
-                Files.delete(file);
+                delete(file);
                 return FileVisitResult.CONTINUE;
             }
         });
     }
 
     /**
-     * Get the resource Path.
+     * Get the resource Path from a 'jar' file.
      *
      * @param clazz Calling class.
      * @param name  Resource name.
@@ -217,7 +220,7 @@ public class BEWFiles
             return null;
         }
 
-        URI uri = clazz.getResource(name).toURI();
+        final URI uri = clazz.getResource(name).toURI();
 
         if ("jar".equals(uri.getScheme()))
         {
@@ -242,15 +245,15 @@ public class BEWFiles
 
     private static void processInList(
             final Path srcPath,
-            SortedSet<Path> inList,
+            final SortedSet<Path> inList,
             final Path destPath,
-            List<FileData> outList,
-            Set<Path> dirList,
+            final List<FileData> outList,
+            final Set<Path> dirList,
             final Display display
     ) throws IOException
     {
-        Pattern pattern1 = Pattern.compile("^(?<filename>.*)$");
-        Pattern pattern2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
+        final Pattern pattern1 = Pattern.compile("^(?<filename>.*)$");
+        final Pattern pattern2 = Pattern.compile("^(?:" + srcPath + "/)(?<filename>.*)$");
 
         for (Path inPath : inList)
         {
@@ -266,19 +269,19 @@ public class BEWFiles
 
             if (matcher.find())
             {
-                Path outPath = of(destPath.toString(), matcher.group("filename"));
+                final Path outPath = of(destPath.toString(), matcher.group("filename"));
 
                 if (notExists(outPath) || getLastModifiedTime(inPath).compareTo(getLastModifiedTime(outPath)) > 0)
                 {
                     outList.add(new FileData(inPath, outPath));
-                    Path parent = outPath.getParent();
+                    final Path parent = outPath.getParent();
 
                     if (notExists(parent))
                     {
                         dirList.add(parent);
                     }
 
-                    display.println(DEBUG,outPath);
+                    display.println(DEBUG, outPath);
                 }
             }
         }
