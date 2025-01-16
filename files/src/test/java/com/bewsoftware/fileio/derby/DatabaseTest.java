@@ -18,12 +18,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.fileio.derby.test;
+package com.bewsoftware.fileio.derby;
 
 import com.bewsoftware.common.InvalidParameterException;
-import com.bewsoftware.fileio.derby.Database;
 import com.bewsoftware.fileio.derby.Database.DbOpenResult;
-import com.bewsoftware.fileio.derby.ResultSetPrinter;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
 import java.sql.ResultSet;
@@ -41,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
+ * Test the Database class.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  */
