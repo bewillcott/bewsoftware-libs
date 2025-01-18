@@ -18,9 +18,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.optional.java.util.optional.map;
+package com.bewsoftware.optional.java.util;
 
-import com.bewsoftware.optional.java.util.OptionalMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;

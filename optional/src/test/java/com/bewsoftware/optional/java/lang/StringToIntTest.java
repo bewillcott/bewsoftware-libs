@@ -18,9 +18,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.optional.java.lang.optional.integer;
+package com.bewsoftware.optional.java.lang;
 
-import com.bewsoftware.optional.java.lang.OptionalInteger;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 

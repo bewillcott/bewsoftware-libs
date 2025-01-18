@@ -37,7 +37,7 @@ public class OptionalInteger
     {
     }
 
-    public static Optional<Integer> stringToInt(String s)
+    public static Optional<Integer> stringToInt(final String s)
     {
         Optional<Integer> rtn;
 
