@@ -25,7 +25,7 @@
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.0
+ * @version 3.0.2
  */
 module bewsoftware.utils {
     requires transitive java.desktop;
@@ -42,4 +42,5 @@ module bewsoftware.utils {
     exports com.bewsoftware.utils.regexp;
     exports com.bewsoftware.utils.string;
     exports com.bewsoftware.utils.struct;
+    exports com.github.dweymouth;
 }
