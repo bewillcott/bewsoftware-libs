@@ -182,18 +182,18 @@ public class IniFile
      *
      * @throws NullPointerException      If the path parameter is
      *                                   {@code null}.
-     * @throws InvalidParameterException If path.toString().isBlank().
-     * @since 1.0
+     * @throws IllegalArgumentException If path.toString().isBlank().
+     * @since 3.0.2
      */
     public IniFile(final Path path)
-            throws NullPointerException, InvalidParameterException
+            throws NullPointerException, IllegalArgumentException
     {
         if (path == null)
         {
             throw new NullPointerException("path is null");
         } else if (path.toString().isBlank())
         {
-            throw new InvalidParameterException("path is blank");
+            throw new IllegalArgumentException("path is blank");
         } else
         {
             this.path = path;
@@ -333,7 +333,7 @@ public class IniFile
             }
 
         } catch (NullPointerException | IOException
-                | IniFileFormatException | InvalidParameterException ex)
+                | IniFileFormatException | IllegalArgumentException ex)
         {
             System.err.println(IniFile.class.getName() + ".main():\n" + ex);
             exit(1);
@@ -359,14 +359,14 @@ public class IniFile
      * @throws FileAlreadyLoadedException The file cannot be reloaded.
      * @throws IniFileFormatException     The format of the <u>ini</u> file is
      *                                    non-conforming.
-     * @throws InvalidParameterException  If the {@code comment} is not a
+     * @throws IllegalArgumentException  If the {@code comment} is not a
      *                                    valid <u>ini</u> file format comment.
      * @throws IOException                An I/O error occurs opening the file
-     * @since 1.0
+     * @since 3.0.2
      */
     public IniFile loadFile()
             throws FileAlreadyLoadedException, IniFileFormatException,
-            InvalidParameterException, IOException
+            IllegalArgumentException, IOException
     {
 
         if (fileIsLoaded)
@@ -393,11 +393,12 @@ public class IniFile
      * @throws IniFileFormatException    If the format of the supplied ini file
      *                                   does
      *                                   not conform to the general standard.
-     * @throws InvalidParameterException If the {@code comment} is not a
+     * @throws IllegalArgumentException If the {@code comment} is not a
      *                                   valid <u>ini</u> file format comment.
+     * @since 3.0.2
      */
     public IniFile mergeFile(final Path file)
-            throws IOException, IniFileFormatException, InvalidParameterException
+            throws IOException, IniFileFormatException, IllegalArgumentException
     {
         try (BufferedReader in = Files.newBufferedReader(file))
         {
@@ -484,11 +485,12 @@ public class IniFile
      * @throws IOException               If an I/O error occurs.
      * @throws IniFileFormatException    If the format of the supplied ini file
      *                                   does not conform to the general standard.
-     * @throws InvalidParameterException If the comment is not a valid ini file
+     * @throws IllegalArgumentException If the comment is not a valid ini file
      *                                   format comment.
+     * @since 3.0.2
      */
     private boolean parseINI(final BufferedReader reader)
-            throws IOException, IniFileFormatException, InvalidParameterException
+            throws IOException, IniFileFormatException, IllegalArgumentException
     {
         Pattern p = Pattern.compile(IniDocumentImpl.INI_PATTERN);
         String line;

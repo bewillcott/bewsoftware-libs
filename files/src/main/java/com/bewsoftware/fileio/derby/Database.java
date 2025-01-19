@@ -19,7 +19,6 @@
  */
 package com.bewsoftware.fileio.derby;
 
-import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.fileio.BEWFiles;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
@@ -69,17 +68,17 @@ public class Database implements AutoCloseable
      *
      * @param dbName name and location of database file.
      *
-     * @throws InvalidParameterException if 'dbFilename' is either
-     *                                   null or blank.
+     * @throws IllegalArgumentException if 'dbFilename' is either
+     *                                  null or blank.
      */
-    public Database(final String dbName) throws InvalidParameterException
+    public Database(final String dbName) throws IllegalArgumentException
     {
         if (dbName == null)
         {
-            throw new InvalidParameterException("dbName: is null");
+            throw new IllegalArgumentException("dbName: is null");
         } else if (dbName.isBlank())
         {
-            throw new InvalidParameterException("dbName: is blank");
+            throw new IllegalArgumentException("dbName: is blank");
         }
 
         this.dbPath = of(dbName);

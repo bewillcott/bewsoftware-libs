@@ -16,4 +16,7 @@
         <netbeans.hint.license>gpl30_for_Generic</netbeans.hint.license>
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>ini</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>
