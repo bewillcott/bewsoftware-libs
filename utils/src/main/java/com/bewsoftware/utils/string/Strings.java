@@ -21,7 +21,6 @@
 package com.bewsoftware.utils.string;
 
 import java.util.Formatter;
-import java.util.Objects;
 
 import static java.lang.Character.isWhitespace;
 
@@ -31,10 +30,11 @@ import static java.lang.Character.isWhitespace;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 3.0.0
+ * @version 3.0.2
  */
 public interface Strings
 {
+
     /**
      * centre fills the {@code number} within a text string of {@code width}
      * length.
@@ -51,8 +51,7 @@ public interface Strings
 
     /**
      * Formats the {@code text} to be centred within a text string of
-     * {@code width}
-     * length.
+     * {@code width} length.
      *
      * @param text  to wrap
      * @param width of required text
@@ -81,8 +80,7 @@ public interface Strings
 
     /**
      * Formats the {@code text} to be centred within a text string of
-     * {@code width}
-     * length.
+     * {@code width} length.
      *
      * @param text  to wrap
      * @param width of required text
@@ -134,12 +132,15 @@ public interface Strings
     }
 
     /**
-     * Process a single 'line', either indenting or outdenting the text by the
+     * Process a single 'line', either indenting or out-denting the text by the
      * number of 'spaces' required.
      *
-     * @param line   to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param line   to process.
+     * @param spaces the number of spaces required.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed line.
      */
@@ -233,12 +234,28 @@ public interface Strings
     }
 
     /**
+     * Returns {@code true} if the provided string is either <i>null</i> or
+     * {@linkplain String#isBlank() blank}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided string is either <i>null</i> or
+     * <i>blank</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    static boolean isBlank(final String str)
+    {
+        return str == null || str.isBlank();
+    }
+
+    /**
      * Trim all whitespace characters from the beginning of the text string.
      *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
-     *         or {@code null} if 'text' is {@code null}..
+     *         or <i>null</i> if {@code text} is <i>null</i>.
      *
      * @see Character#isWhitespace(char)
      */
@@ -334,12 +351,28 @@ public interface Strings
     }
 
     /**
+     * Returns {@code true} if the provided string is neither <i>null</i>
+     * nor {@linkplain String#isBlank() blank}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided reference is neither <i>null</i>
+     * nor <i>blank</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    static boolean notBlank(final String str)
+    {
+        return str != null && !str.isBlank();
+    }
+
+    /**
      * Trim all whitespace characters from the end of the text string.
      *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
-     *         or {@code null} if 'text' is {@code null}..
+     *         or <i>null</i> if {@code text} is <i>null</i>.
      *
      * @see Character#isWhitespace(char)
      */
@@ -366,14 +399,8 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>blank</i>.
-     * <dl>
-     * <dt>blank:</dt>
-     * <dd>The string is either <i>empty</i> or contains only white space
-     * code-points.</dd>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isBlank() blank}.
      *
      * @param str The string to check for blankness.
      *
@@ -384,9 +411,12 @@ public interface Strings
      *
      * @see #requireNonEmpty(java.lang.String)
      */
-    static String requireNonBlank(String str)
+    static String requireNonBlank(final String str) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str).isBlank())
+        if (str == null)
+        {
+            throw new NullPointerException();
+        } else if (str.isBlank())
         {
             throw new IllegalArgumentException("isBlank.");
         }
@@ -395,14 +425,8 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>blank</i>.
-     * <dl>
-     * <dt>blank:</dt>
-     * <dd>The string is either <i>empty</i> or contains only white space
-     * code-points.</dd>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isBlank() blank}.
      *
      * @param str     The string to check for blankness.
      * @param message Detail message to be used in the event that an exception
@@ -415,22 +439,24 @@ public interface Strings
      *
      * @see #requireNonEmpty(java.lang.String, java.lang.String)
      */
-    static String requireNonBlank(String str, String message)
+    static String requireNonBlank(String str, String message) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str, message).isBlank())
+        if (str == null)
         {
-            throw new IllegalArgumentException("isBlank: " + message);
+            throw new NullPointerException("isNull: " + (message == null
+                    ? "" : message));
+        } else if (str.isBlank())
+        {
+            throw new IllegalArgumentException("isBlank: " + (message == null
+                    ? "" : message));
         }
 
         return str;
     }
 
     /**
-     * Checks that the specified string isn't <i>empty</i>.
-     * <dl>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isEmpty() empty}.
      *
      * @param str The string to check for emptiness.
      *
@@ -439,9 +465,12 @@ public interface Strings
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    static String requireNonEmpty(String str)
+    static String requireNonEmpty(String str) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str).isEmpty())
+        if (str == null)
+        {
+            throw new NullPointerException();
+        } else if (str.isEmpty())
         {
             throw new IllegalArgumentException("isEmpty.");
         }
@@ -450,11 +479,8 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>empty</i>.
-     * <dl>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isEmpty() empty}.
      *
      * @param str     The string to check for emptiness.
      * @param message Detail message to be used in the event that an exception
@@ -465,11 +491,16 @@ public interface Strings
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    static String requireNonEmpty(String str, String message)
+    static String requireNonEmpty(final String str, final String message) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str, message).isEmpty())
+        if (str == null)
         {
-            throw new IllegalArgumentException("isEmpty: " + message);
+            throw new NullPointerException("isNull: " + (message == null
+                    ? "" : message));
+        } else if (str.isEmpty())
+        {
+            throw new IllegalArgumentException("isEmpty: " + (message == null
+                    ? "" : message));
         }
 
         return str;
