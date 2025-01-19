@@ -19,7 +19,6 @@
  */
 package com.bewsoftware.utils.io;
 
-import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.utils.concurrent.PerThreadPoolExecutor;
 import com.bewsoftware.utils.concurrent.ThreadExecutorService;
 import com.bewsoftware.utils.string.Strings;
@@ -193,7 +192,7 @@ public final class ConsoleIO implements Display, Input
                 file.set(writers.get(filename).addUsage());
                 lBlank = false;
 
-            } catch (NullPointerException | InvalidParameterException | IOException ex)
+            } catch (NullPointerException | IllegalArgumentException | IOException ex)
             {
                 exception.compareAndSet(null, ex);
             }
@@ -266,7 +265,7 @@ public final class ConsoleIO implements Display, Input
                     throw new NullPointerException("ident - must not be 'null' or blank.");
                 }
 
-            } catch (IOException | NullPointerException | InvalidParameterException ex)
+            } catch (IOException | NullPointerException | IllegalArgumentException ex)
             {
                 exception.compareAndSet(null, ex);
             }
@@ -693,7 +692,8 @@ public final class ConsoleIO implements Display, Input
 
         try
         {
-            final String sThreadId = (threadId != PARENT_ID) ? "[" + threadId + "] " : "";
+            final String sThreadId = (threadId != PARENT_ID)
+                    ? "[" + threadId + "] " : "";
 
             if (linePrefix != null && !linePrefix.get().isBlank())
             {
@@ -1179,23 +1179,23 @@ public final class ConsoleIO implements Display, Input
          *
          * @param filename name of file to create/open
          *
-         * @throws FileNotFoundException     If the given string does not denote
-         *                                   an
-         *                                   existing, writable regular file and a
-         *                                   new regular file of that name cannot be
-         *                                   created, or if some other error occurs
-         *                                   while opening or creating the file.
-         * @throws NullPointerException      if {@code filename} is
-         *                                   {@code null}.
-         * @throws InvalidParameterException if {@code filename}
-         *                                   {@link String#isBlank() isBlank()}.
+         * @throws FileNotFoundException    If the given string does not denote
+         *                                  an
+         *                                  existing, writable regular file and a
+         *                                  new regular file of that name cannot be
+         *                                  created, or if some other error occurs
+         *                                  while opening or creating the file.
+         * @throws NullPointerException     if {@code filename} is
+         *                                  {@code null}.
+         * @throws IllegalArgumentException if {@code filename}
+         *                                  {@link String#isBlank() isBlank()}.
          */
         private WriterInstance(final String filename)
-                throws FileNotFoundException, NullPointerException, InvalidParameterException
+                throws FileNotFoundException, NullPointerException, IllegalArgumentException
         {
             if (requireNonNull(filename).isBlank())
             {
-                throw new InvalidParameterException(filename);
+                throw new IllegalArgumentException(filename);
             }
 
             this.filename = filename;
@@ -1209,17 +1209,17 @@ public final class ConsoleIO implements Display, Input
          * @param ident  String to identify this Writer in internal data store.
          * @param writer where to write output
          *
-         * @throws NullPointerException      if either {@code indent} or
-         *                                   {@code writer} are {@code null}.
-         * @throws InvalidParameterException if {@code indent}
-         *                                   {@linkplain String#isBlank() isBlank()}.
+         * @throws NullPointerException     if either {@code indent} or
+         *                                  {@code writer} are {@code null}.
+         * @throws IllegalArgumentException if {@code indent}
+         *                                  {@linkplain String#isBlank() isBlank()}.
          */
         private WriterInstance(final String ident, final Writer writer)
-                throws NullPointerException, InvalidParameterException
+                throws NullPointerException, IllegalArgumentException
         {
             if (requireNonNull(ident).isBlank())
             {
-                throw new InvalidParameterException(ident);
+                throw new IllegalArgumentException(ident);
             }
 
             filename = ident;
