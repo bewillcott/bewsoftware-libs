@@ -19,6 +19,9 @@
  */
 package com.bewsoftware.utils;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 /**
  * This class provides a way to get a value of type &lt;T&gt; into
  * and out of either a Lambda expression or a method through a parameter.
@@ -40,27 +43,42 @@ package com.bewsoftware.utils;
  *
  * @Note
  * This file was copied from one of my personal libraries.
+ * <p>
+ * Some might think that the class: {@link Optional} would be just as good to perform
+ * the same tasks, I disagree. As is mentioned in the Javadoc for {@code Optional} :-
+ * <hr>
+ * <b>API Note:</b><br>
+ * <i>
+ * Optional is primarily intended for use as a method return type where there is a clear need to represent "no result,"
+ * and where using null is likely to cause errors. [...]
+ * </i>
+ * <hr>
+ * Technically, you probably could use it, but I think that its use in the context of {@code Ref}'s usage, would be more
+ * confusing than helpful.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <T> type of Object
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.0.2
  */
 @SuppressWarnings("PublicField")
 public final class Ref<T>
 {
     /**
      * The object being held.
+     *
+     * @Note
+     * This field is intentionally accessible publicly, to improve the convenience
+     * of its use. As this class is a temporary holder of an object, rather than
+     * something more permanent.
      */
     public T val;
 
     /**
-     * This constructor is <b>private</b> to prevent instantiation by external
-     * clients.
+     * This constructor is <b>private</b> to prevent instantiation by external clients.
      * <p>
-     * This class should <i>only</i> be instantiated through one of the factory
-     * methods:
+     * This class should <i>only</i> be instantiated through one of the factory methods:
      * <ul>
      * <li>{@link  #val()}</li>
      * <li>{@link  #val(Object) val(T val)}</li>
@@ -68,7 +86,7 @@ public final class Ref<T>
      */
     private Ref()
     {
-        this.val = null;
+        val = null;
     }
 
     /**
@@ -92,7 +110,7 @@ public final class Ref<T>
      * @return a new instance of the Ref class, initialized with the 'val'
      *         object.
      */
-    public static <T> Ref<T> val(T val)
+    public static <T> Ref<T> val(final T val)
     {
         Ref<T> rtn = new Ref<>();
         rtn.val = val;
@@ -104,7 +122,25 @@ public final class Ref<T>
      */
     public void clear()
     {
-        this.val = null;
+        val = null;
+    }
+
+    /**
+     * If a value is present, performs the given action with the value,
+     * otherwise does nothing.
+     *
+     * @param action to be performed, if a value is present.
+     *
+     * @throws NullPointerException if value is present and the given action is
+     *                              {@code null}
+     * @since 3.0.2
+     */
+    public void ifPresent(Consumer<? super T> action)
+    {
+        if (isPresent())
+        {
+            action.accept(val);
+        }
     }
 
     /**
@@ -115,18 +151,17 @@ public final class Ref<T>
      */
     public boolean isEmpty()
     {
-        return this.val == null;
+        return val == null;
     }
 
     /**
      * Check to see if this Ref object has been set to a value.
      *
-     * @return {@code true} if it has been set to a value, {@code false}
-     *         otherwise.
+     * @return {@code true} if it has been set to a value, {@code false} otherwise.
      */
     public boolean isPresent()
     {
-        return this.val != null;
+        return val != null;
     }
 
     /**
@@ -143,6 +178,6 @@ public final class Ref<T>
     @Override
     public String toString()
     {
-        return "" + this.val;
+        return "" + val;
     }
 }
