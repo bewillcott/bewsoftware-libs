@@ -36,6 +36,7 @@ module bewsoftware.utils {
     exports com.bewsoftware.utils;
     exports com.bewsoftware.utils.concurrent;
     exports com.bewsoftware.utils.crypto;
+    exports com.bewsoftware.utils.function;
     exports com.bewsoftware.utils.graphics;
     exports com.bewsoftware.utils.io;
     exports com.bewsoftware.utils.reflect;

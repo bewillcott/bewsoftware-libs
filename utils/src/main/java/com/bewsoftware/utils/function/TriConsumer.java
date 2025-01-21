@@ -2,7 +2,7 @@
  *  File Name:    TriConsumer.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2021 Bradley Willcott
+ *  Copyright (c) 2021, 2025 Bradley Willcott
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 package com.bewsoftware.utils.function;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -46,10 +47,10 @@ import java.util.function.Consumer;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.9
- * @version 3.0.1
+ * @version 3.0.2
  */
 @FunctionalInterface
-public interface TriConsumer<T, U, V>
+public interface TriConsumer<T, U, V> extends Serializable
 {
 
     /**
