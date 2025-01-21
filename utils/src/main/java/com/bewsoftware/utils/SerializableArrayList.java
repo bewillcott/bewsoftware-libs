@@ -1,0 +1,76 @@
+/*
+ *  File Name:    SerializableArrayList.java
+ *  Project Name: bewsoftware-utils
+ *
+ *  Copyright (c) 2025 Bradley Willcott
+ *
+ *  bewsoftware-utils is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  bewsoftware-utils is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.bewsoftware.utils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * SerializableArrayList class description.<br>
+ * This is a special version of the {@link ArrayList} because it implements the {@link SerializableList} interface.
+ *
+ * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+ * @param <E> the type of elements in this list
+ *
+ * @since 3.0.2
+ * @version 3.0.2
+ */
+public class SerializableArrayList<E> extends ArrayList<E> implements SerializableList<E>
+{
+    private static final long serialVersionUID = 1218746376491915305L;
+
+    /**
+     * Constructs an empty list with an initial capacity of ten.
+     */
+    public SerializableArrayList()
+    {
+        super();
+    }
+
+    /**
+     * Constructs an empty list with the specified initial capacity.
+     *
+     * @param initialCapacity the initial capacity of the list.
+     */
+    public SerializableArrayList(int initialCapacity)
+    {
+        super(initialCapacity);
+    }
+
+    /**
+     * Constructs a list containing the elements of the specified collection, in the order they are returned by the
+     * collection's iterator.
+     *
+     * @param c the collection whose elements are to be placed into this list.
+     *
+     * @throws NullPointerException if the specified collection is <i>null</i>.
+     */
+    public SerializableArrayList(Collection<? extends E> c)
+    {
+        super(c);
+    }
+
+    @Override
+    public Object clone()
+    {
+        return super.clone();
+    }
+}
