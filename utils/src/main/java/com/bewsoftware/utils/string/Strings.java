@@ -428,9 +428,8 @@ public interface Strings
      * Checks that the specified string isn't
      * {@linkplain String#isBlank() blank}.
      *
-     * @param str     The string to check for blankness.
-     * @param message Detail message to be used in the event that an exception
-     *                is thrown.
+     * @param str  The string to check for blankness.
+     * @param name of variable/parameter being tested.
      *
      * @return {@code str} if not <i>blank</i>.
      *
@@ -439,16 +438,16 @@ public interface Strings
      *
      * @see #requireNonEmpty(java.lang.String, java.lang.String)
      */
-    static String requireNonBlank(String str, String message) throws NullPointerException, IllegalArgumentException
+    static String requireNonBlank(final String str, final String name) throws NullPointerException, IllegalArgumentException
     {
         if (str == null)
         {
-            throw new NullPointerException("isNull: " + (message == null
-                    ? "" : message));
+            throw new NullPointerException("isNull: " + (name == null
+                    ? "" : name));
         } else if (str.isBlank())
         {
-            throw new IllegalArgumentException("isBlank: " + (message == null
-                    ? "" : message));
+            throw new IllegalArgumentException("isBlank: " + (name == null
+                    ? "" : name));
         }
 
         return str;
@@ -465,7 +464,7 @@ public interface Strings
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    static String requireNonEmpty(String str) throws NullPointerException, IllegalArgumentException
+    static String requireNonEmpty(final String str) throws NullPointerException, IllegalArgumentException
     {
         if (str == null)
         {
@@ -482,25 +481,24 @@ public interface Strings
      * Checks that the specified string isn't
      * {@linkplain String#isEmpty() empty}.
      *
-     * @param str     The string to check for emptiness.
-     * @param message Detail message to be used in the event that an exception
-     *                is thrown.
+     * @param str  The string to check for emptiness.
+     * @param name of variable/parameter being tested.
      *
      * @return {@code str} if not <i>empty</i>.
      *
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
      */
-    static String requireNonEmpty(final String str, final String message) throws NullPointerException, IllegalArgumentException
+    static String requireNonEmpty(final String str, final String name) throws NullPointerException, IllegalArgumentException
     {
         if (str == null)
         {
-            throw new NullPointerException("isNull: " + (message == null
-                    ? "" : message));
+            throw new NullPointerException("isNull: " + (name == null
+                    ? "" : name));
         } else if (str.isEmpty())
         {
-            throw new IllegalArgumentException("isEmpty: " + (message == null
-                    ? "" : message));
+            throw new IllegalArgumentException("isEmpty: " + (name == null
+                    ? "" : name));
         }
 
         return str;
