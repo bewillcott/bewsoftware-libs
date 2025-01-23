@@ -34,7 +34,7 @@ import java.util.List;
  * @since 3.0.2
  * @version 3.0.2
  */
-public interface SerializableList<E> extends List<E>, Serializable
+public interface SerializableList<E> extends List<E>, Serializable, Cloneable
 {
 
 }

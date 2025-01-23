@@ -20,8 +20,8 @@
 
 package com.bewsoftware.utils.function;
 
+
 /**
- * Callback class description.<br>
  * This functional interface is intended to be used to provide a simple
  * alternative to {@link java.beans.PropertyChangeSupport PropertyChangeSupport},
  * when you only need an aggregate class to link to it.
