@@ -34,7 +34,7 @@ import java.util.Locale;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.1
+ * @version 3.0.2
  */
 @Immutable
 public class ImmutableDate implements Serializable, Cloneable, Comparable<ImmutableDate>
@@ -66,8 +66,12 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * default time zone with the default
      * {@linkplain Locale.Category#FORMAT FORMAT} locale.
      *
-     * @see GregorianCalendar
+     * @deprecated Replacing all public constructors with static factory methods.
+     *
+     * @see ImmutableDate#of() : as the replacement
+     * @see GregorianCalendar : used internally.
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     public ImmutableDate()
     {
         this(new GregorianCalendar());
@@ -81,8 +85,12 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @param millis the milliseconds since January 1, 1970, 00:00:00 GMT
      *               (Gregorian).
      *
-     * @see java.lang.System#currentTimeMillis()
+     * @deprecated Replacing all public constructors with static factory methods.
+     *
+     * @see ImmutableDate#of(long) : as the replacement
+     * @see System#currentTimeMillis()
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     public ImmutableDate(final long millis)
     {
         final Calendar cal = new GregorianCalendar();
@@ -95,7 +103,12 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * those in the {@code date} object.
      *
      * @param date Date object to copy from.
+     *
+     * @deprecated Replacing all public constructors with static factory methods.
+     *
+     * @see ImmutableDate#from(Date) : as the replacement
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     public ImmutableDate(final Date date)
     {
         final Calendar cal = new GregorianCalendar();
@@ -111,7 +124,12 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @param year  the year beginning at 1900.
      * @param month the month between 0-11. January = 0.
      * @param dom   the day of the month between 1-31.
+     *
+     * @deprecated Replacing all public constructors with static factory methods.
+     *
+     * @see ImmutableDate#of(int, int, int) : as the replacement
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     public ImmutableDate(final int year, final int month, final int dom)
     {
         this(new GregorianCalendar(year, month, dom));
@@ -151,9 +169,10 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
      * @exception NullPointerException     if {@code instant} is null.
      * @exception IllegalArgumentException if the instant is too large to
      *                                     represent as a {@code Date}
-     * @since 1.8
+     * @since 1.8,
+     * @since 3.0.2 (made final)
      */
-    public static ImmutableDate from(final Instant instant)
+    public static final ImmutableDate from(final Instant instant)
     {
         try
         {
@@ -162,6 +181,78 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
         {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    /**
+     * Initializes a new instance of {@code ImmutableDate} setting its values to
+     * those in the {@code date} object.
+     *
+     * @return a new fully configured Immutable instance.
+     *
+     * @param date Date object to copy from.
+     *
+     * @since 3.0.2
+     */
+    public static final ImmutableDate from(final Date date)
+    {
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(date.getTime());
+        return new ImmutableDate(cal);
+    }
+
+    /**
+     * Initializes a new instance of {@code ImmutableDate} to represent the
+     * specified number of milliseconds since the standard base time known as
+     * "the epoch", namely January 1, 1970, 00:00:00 GMT.
+     *
+     * @param millis the milliseconds since January 1, 1970, 00:00:00 GMT
+     *               (Gregorian).
+     *
+     * @return a new fully configured Immutable instance.
+     *
+     * @see java.lang.System#currentTimeMillis()
+     *
+     * @since 3.0.2
+     */
+    public static final ImmutableDate of(final long millis)
+    {
+        final Calendar cal = new GregorianCalendar();
+        cal.setTimeInMillis(millis);
+        return new ImmutableDate(cal);
+    }
+
+    /**
+     * Constructs a default {@code ImmutableDate} using the current time in the
+     * default time zone with the default
+     * {@linkplain Locale.Category#FORMAT FORMAT} locale.
+     *
+     * @return a new fully configured Immutable instance.
+     *
+     * @see GregorianCalendar
+     *
+     * @since 3.0.2
+     */
+    public static final ImmutableDate of()
+    {
+        return new ImmutableDate(new GregorianCalendar());
+    }
+
+    /**
+     * Allocates an ImmutableDate object and initializes it so that it
+     * represents midnight, local time, at the beginning of the day specified by
+     * the year, month, and dom arguments.
+     *
+     * @param year  the year beginning at 1900.
+     * @param month the month between 0-11. January = 0.
+     * @param dom   the day of the month between 1-31.
+     *
+     * @return a new fully configured Immutable instance.
+     *
+     * @since 3.0.2
+     */
+    public static final ImmutableDate of(final int year, final int month, final int dom)
+    {
+        return new ImmutableDate(new GregorianCalendar(year, month, dom));
     }
 
     /**
