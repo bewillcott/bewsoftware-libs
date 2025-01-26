@@ -24,8 +24,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * SerializableArrayList class description.<br>
- * This is a special version of the {@link ArrayList} because it implements the {@link SerializableList} interface.
+ * This is a special version of the {@link ArrayList}, because it implements the
+ * {@link SerializableList} interface. The purpose of that, is to allow it to be
+ * serialized as part of an aggregate class, rather than having to be a transient.
+ *
+ * {@snippet :
+ * // Instead of this:
+ *     private final transient List<String> names1 = new ArrayList<>();
+ *
+ * // You can now have this:
+ *     private final SerializableList<String> names2 = new SerializableArrayList<>();
+ * }
+ *
+ * As a transient, you would have to handle the serialization of {@code names1} yourself.
+ * However, {@code names2} is automatically serialized along with the rest of the classes
+ * non static members.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <E> the type of elements in this list

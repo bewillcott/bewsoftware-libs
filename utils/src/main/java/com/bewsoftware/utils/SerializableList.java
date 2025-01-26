@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SerializableList interface description.<br>
  * This interface is to be used when needing to Serialize a List like {@link ArrayList}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <E> the type of elements in this list.
  *
+ * @see SerializableArrayList
  * @since 3.0.2
  * @version 3.0.2
  */
