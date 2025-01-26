@@ -22,7 +22,7 @@ package com.bewsoftware.utils.io;
 
 import java.io.StringWriter;
 /**
- * This StringWriterPlus class extends the {@code java.io.StringWriterPlus} by adding
+ * This StringWriterPlus class extends {@code java.io.StringWriter} by adding
  * a convenience method: {@linkplain #clear()}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>

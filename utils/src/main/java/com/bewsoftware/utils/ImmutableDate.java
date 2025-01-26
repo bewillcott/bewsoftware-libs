@@ -28,7 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * The class ImmutableDate represents a specific instant in time, with
+ * The ImmutableDate class represents a specific instant in time, with
  * millisecond precision.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
@@ -136,7 +136,7 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
     }
 
     /**
-     * This constructor is called by all the {@code public} constructors, to
+     * This constructor is called by all the {@code public} factory methods, to
      * finish the initialization process.
      *
      * @param cal The calendar with required information.
@@ -238,7 +238,7 @@ public class ImmutableDate implements Serializable, Cloneable, Comparable<Immuta
     }
 
     /**
-     * Allocates an ImmutableDate object and initializes it so that it
+     * Allocates an {@code ImmutableDate} object and initializes it so that it
      * represents midnight, local time, at the beginning of the day specified by
      * the year, month, and dom arguments.
      *
