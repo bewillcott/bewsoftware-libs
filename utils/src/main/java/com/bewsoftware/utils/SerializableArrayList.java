@@ -20,22 +20,24 @@
 
 package com.bewsoftware.utils;
 
+import com.bewsoftware.utils.string.MessageBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * This is a special version of the {@link ArrayList}, because it implements the
  * {@link SerializableList} interface. The purpose of that, is to allow it to be
  * serialized as part of an aggregate class, rather than having to be a transient.
- *
+ * <p>
  * {@snippet :
  * // Instead of this:
  *     private final transient List<String> names1 = new ArrayList<>();
- *
+ * <p>
  * // You can now have this:
- *     private final SerializableList<String> names2 = new SerializableArrayList<>();
+ * private final SerializableList<String> names2 = new SerializableArrayList<>();
  * }
- *
+ * <p>
  * As a transient, you would have to handle the serialization of {@code names1} yourself.
  * However, {@code names2} is automatically serialized along with the rest of the classes
  * non static members.
@@ -85,5 +87,32 @@ public class SerializableArrayList<E> extends ArrayList<E> implements Serializab
     public Object clone()
     {
         return super.clone();
+    }
+
+    @Override
+    public String toString()
+    {
+        Iterator<E> it = iterator();
+
+        if (!it.hasNext())
+        {
+            return "[]";
+        }
+
+        MessageBuilder mb = new MessageBuilder();
+        mb.appendln('[');
+
+        for (;;)
+        {
+            E e = it.next();
+            mb.append("    ").append(e == this ? "(this Collection)" : e);
+
+            if (!it.hasNext())
+            {
+                return mb.appendln(']').toString();
+            }
+            
+            mb.appendln(',');
+        }
     }
 }
