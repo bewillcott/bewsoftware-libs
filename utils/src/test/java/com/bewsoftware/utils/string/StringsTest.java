@@ -74,19 +74,6 @@ public class StringsTest
         );
     }
 
-    public static Stream<Arguments> provideArgsForTestLTrim()
-    {
-        return Stream.of(
-                Arguments.of(null, null),
-                Arguments.of("", ""),
-                Arguments.of("  ", ""),
-                Arguments.of("not blank", "not blank"),
-                Arguments.of("  left spaces", "left spaces"),
-                Arguments.of("right spaces   ", "right spaces   "),
-                Arguments.of("   front and back spaces   ", "front and back spaces   ")
-        );
-    }
-
     public static Stream<Arguments> provideArgsForTestLeftJustify_String_int()
     {
         return Stream.of(
@@ -108,19 +95,6 @@ public class StringsTest
                 Arguments.of(3, 3, "3  "),
                 Arguments.of(4, 4, "4   "),
                 Arguments.of(5, 5, "5    ")
-        );
-    }
-
-    public static Stream<Arguments> provideArgsForTestRTrim()
-    {
-        return Stream.of(
-                Arguments.of(null, null),
-                Arguments.of("", ""),
-                Arguments.of("  ", ""),
-                Arguments.of("not blank", "not blank"),
-                Arguments.of("   left spaces", "   left spaces"),
-                Arguments.of("right spaces   ", "right spaces"),
-                Arguments.of("   front and back spaces   ", "   front and back spaces")
         );
     }
 
@@ -220,27 +194,6 @@ public class StringsTest
     }
 
     /**
-     * Test of lTrim method, of class Strings.
-     *
-     * @param input
-     * @param expected
-     */
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestLTrim")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testLTrim(String input, String expected)
-    {
-        String result = input.stripLeading();
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testLTrim");
-            System.out.println("  Strings.lTrim(\"" + input + "\")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
-    }
-
-    /**
      * Test of leftJustify method, of class Strings.
      *
      * @param text
@@ -279,27 +232,6 @@ public class StringsTest
         {
             System.out.println("testLeftJustify_int_int");
             System.out.println("  Strings.leftJustify(" + number + ", " + width + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
-    }
-
-    /**
-     * Test of rTrim method, of class Strings.
-     *
-     * @param input
-     * @param expected
-     */
-    @ParameterizedTest
-    @MethodSource("provideArgsForTestRTrim")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testRTrim(String input, String expected)
-    {
-        String result = input.stripTrailing();
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testRTrim");
-            System.out.println("  Strings.rTrim(\"" + input + "\")");
             System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
             return "";
         });
