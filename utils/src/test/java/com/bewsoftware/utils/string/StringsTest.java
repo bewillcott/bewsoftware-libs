@@ -230,7 +230,7 @@ public class StringsTest
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testLTrim(String input, String expected)
     {
-        String result = Strings.lTrim(input);
+        String result = input.stripLeading();
         assertEquals(expected, result, () ->
         {
             System.out.println("testLTrim");
@@ -295,7 +295,7 @@ public class StringsTest
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public void testRTrim(String input, String expected)
     {
-        String result = Strings.rTrim(input);
+        String result = input.stripTrailing();
         assertEquals(expected, result, () ->
         {
             System.out.println("testRTrim");

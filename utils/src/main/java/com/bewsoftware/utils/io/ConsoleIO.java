@@ -988,7 +988,7 @@ public final class ConsoleIO implements Display, Input
                         {
                             for (String text : textArr)
                             {
-                                final Line line2 = new Line(line.getLevel(), Strings.rTrim(text));
+                                final Line line2 = new Line(line.getLevel(), text.stripTrailing());
                                 line2.append("\n");
                                 rtn.add(line2);
                             }
