@@ -132,6 +132,36 @@ public interface Strings
     }
 
     /**
+     * Format an array. Each element will be indented on a separate line.
+     *
+     * @param <T> Type of elements in the array.
+     * @param arr of {@literal <T>} elements to layout.
+     *
+     * @return a String of the formatted array.
+     */
+    static <T> String formatArray(final T[] arr)
+    {
+        MessageBuilder mb = new MessageBuilder();
+
+        mb.appendln('[');
+
+        for (int i = 0; i < arr.length;)
+        {
+            mb.append("    ").append(arr[i++]);
+
+            if (!(i < arr.length))
+            {
+                mb.appendln().appendln(']');
+                break;
+            }
+
+            mb.appendln(',');
+        }
+
+        return mb.toString();
+    }
+
+    /**
      * Process a single 'line', either indenting or out-denting the text by the
      * number of 'spaces' required.
      *
@@ -252,6 +282,8 @@ public interface Strings
     /**
      * Trim all whitespace characters from the beginning of the text string.
      *
+     * @deprecated Use {@link String#stripLeading()} instead.
+     *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
@@ -259,6 +291,7 @@ public interface Strings
      *
      * @see Character#isWhitespace(char)
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     static String lTrim(final String text)
     {
         String rtn = "";
@@ -369,6 +402,8 @@ public interface Strings
     /**
      * Trim all whitespace characters from the end of the text string.
      *
+     * @deprecated Use {@link String#stripTrailing()} instead.
+     *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
@@ -376,6 +411,7 @@ public interface Strings
      *
      * @see Character#isWhitespace(char)
      */
+    @Deprecated(forRemoval = true, since = "3.0.2")
     static String rTrim(final String text)
     {
         String rtn = "";
