@@ -109,7 +109,7 @@ public class SerializableArrayList<E> extends ArrayList<E> implements Serializab
 
             if (!it.hasNext())
             {
-                return mb.append(']').toString();
+                return mb.appendln().append(']').toString();
             }
 
             mb.appendln(',');
