@@ -621,22 +621,4 @@ public interface Strings
 
         return rtn;
     }
-
-    /**
-     * Provide C 'printf'-style formatting of text, only instead of printing it
-     * to the console, the resulting text is return as a String object.
-     *
-     * @param format string
-     * @param args   parameters to be used
-     *
-     * @return a new string containing the formatted text.
-     *
-     * @deprecated Use String.format(String, Object...) instead.
-     * @see String#format(String, Object...)
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    static String sprintf(final String format, Object... args)
-    {
-        return new Formatter().format(format, args).toString();
-    }
 }
