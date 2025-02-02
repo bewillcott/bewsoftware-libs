@@ -30,17 +30,17 @@ import java.util.Iterator;
  * {@link SerializableList} interface. The purpose of that, is to allow it to be
  * serialized as part of an aggregate class, rather than having to be a transient.
  * <p>
- * {@snippet :
- * // Instead of this:
- *     private final transient List<String> names1 = new ArrayList<>();
- * <p>
- * // You can now have this:
- * private final SerializableList<String> names2 = new SerializableArrayList<>();
- * }
- * <p>
+ * Instead of this:
+ * <pre><code>
+ *     private final transient List&lt;String&gt; names1 = new ArrayList<>();
+ * </code></pre>
+ * You can now have this:
+ * <pre><code>
+ *     private final SerializableList&lt;String&gt; names2 = new SerializableArrayList<>();
+ * </code></pre>
  * As a transient, you would have to handle the serialization of {@code names1} yourself.
  * However, {@code names2} is automatically serialized along with the rest of the classes
- * non static members.
+ * non-static members.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <E> the type of elements in this list
@@ -104,14 +104,14 @@ public class SerializableArrayList<E> extends ArrayList<E> implements Serializab
 
         for (;;)
         {
-            E e = it.next();
+            final E e = it.next();
             mb.append("    ").append(e == this ? "(this Collection)" : e);
 
             if (!it.hasNext())
             {
-                return mb.appendln(']').toString();
+                return mb.append(']').toString();
             }
-            
+
             mb.appendln(',');
         }
     }

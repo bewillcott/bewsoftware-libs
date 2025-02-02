@@ -46,7 +46,7 @@ public interface Strings
      */
     static String centreFill(final int number, final int width)
     {
-        return centreFill(Integer.toString(number), width);
+        return centreFill("" + number, width);
     }
 
     /**
@@ -75,7 +75,7 @@ public interface Strings
      */
     static String centreFill(final int number, final int width, final String fill)
     {
-        return centreFill(Integer.toString(number), width, fill);
+        return centreFill("" + number, width, fill);
     }
 
     /**
@@ -216,8 +216,11 @@ public interface Strings
      * out-denting the lines by the number of 'spaces' required.
      *
      * @param obj    to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param spaces the number of spaces required.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed text
      */
@@ -231,8 +234,11 @@ public interface Strings
      * out-denting the lines by the number of 'spaces' required.
      *
      * @param text   to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param spaces the number of spaces required.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed text
      */
@@ -258,6 +264,9 @@ public interface Strings
                     mb.append(indentLine(strLine, spaces));
                 }
             }
+        } else
+        {
+            mb.append(text);
         }
 
         return mb.toString();
@@ -551,7 +560,7 @@ public interface Strings
      */
     static String rightJustify(final int number, final int width)
     {
-        return rightJustify(Integer.toString(number), width);
+        return rightJustify("" + number, width);
     }
 
     /**
@@ -580,7 +589,7 @@ public interface Strings
      */
     static String rightJustify(final int number, final int width, final String fill)
     {
-        return rightJustify(Integer.toString(number), width, fill);
+        return rightJustify("" + number, width, fill);
     }
 
     /**
@@ -601,12 +610,9 @@ public interface Strings
         // Process only if necessary
         if (length < width)
         {
-            final int preLen = (width - text.length());
+            final int preLen = (width - length);
 
-            rtn = new StringBuilder()
-                    .append(fill.repeat(preLen))
-                    .append(text)
-                    .toString();
+            rtn = fill.repeat(preLen) + text;
 
         } else
         {

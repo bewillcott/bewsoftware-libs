@@ -20,10 +20,12 @@
 
 package com.bewsoftware.utils.string;
 
+import java.util.Date;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -36,6 +38,42 @@ public class StringsTest
 
     public StringsTest()
     {
+    }
+
+    public static Stream<Arguments> provideArgsForIndentLine_String_int()
+    {
+        return Stream.of(
+                Arguments.of(" ", 0, " "),
+                Arguments.of(" ", 1, "  "),
+                Arguments.of("X", 2, "  X"),
+                Arguments.of("3", 3, "   3"),
+                Arguments.of("  .", 4, "      ."),
+                Arguments.of("*", 5, "     *"),
+                Arguments.of(" ", -1, ""),
+                Arguments.of("    X", -2, "  X"),
+                Arguments.of("      3", -3, "   3"),
+                Arguments.of("    .", -4, "."),
+                Arguments.of("     *", -5, "*")
+        );
+    }
+
+    public static Stream<Arguments> provideArgsForIndentLines_Object_int()
+    {
+        final Date date = new Date(1738476600000L);
+
+        return Stream.of(
+                Arguments.of(date, 0, "Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of(date, 1, " Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of(date, 2, "  Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of(date, 3, "   Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of("  " + date, 4, "      Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of(date, 5, "     Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of(" " + date, -1, "Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of("    " + date, -2, "  Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of("      " + date, -3, "   Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of("    " + date, -4, "Sun Feb 02 14:10:00 AWST 2025"),
+                Arguments.of("     " + date, -5, "Sun Feb 02 14:10:00 AWST 2025")
+        );
     }
 
     public static Stream<Arguments> provideArgsForTestCentreFill_String_int()
@@ -71,6 +109,27 @@ public class StringsTest
                 Arguments.of("3", 3, "333"),
                 Arguments.of(".", 4, "...."),
                 Arguments.of("*", 5, "*****")
+        );
+    }
+
+    public static Stream<Arguments> provideArgsForTestFormatArray_Array()
+    {
+        return Stream.of(
+                Arguments.of(
+                        new String[]
+                        {
+                            "This is some text",
+                            "which will be",
+                            "hopefully layed-out",
+                            "properly."
+                        },
+                        "[\n"
+                        + "    This is some text,\n"
+                        + "    which will be,\n"
+                        + "    hopefully layed-out,\n"
+                        + "    properly.\n"
+                        + "]\n"
+                )
         );
     }
 
@@ -127,8 +186,32 @@ public class StringsTest
         );
     }
 
+    public static Stream<Arguments> provideArgsForTestRightJustify_String_int()
+    {
+        return Stream.of(
+                Arguments.of(" ", 0, " "),
+                Arguments.of(" ", 1, " "),
+                Arguments.of("X", 2, " X"),
+                Arguments.of("3", 3, "  3"),
+                Arguments.of("  .", 4, "   ."),
+                Arguments.of("*", 5, "    *")
+        );
+    }
+
+    public static Stream<Arguments> provideArgsForTestRightJustify_int_int()
+    {
+        return Stream.of(
+                Arguments.of(0, 0, "0"),
+                Arguments.of(1, 1, "1"),
+                Arguments.of(2, 2, " 2"),
+                Arguments.of(3, 3, "  3"),
+                Arguments.of(4, 4, "   4"),
+                Arguments.of(5, 5, "    5")
+        );
+    }
+
     /**
-     * Test of centreFill method, of class Strings.
+     * Test of centreFill method.
      *
      * @param input
      * @param width
@@ -136,21 +219,17 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestCentreFill_String_int")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testCentreFill_String_int(String input, int width, String expected)
+    public void testCentreFill_String_int(final String input, final int width, final String expected)
     {
-        String result = Strings.centreFill(input, width);
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testCentreFill_String_int");
-            System.out.println("  Strings.centreFill(\"" + input + "\", " + width + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.centreFill(input, width);
+        assertEquals(expected, result,
+                "testCentreFill_String_int\n"
+                + format("    Strings.centreFill(\"%s\", %d)%n", input, width)
+        );
     }
 
     /**
-     * Test of centreFill method, of class Strings.
+     * Test of centreFill method.
      *
      * @param number
      * @param width
@@ -158,21 +237,17 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestCentreFill_int_int")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testCentreFill_int_int(int number, int width, String expected)
+    public void testCentreFill_int_int(final int number, final int width, final String expected)
     {
-        String result = Strings.centreFill(number, width);
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testCentreFill_int_int");
-            System.out.println("  Strings.centreFill(" + number + ", " + width + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.centreFill(number, width);
+        assertEquals(expected, result,
+                "testCentreFill_int_int\n"
+                + format("    Strings.centreFill(\"%d\", %d)%n", number, width)
+        );
     }
 
     /**
-     * Test of fill method, of class Strings.
+     * Test of fill method.
      *
      * @param text
      * @param count
@@ -180,21 +255,71 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestFill_String_int")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testFill(String text, int count, String expected)
+    public void testFill_String_int(final String text, final int count, final String expected)
     {
-        String result = Strings.fill(text, count);
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testFill");
-            System.out.println("  Strings.fill(\"" + text + "\", " + count + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.fill(text, count);
+        assertEquals(expected, result,
+                "testFill_String_int\n"
+                + format("    Strings.fill(\"%s\", %d)%n", text, count)
+        );
     }
 
     /**
-     * Test of leftJustify method, of class Strings.
+     * Test of formatArray method.
+     *
+     * @param <T>
+     * @param arr
+     * @param expected
+     */
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestFormatArray_Array")
+    public <T> void testFormatArray(final T[] arr, final String expected)
+    {
+        final String result = Strings.formatArray(arr);
+        assertEquals(expected, result,
+                "testFormatArray\n"
+                + format("    Strings.formatArray(\"%n%s\")%n", arrayToString(arr))
+        );
+    }
+
+    /**
+     * Test of indentLine method.
+     *
+     * @param text
+     * @param width
+     * @param expected
+     */
+    @ParameterizedTest
+    @MethodSource("provideArgsForIndentLine_String_int")
+    public void testIndentLine_String_int(final String text, final int width, final String expected)
+    {
+        final String result = Strings.indentLine(text, width);
+        assertEquals(expected, result,
+                "testIndentLine_String_int\n"
+                + format("    Strings.indentLine(\"%s\", %d)%n", text, width)
+        );
+    }
+
+    /**
+     * Test of indentLines method.
+     *
+     * @param obj
+     * @param width
+     * @param expected
+     */
+    @ParameterizedTest
+    @MethodSource("provideArgsForIndentLines_Object_int")
+    public void testIndentLines_Object_int(final Object obj, final int width, final String expected)
+    {
+        final String result = Strings.indentLines(obj, width);
+        assertEquals(expected, result,
+                "testIndentLines_Object_int\n"
+                + format("    Strings.indentLines(\"%s\", %d)%n", obj, width)
+        );
+    }
+
+    /**
+     * Test of leftJustify method.
      *
      * @param text
      * @param width
@@ -202,21 +327,17 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestLeftJustify_String_int")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testLeftJustify_String_int(String text, int width, String expected)
+    public void testLeftJustify_String_int(final String text, final int width, final String expected)
     {
-        String result = Strings.leftJustify(text, width);
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testLeftJustify_String_int");
-            System.out.println("  Strings.leftJustify(\"" + text + "\", " + width + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.leftJustify(text, width);
+        assertEquals(expected, result,
+                "testLeftJustify_String_int\n"
+                + format("    Strings.leftJustify(\"%s\", %d)%n", text, width)
+        );
     }
 
     /**
-     * Test of leftJustify method, of class Strings.
+     * Test of leftJustify method.
      *
      * @param number
      * @param width
@@ -224,21 +345,17 @@ public class StringsTest
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestLeftJustify_int_int")
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testLeftJustify_int_int(int number, int width, String expected)
+    public void testLeftJustify_int_int(final int number, final int width, final String expected)
     {
-        String result = Strings.leftJustify(number, width);
-        assertEquals(expected, result, () ->
-        {
-            System.out.println("testLeftJustify_int_int");
-            System.out.println("  Strings.leftJustify(" + number + ", " + width + ")");
-            System.out.println("  Expected: <" + expected + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.leftJustify(number, width);
+        assertEquals(expected, result,
+                "testLeftJustify_int_int\n"
+                + format("    Strings.leftJustify(\"%d\", %d)%n", number, width)
+        );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
@@ -248,21 +365,17 @@ public class StringsTest
             {
                 "Non-blank"
             })
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testRequireNonBlank_String(String text)
+    public void testRequireNonBlank_String(final String text)
     {
-        String result = Strings.requireNonBlank(text);
-        assertEquals(text, result, () ->
-        {
-            System.out.println("testRequireNonBlank_String");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\")");
-            System.out.println("  Expected: <" + text + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.requireNonBlank(text);
+        assertEquals(text, result,
+                "testRequireNonBlank_String\n"
+                + format("    Strings.requireNonBlank(\"%s\")%n", text)
+        );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
@@ -272,53 +385,37 @@ public class StringsTest
             {
                 "", "  "
             })
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonBlank_String_IllegalArgumentException(String text)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonBlank_String_IllegalArgumentException(final String text)
     {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Strings.requireNonBlank(text),
-                () ->
-        {
-            System.out.println("testRequireNonBlank_String_IllegalArgumentException");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\")");
-            System.out.println("  Expected: <IllegalArgumentException> but was: <>");
-            return "";
-        }
+                "testRequireNonBlank_String_IllegalArgumentException\n"
+                + format("    Strings.requireNonBlank(\"%s\")%n", text)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
     @ParameterizedTest
     @NullSource
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonBlank_String_NullPointerException(String text)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonBlank_String_NullPointerException(final String text)
     {
         assertThrows(
                 NullPointerException.class,
                 () -> Strings.requireNonBlank(text),
-                () ->
-        {
-            System.out.println("testRequireNonBlank_String_NullPointerException");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\")");
-            System.out.println("  Expected: <IllegalArgumentException> but was: <>");
-            return "";
-        }
+                "testRequireNonBlank_String_NullPointerException\n"
+                + format("    Strings.requireNonBlank(\"%s\")%n", text)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
@@ -328,75 +425,55 @@ public class StringsTest
     {
         "test:test", "test2:test", "Java:Java"
     }, delimiter = ':')
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testRequireNonBlank_String_String(String text, String msg)
+    public void testRequireNonBlank_String_String(final String text, final String msg)
     {
-        String result = Strings.requireNonBlank(text, msg);
-        assertEquals(text, text, () ->
-        {
-            System.out.println("testRequireNonBlank_String_String");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <" + text + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.requireNonBlank(text, msg);
+        assertEquals(text, text,
+                "testRequireNonBlank_String_String\n"
+                + format("    Strings.requireNonBlank(\"%s\", \"%s\")%n", text, msg)
+        );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_IllegalArgumentException")
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonBlank_String_String_IllegalArgumentException(String text, String msg)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonBlank_String_String_IllegalArgumentException(final String text, final String msg)
     {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Strings.requireNonBlank(text, msg),
-                () ->
-        {
-            System.out.println("testRequireNonBlank_String_String_IllegalArgumentException");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <IllegalArgumentException> but was: <>");
-            return "";
-        }
+                "testRequireNonBlank_String_String_IllegalArgumentException\n"
+                + format("    Strings.requireNonBlank(\"%s\", \"%s\")%n", text, msg)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonBlank_String_String_NullPointerException")
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonBlank_String_String_NullPointerException(String text, String msg)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonBlank_String_String_NullPointerException(final String text, final String msg)
     {
         assertThrows(
                 NullPointerException.class,
                 () -> Strings.requireNonBlank(text, msg),
-                () ->
-        {
-            System.out.println("testRequireNonBlank_String_String_NullPointerException");
-            System.out.println("  Strings.requireNonBlank(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <NullPointerException> but was: <>");
-            return "";
-        }
+                "testRequireNonBlank_String_String_NullPointerException\n"
+                + format("    Strings.requireNonBlank(\"%s\", \"%s\")%n", text, msg)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
@@ -406,21 +483,17 @@ public class StringsTest
             {
                 "Non-Empty"
             })
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testRequireNonEmpty_String(String text)
+    public void testRequireNonEmpty_String(final String text)
     {
-        String result = Strings.requireNonEmpty(text);
-        assertEquals(text, result, () ->
-        {
-            System.out.println("testRequireNonEmpty_String");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\")");
-            System.out.println("  Expected: <" + text + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.requireNonEmpty(text);
+        assertEquals(text, result,
+                "testRequireNonEmpty_String\n"
+                + format("    Strings.requireNonEmpty(\"%s\")%n", text)
+        );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
@@ -430,53 +503,37 @@ public class StringsTest
             {
                 ""
             })
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonEmpty_String_IllegalArgumentException(String text)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonEmpty_String_IllegalArgumentException(final String text)
     {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Strings.requireNonEmpty(text),
-                () ->
-        {
-            System.out.println("testRequireNonEmpty_String_IllegalArgumentException");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\")");
-            System.out.println("  Expected: <IllegalArgumentException> but was: <>");
-            return "";
-        }
+                "testRequireNonEmpty_String_IllegalArgumentException\n"
+                + format("    Strings.requireNonEmpty(\"%s\")%n", text)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      */
     @ParameterizedTest
     @NullSource
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonEmpty_String_NullPointerException(String text)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonEmpty_String_NullPointerException(final String text)
     {
         assertThrows(
                 NullPointerException.class,
                 () -> Strings.requireNonEmpty(text),
-                () ->
-        {
-            System.out.println("testRequireNonEmpty_String_NullPointerException");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\")");
-            System.out.println("  Expected: <NullPointerException> but was: <>");
-            return "";
-        }
+                "testRequireNonEmpty_String_NullPointerException\n"
+                + format("    Strings.requireNonEmpty(\"%s\")%n", text)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
@@ -486,71 +543,106 @@ public class StringsTest
     {
         "test:test", "test2:test", "Java:Java"
     }, delimiter = ':')
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public void testRequireNonEmpty_String_String(String text, String msg)
+    public void testRequireNonEmpty_String_String(final String text, final String msg)
     {
-        String result = Strings.requireNonEmpty(text, msg);
-        assertEquals(text, text, () ->
-        {
-            System.out.println("testRequireNonEmpty_String_String");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <" + text + "> but was: <" + result + ">");
-            return "";
-        });
+        final String result = Strings.requireNonEmpty(text, msg);
+        assertEquals(text, text,
+                "testRequireNonEmpty_String_String\n"
+                + format("    Strings.requireNonEmpty(\"%s\", \"%s\")%n", text, msg)
+        );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_IllegalArgumentException")
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonEmpty_String_String_IllegalArgumentException(String text, String msg)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonEmpty_String_String_IllegalArgumentException(final String text, final String msg)
     {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> Strings.requireNonEmpty(text, msg),
-                () ->
-        {
-            System.out.println("testRequireNonEmpty_String_String_IllegalArgumentException");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <IllegalArgumentException> but was: <>");
-            return "";
-        }
+                "testRequireNonEmpty_String_String_IllegalArgumentException\n"
+                + format("    Strings.requireNonEmpty(\"%s\", \"%s\")%n", text, msg)
         );
     }
 
     /**
-     * Test of requireNonBlank method, of class Strings.
+     * Test of requireNonBlank method.
      *
      * @param text
      * @param msg
      */
     @ParameterizedTest
     @MethodSource("provideArgsForTestRequireNonEmpty_String_String_NullPointerException")
-    @SuppressWarnings(
-            {
-                "ThrowableResultIgnored", "UseOfSystemOutOrSystemErr"
-            })
-    public void testRequireNonEmpty_String_String_NullPointerException(String text, String msg)
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testRequireNonEmpty_String_String_NullPointerException(final String text, final String msg)
     {
         assertThrows(
                 NullPointerException.class,
                 () -> Strings.requireNonEmpty(text, msg),
-                () ->
-        {
-            System.out.println("testRequireNonEmpty_String_String_NullPointerException");
-            System.out.println("  Strings.requireNonEmpty(\"" + text + "\", \"" + msg + "\")");
-            System.out.println("  Expected: <NullPointerException> but was: <>");
-            return "";
-        }
+                "testRequireNonEmpty_String_String_NullPointerException\n"
+                + format("    Strings.requireNonEmpty(\"%s\", \"%s\")%n", text, msg)
         );
     }
 
+    /**
+     * Test of rightJustify method.
+     *
+     * @param text
+     * @param width
+     * @param expected
+     */
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestRightJustify_String_int")
+    public void testRightJustify_String_int(final String text, final int width, final String expected)
+    {
+        final String result = Strings.rightJustify(text, width);
+        assertEquals(expected, result,
+                "testRightJustify_String_int\n"
+                + format("    Strings.rightJustify(\"%s\", %d)%n", text, width)
+        );
+    }
+
+    /**
+     * Test of rightJustify method.
+     *
+     * @param number
+     * @param width
+     * @param expected
+     */
+    @ParameterizedTest
+    @MethodSource("provideArgsForTestRightJustify_int_int")
+    public void testRightJustify_int_int(final int number, final int width, final String expected)
+    {
+        final String result = Strings.rightJustify(number, width);
+        assertEquals(expected, result,
+                "testRightJustify_int_int\n"
+                + format("    Strings.rightJustify(\"%d\", %d)%n", number, width)
+        );
+    }
+
+    /**
+     * Quick convert of an array to a text string for display purposes.
+     *
+     * @param <T>
+     * @param arr
+     *
+     * @return
+     */
+    private <T> String arrayToString(final T[] arr)
+    {
+        final MessageBuilder mb = new MessageBuilder();
+
+        for (T element : arr)
+        {
+            mb.appendln(element);
+        }
+
+        return mb.toString();
+    }
 }

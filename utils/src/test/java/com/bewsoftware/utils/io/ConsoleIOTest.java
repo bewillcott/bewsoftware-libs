@@ -22,6 +22,7 @@ package com.bewsoftware.utils.io;
 
 import org.junit.jupiter.api.Test;
 
+import static com.bewsoftware.utils.Utils.println;
 import static com.bewsoftware.utils.io.DisplayDebugLevel.DEFAULT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,7 +39,7 @@ public class ConsoleIOTest
 //    @Test
     public void multiThreadedTest()
     {
-        System.out.println("multiThreadedTest\n-----------");
+        println("multiThreadedTest\n-----------");
 
 //        StringWriterPlus sw1 = new StringWriterPlus();
 //        TestingTask task1 = new TestingTask("[T1]", "t1", sw1, 1);
@@ -49,7 +50,7 @@ public class ConsoleIOTest
     @Test
     public void printlnTest() throws Exception
     {
-        System.out.println("printlnTest\n-----------");
+        println("printlnTest\n-----------");
 
         DisplayDebugLevel level = DEFAULT;
         String text1 = "123456";
@@ -68,7 +69,7 @@ public class ConsoleIOTest
         {
             if (display.isException())
             {
-                System.err.println(display.popException());
+                println(display.popException());
             }
         }
 //        });
