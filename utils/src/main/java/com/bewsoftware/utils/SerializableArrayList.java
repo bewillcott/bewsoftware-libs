@@ -32,11 +32,11 @@ import java.util.Iterator;
  * <p>
  * Instead of this:
  * <pre><code>
- *     private final transient List&lt;String&gt; names1 = new ArrayList<>();
+ *     private final transient List&lt;String&gt; names1 = new ArrayList&lt;&gt;();
  * </code></pre>
  * You can now have this:
  * <pre><code>
- *     private final SerializableList&lt;String&gt; names2 = new SerializableArrayList<>();
+ *     private final SerializableList&lt;String&gt; names2 = new SerializableArrayList&lt;&gt;();
  * </code></pre>
  * As a transient, you would have to handle the serialization of {@code names1} yourself.
  * However, {@code names2} is automatically serialized along with the rest of the classes
