@@ -20,8 +20,6 @@
 
 package com.bewsoftware.utils.string;
 
-import java.util.Formatter;
-
 import static java.lang.Character.isWhitespace;
 
 /**
@@ -34,7 +32,6 @@ import static java.lang.Character.isWhitespace;
  */
 public interface Strings
 {
-
     /**
      * centre fills the {@code number} within a text string of {@code width}
      * length.
@@ -289,6 +286,22 @@ public interface Strings
     }
 
     /**
+     * Returns {@code true} if the provided string is either <i>null</i> or
+     * {@linkplain String#isEmpty() empty}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided string is either <i>null</i> or
+     * <i>empty</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    static boolean isEmpty(final String str)
+    {
+        return str == null || str.isEmpty();
+    }
+
+    /**
      * Trim all whitespace characters from the beginning of the text string.
      *
      * @deprecated Use {@link String#stripLeading()} instead.
@@ -406,6 +419,22 @@ public interface Strings
     static boolean notBlank(final String str)
     {
         return str != null && !str.isBlank();
+    }
+
+    /**
+     * Returns {@code true} if the provided string is neither <i>null</i>
+     * nor {@linkplain String#isEmpty() empty}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided reference is neither <i>null</i>
+     * nor <i>empty</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    static boolean notEmpty(final String str)
+    {
+        return str != null && !str.isEmpty();
     }
 
     /**
