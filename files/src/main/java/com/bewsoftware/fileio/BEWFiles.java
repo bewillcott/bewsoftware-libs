@@ -37,20 +37,17 @@ import static java.nio.file.Path.of;
 /**
  * This class contains various helper methods for file and directory operations.
  *
+ * @apiNote
+ * Converted from a utility class to an interface. Simplifies understanding (that
+ * it is not meant to be instantiated).
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.0
+ * @version 3.0.2
  */
-public class BEWFiles
+public interface BEWFiles
 {
-    /**
-     * This class in not meant to be instantiated.
-     */
-    private BEWFiles()
-    {
-    }
-
     /**
      * Recursively copies the directories and files of the {@code sourceDir} to
      * the {@code destDir}.
@@ -287,7 +284,8 @@ public class BEWFiles
         }
     }
 
-    private static class FileData
+    @SuppressWarnings("PublicInnerClass")
+    static class FileData
     {
         public final Path destinationPath;
 

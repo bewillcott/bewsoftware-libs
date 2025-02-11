@@ -40,7 +40,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.7
- * @version 3.0.0
+ * @version 3.0.2
  */
 public class Finder extends SimpleFileVisitor<Path>
 {
@@ -61,6 +61,8 @@ public class Finder extends SimpleFileVisitor<Path>
     public Finder(final Display display, final String pattern)
     {
         this.display = display;
+        display.println(DEBUG,pattern);
+
         matcher = FileSystems.getDefault()
                 .getPathMatcher("glob:" + Objects.requireNonNull(pattern));
     }

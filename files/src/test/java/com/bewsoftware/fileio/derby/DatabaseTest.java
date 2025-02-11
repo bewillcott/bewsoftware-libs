@@ -20,7 +20,6 @@
 
 package com.bewsoftware.fileio.derby;
 
-import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.fileio.derby.Database.DbOpenResult;
 import com.bewsoftware.utils.io.ConsoleIO;
 import com.bewsoftware.utils.io.Display;
@@ -87,7 +86,7 @@ public class DatabaseTest
     }
 
     @BeforeAll
-    public static void setUpClass() throws SQLException, InvalidParameterException
+    public static void setUpClass() throws SQLException
     {
         DISPLAY.println("setUp()");
 
