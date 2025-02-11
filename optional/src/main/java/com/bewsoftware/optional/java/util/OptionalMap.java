@@ -38,7 +38,7 @@ public class OptionalMap
     {
     }
 
-    public static <K, V> Optional<V> get(Map<K, V> map, K key)
+    public static <K, V> Optional<V> get(final Map<K, V> map, final K key)
     {
         return Optional.ofNullable(map.get(key));
     }

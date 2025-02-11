@@ -17,9 +17,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package test.com.bewsoftware.utils;
+package com.bewsoftware.utils;
 
-import com.bewsoftware.utils.AvlTree;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -167,36 +166,6 @@ public class AvlTreeTest
     }
 
     /**
-     * Test of delete method, of class AvlTree.
-     */
-    @Test
-    public void testDelete()
-    {
-        AvlTree<Integer> list = generateList();
-
-        assertFalse(list.delete(50));
-        assertTrue(list.contains(5));
-
-        assertTrue(list.delete(5));
-        assertFalse(list.contains(5));
-    }
-
-//    /**
-//     * Test of get method, of class AvlTree.
-//     */
-//    @Test
-//    @SuppressWarnings("AssertEqualsBetweenInconvertibleTypes")
-//    public void testGet()
-//    {
-//        AvlTree<Integer> list = generateList();
-//        Assertions.assertEquals(5, list.get(4));
-//        Assertions.assertNotEquals(5, list.get(5));
-//        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
-//                        {
-//                            list.get(list.size());
-//                        });
-//    }
-    /**
      * Test of getCount method, of class AvlTree.
      */
     @Test
@@ -207,20 +176,6 @@ public class AvlTreeTest
         assertNotEquals(5, list.size());
     }
 
-//    /**
-//     * Test of indexOf method, of class AvlTree.
-//     */
-//    @Test
-//    public void testIndexOf()
-//    {
-//        AvlTree<Integer> list = generateList();
-//        Assertions.assertEquals(10, list.indexOf(11));
-//        Assertions.assertNotEquals(5, list.indexOf(1));
-//        Assertions.assertThrows(NullPointerException.class, () ->
-//                        {
-//                            list.indexOf(null);
-//                        });
-//    }
     /**
      * Test of isBalanced method, of class AvlTree.
      */

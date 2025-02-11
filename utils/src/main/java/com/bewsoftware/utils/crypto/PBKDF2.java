@@ -101,9 +101,8 @@ public final class PBKDF2
             throws CannotPerformOperationException
     {
         // Generate a random salt
-        SecureRandom random = new SecureRandom();
         byte[] salt = new byte[SALT_BYTE_SIZE];
-        random.nextBytes(salt);
+        new SecureRandom().nextBytes(salt);
 
         // Hash the password
         byte[] hash = pbkdf2(password.toCharArray(), salt, PBKDF2_ITERATIONS,

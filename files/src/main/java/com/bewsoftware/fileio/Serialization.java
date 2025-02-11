@@ -24,22 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class contains helper methods for serializing and deserializing
+ * This interface contains helper methods for serializing and deserializing
  * objects to an external binary file.
+ *
+ * @apiNote
+ * Converted from a utility class to an interface. Simplifies understanding (that
+ * it is not meant to be instantiated).
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 1.0.6
+ * @version 3.0.2
  */
-public class Serialization {
-
-    /**
-     * Not meant to be instantiated.
-     */
-    private Serialization() {
-    }
-
+public interface Serialization
+{
     /**
      * Add the Object {@code obj}, to the external binary file:
      * {@code filename}.
@@ -57,12 +55,14 @@ public class Serialization {
      *
      * @throws IOException if any
      */
-    public static <T> void add(final T obj, final String filename) throws IOException {
+    public static <T> void add(final T obj, final String filename) throws IOException
+    {
         // Write out the objects
-        try ( ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(filename, true)) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename, true))
+        {
             @Override
-            protected void writeStreamHeader() throws IOException {
+            protected void writeStreamHeader() throws IOException
+            {
                 reset();
             }
         })
@@ -89,12 +89,14 @@ public class Serialization {
      *
      * @throws IOException if any
      */
-    public static <T> void addAll(final List<T> objs, final String filename) throws IOException {
+    public static <T> void addAll(final List<T> objs, final String filename) throws IOException
+    {
         // Write out the objects
-        try ( ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(filename, true)) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename, true))
+        {
             @Override
-            protected void writeStreamHeader() throws IOException {
+            protected void writeStreamHeader() throws IOException
+            {
                 reset();
             }
         })
@@ -124,11 +126,12 @@ public class Serialization {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> readObjects(final String filename)
-            throws ClassNotFoundException, IOException {
+            throws ClassNotFoundException, IOException
+    {
 
-        List<T> objs = new ArrayList<>();
+        final List<T> objs = new ArrayList<>();
 
-        try ( FileInputStream fis = new FileInputStream(filename);  ObjectInputStream in = new ObjectInputStream(fis);)
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));)
         {
             T obj = null;
 
@@ -160,9 +163,9 @@ public class Serialization {
      *
      * @throws IOException if any
      */
-    public static <T> void store(final T obj, final String filename) throws IOException {
-        try ( ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(filename)))
+    public static <T> void store(final T obj, final String filename) throws IOException
+    {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename)))
         {
             out.writeObject(obj);
             out.flush();
@@ -183,9 +186,9 @@ public class Serialization {
      *
      * @throws IOException if any
      */
-    public static <T> void storeAll(final List<T> objs, final String filename) throws IOException {
-        try ( ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(filename)))
+    public static <T> void storeAll(final List<T> objs, final String filename) throws IOException
+    {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename)))
         {
             for (T obj : objs)
             {

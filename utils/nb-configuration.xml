@@ -18,9 +18,14 @@
     </properties>
     <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
         <word>appendln</word>
+        <word>arity</word>
         <word>callable's</word>
+        <word>Clazz</word>
         <word>Clearable</word>
+        <word>enum</word>
+        <word>enum's</word>
         <word>println</word>
+        <word>runtime's</word>
         <word>whitespace</word>
     </spellchecker-wordlist>
 </project-shared-configuration>

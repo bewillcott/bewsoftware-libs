@@ -848,7 +848,7 @@ public class PerThreadPoolExecutor implements ThreadExecutorService
     /**
      * The main mechanics of invokeAny.
      *
-     * @Note
+     * @note
      * Code copied from {@linkplain AbstractExecutorService}.
      */
     private <T> T doInvokeAny(

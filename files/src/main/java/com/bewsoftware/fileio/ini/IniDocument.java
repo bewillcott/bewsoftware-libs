@@ -18,7 +18,6 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.common.InvalidParameterException;
 import com.bewsoftware.property.IniProperty;
 import com.bewsoftware.property.MutableIniProperty;
 import java.util.ArrayList;
@@ -28,11 +27,10 @@ import java.util.List;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.0
+ * @version 3.0.2
  */
 public interface IniDocument
 {
-
     /**
      * Test to see whether or not this <b>key</b> exists within this
      * <b>section</b> in the internal store.
@@ -41,8 +39,6 @@ public interface IniDocument
      * @param key     possible key
      *
      * @return {@code true} if the key exists, {@code false} otherwise.
-     *
-     * @since 1.0
      */
     boolean containsKey(final String section, final String key);
 
@@ -53,8 +49,6 @@ public interface IniDocument
      * @param section possible section.
      *
      * @return {@code true} if the section exists, {@code false} otherwise.
-     *
-     * @since 1.0
      */
     default boolean containsSection(final String section)
     {
@@ -72,7 +66,6 @@ public interface IniDocument
      * @return Either the stored value or the defaultValue if key is not found.
      *
      * @throws NullPointerException if the specified key is {@code null}.
-     * @since 1.0
      */
     default boolean getBoolean(final String section, final String key, final boolean defaultvalue)
     {
@@ -90,7 +83,6 @@ public interface IniDocument
      * @return Either the stored value or the defaultValue if key is not found.
      *
      * @throws NullPointerException if the specified section is {@code null}.
-     * @since 1.0
      */
     default boolean getBooleanG(final String key, final boolean defaultvalue)
     {
@@ -115,8 +107,6 @@ public interface IniDocument
      * @param key The key whose comment we are after.
      *
      * @return the comment or {@code null}
-     *
-     * @since 1.0
      */
     default String getCommentG(final String key)
     {
@@ -132,8 +122,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default double getDouble(final String section, final String key, final double defaultvalue)
     {
@@ -149,8 +137,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default double getDoubleG(final String key, final double defaultvalue)
     {
@@ -166,8 +152,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default float getFloat(final String section, final String key, final float defaultvalue)
     {
@@ -183,8 +167,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default float getFloatG(final String key, final float defaultvalue)
     {
@@ -200,8 +182,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default int getInt(final String section, final String key, final int defaultvalue)
     {
@@ -217,8 +197,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default int getIntG(final String key, final int defaultvalue)
     {
@@ -234,8 +212,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default long getLong(final String section, final String key, final long defaultvalue)
     {
@@ -251,8 +227,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default long getLongG(final String key, final long defaultvalue)
     {
@@ -273,8 +247,6 @@ public interface IniDocument
      * @param section Name of the section.
      *
      * @return List of properties.
-     *
-     * @since 1.0
      */
     List<IniProperty<String>> getSection(final String section);
 
@@ -286,8 +258,6 @@ public interface IniDocument
      * @param section Name of the section.
      *
      * @return The comment if set, otherwise {@code null}.
-     *
-     * @since 1.0
      */
     String getSectionComment(final String section);
 
@@ -307,8 +277,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default String getString(final String section, final String key, final String defaultvalue)
     {
@@ -324,8 +292,6 @@ public interface IniDocument
      * @param defaultvalue The value to return if the key does not exist.
      *
      * @return Either the stored value or the defaultValue if key is not found.
-     *
-     * @since 1.0
      */
     default String getStringG(final String key, final String defaultvalue)
     {
@@ -347,8 +313,6 @@ public interface IniDocument
      * @param key     The key whose value we are after.
      *
      * @return the stored value or {@code null}.
-     *
-     * @since 1.0
      */
     String getValue(final String section, final String key);
 
@@ -426,8 +390,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     * @since 1.0
      */
     default Boolean setBoolean(final String section, final String key, final boolean value)
     {
@@ -446,13 +408,13 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Boolean setBoolean(final String section, final String key, final boolean value,
-            final String comment) throws InvalidParameterException
+            final String comment) throws IllegalArgumentException
     {
         String rtn = setString(section, key, Boolean.toString(value), comment);
         return rtn != null ? Boolean.valueOf(rtn) : null;
@@ -467,9 +429,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Boolean setBooleanG(final String key, final boolean value)
     {
@@ -489,13 +448,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Boolean setBooleanG(final String key, final boolean value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         String rtn = setStringG(key, Boolean.toString(value), comment);
         return rtn != null ? Boolean.valueOf(rtn) : null;
@@ -512,14 +471,15 @@ public interface IniDocument
      * @return The previous comment of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @throws NullPointerException      If {@code key} is {@code null}.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @throws NullPointerException     If {@code key} is {@code null}.
+     *
+     * @since 3.0.2
      */
     String setComment(final String section, final String key, final String comment)
-            throws InvalidParameterException;
+            throws IllegalArgumentException;
 
     /**
      * Set the {@code comment} for this {@code key} in the global section.
@@ -531,13 +491,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default String setCommentG(final String key, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         return setComment(null, key, comment);
     }
@@ -551,8 +511,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     * @since 1.0
      */
     default Double setDouble(final String section, final String key, final double value)
     {
@@ -572,13 +530,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Double setDouble(final String section, final String key, final double value,
-            final String comment) throws InvalidParameterException
+            final String comment) throws IllegalArgumentException
     {
         String rtn = setString(section, key, Double.toString(value), comment);
         return rtn != null ? Double.valueOf(rtn) : null;
@@ -593,9 +551,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Double setDoubleG(final String key, final double value)
     {
@@ -615,13 +570,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Double setDoubleG(final String key, final double value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         String rtn = setStringG(key, Double.toString(value), comment);
         return rtn != null ? Double.valueOf(rtn) : null;
@@ -636,9 +591,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Float setFloat(final String section, final String key, final float value)
     {
@@ -658,13 +610,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Float setFloat(final String section, final String key, final float value,
-            final String comment) throws InvalidParameterException
+            final String comment) throws IllegalArgumentException
     {
         String rtn = setString(section, key, Float.toString(value), comment);
         return rtn != null ? Float.valueOf(rtn) : null;
@@ -679,9 +631,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Float setFloatG(final String key, final float value)
     {
@@ -703,13 +652,13 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Float setFloatG(final String key, final Float value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         String rtn = setStringG(key, Float.toString(value), comment);
         return rtn != null ? Float.valueOf(rtn) : null;
@@ -724,9 +673,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Integer setInt(final String section, final String key, final int value)
     {
@@ -748,13 +694,13 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Integer setInt(final String section, final String key, final int value,
-            final String comment) throws InvalidParameterException
+            final String comment) throws IllegalArgumentException
     {
         String rtn = setString(section, key, Integer.toString(value), comment);
         return rtn != null ? Integer.valueOf(rtn) : null;
@@ -770,8 +716,6 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     *
-     * @since 1.0
      */
     default Integer setIntG(final String key, final int value)
     {
@@ -793,13 +737,13 @@ public interface IniDocument
      *
      * <u>key</u>.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Integer setIntG(final String key, final int value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         String rtn = setStringG(key, Integer.toString(value), comment);
         return rtn != null ? Integer.valueOf(rtn) : null;
@@ -814,9 +758,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default Long setLong(final String section, final String key, final long value)
     {
@@ -835,16 +776,13 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     *
-     * <u>key</u>.
-     *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Long setLong(final String section, final String key, final long value,
-            final String comment) throws InvalidParameterException
+            final String comment) throws IllegalArgumentException
     {
         String rtn = setString(section, key, Long.toString(value), comment);
         return rtn != null ? Long.valueOf(rtn) : null;
@@ -860,8 +798,6 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     *
-     * @since 1.0
      */
     default Long setLongG(final String key, final long value)
     {
@@ -880,16 +816,13 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     *
-     * <u>key</u>.
-     *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default Long setLongG(final String key, final long value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         String rtn = setStringG(key, Long.toString(value), comment);
         return rtn != null ? Long.valueOf(rtn) : null;
@@ -899,8 +832,6 @@ public interface IniDocument
      * Create an empty section with no comment.
      *
      * @param section New section.
-     *
-     * @since 1.0
      */
     default void setSection(final String section)
     {
@@ -912,8 +843,6 @@ public interface IniDocument
      *
      * @param section New section.
      * @param comment New comment.
-     *
-     * @since 1.0
      */
     void setSection(final String section, final String comment);
 
@@ -927,10 +856,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     * <u>section</u> or <u>key</u>.
-     *
-     * @since 1.0
      */
     default String setString(final String section, final String key, final String value)
     {
@@ -939,7 +864,7 @@ public interface IniDocument
         try
         {
             return setString(section, key, value, null);
-        } catch (InvalidParameterException ex)
+        } catch (IllegalArgumentException ex)
         {
             // Ignore exception, as it won't ever be thrown.
         }
@@ -959,13 +884,13 @@ public interface IniDocument
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     String setString(final String section, final String key, final String value,
-            final String comment) throws InvalidParameterException;
+            final String comment) throws IllegalArgumentException;
 
     /**
      * Set a property with a value of type: <i>String</i>.The key is
@@ -976,9 +901,6 @@ public interface IniDocument
      *
      * @return The previous value of this {@code key},<br>
      * or <i>null</i> if no previous value.
-     *
-     *
-     * @since 1.0
      */
     default String setStringG(final String key, final String value)
     {
@@ -997,13 +919,13 @@ public interface IniDocument
      * or <i>null</i> if no previous value.
      *
      *
-     * @throws InvalidParameterException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format
-     *                                   comment.
-     * @since 1.0
+     * @throws IllegalArgumentException If the {@code comment} is not a
+     *                                  valid <u>ini</u> file format
+     *                                  comment.
+     * @since 3.0.2
      */
     default String setStringG(final String key, final String value, final String comment)
-            throws InvalidParameterException
+            throws IllegalArgumentException
     {
         return setString(null, key, value, comment);
     }
@@ -1015,8 +937,6 @@ public interface IniDocument
      *
      * @return {@code true} if validation is successful, {@code false}
      *         otherwise.
-     *
-     * @since 1.0
      */
     boolean validateComment(final String comment);
 }

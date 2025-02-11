@@ -18,6 +18,7 @@
  */
 package com.bewsoftware.property;
 
+import com.bewsoftware.annotations.jcip.Immutable;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -50,6 +51,7 @@ import java.util.Objects;
  * @since 1.0
  * @version 1.0
  */
+@Immutable
 public class Property<K extends Comparable<K>, V> implements
         Serializable,
         Comparable<Property<K, V>>
@@ -63,6 +65,7 @@ public class Property<K extends Comparable<K>, V> implements
     /**
      * The property's comment field;
      */
+    @SuppressWarnings("ProtectedField")
     protected String comment;
 
     /**
@@ -73,6 +76,7 @@ public class Property<K extends Comparable<K>, V> implements
     /**
      * The property's value field.
      */
+    @SuppressWarnings("ProtectedField")
     protected transient V value;
 
     /**
@@ -83,7 +87,7 @@ public class Property<K extends Comparable<K>, V> implements
      * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
      */
-    public <T extends Property<K, V>> Property(T property)
+    public <T extends Property<K, V>> Property(final T property)
     {
         this(property.key, property.value, property.comment);
     }
@@ -94,7 +98,7 @@ public class Property<K extends Comparable<K>, V> implements
      * @param key   The key.
      * @param value The value.
      */
-    public Property(K key, V value)
+    public Property(final K key, final V value)
     {
         this(key, value, null);
     }
@@ -106,7 +110,7 @@ public class Property<K extends Comparable<K>, V> implements
      * @param value   The value.
      * @param comment The comment.
      */
-    public Property(K key, V value, String comment)
+    public Property(final K key, final V value, final String comment)
     {
         this.key = key;
         this.value = value;
@@ -124,7 +128,7 @@ public class Property<K extends Comparable<K>, V> implements
     }
 
     @Override
-    public int compareTo(Property<K, V> other)
+    public int compareTo(final Property<K, V> other)
     {
         int rtn = 0;
 
@@ -157,26 +161,11 @@ public class Property<K extends Comparable<K>, V> implements
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
-        boolean rtn = false;
-
-        if (this == obj)
-        {
-            rtn = true;
-        } else if (obj instanceof Property<?, ?>)
-        {
-            Property<?, ?> other = (Property<?, ?>) obj;
-
-            if (this.getClass() == other.getClass()
-                    && this.value.getClass() == other.value.getClass()
-                    && this.key.equals(other.key))
-            {
-                rtn = true;
-            }
-        }
-
-        return rtn;
+        return (obj instanceof Property<?, ?> other)
+                && this.key.equals(other.key)
+                && this.value.equals(other.value);
     }
 
     @Override
@@ -212,5 +201,4 @@ public class Property<K extends Comparable<K>, V> implements
     {
         return value;
     }
-
 }

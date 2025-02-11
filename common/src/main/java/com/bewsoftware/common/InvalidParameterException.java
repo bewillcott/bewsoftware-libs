@@ -24,11 +24,15 @@ package com.bewsoftware.common;
  * The InvalidParameterException is thrown when one or more parameters of a
  * method have been passed invalid values.
  *
+ * @deprecated Use {@link IllegalArgumentException} instead. Will be removed
+ * in later version.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.0.2
  */
+@Deprecated(forRemoval = true, since = "3.0.2")
 public class InvalidParameterException extends Exception
 {
     /**

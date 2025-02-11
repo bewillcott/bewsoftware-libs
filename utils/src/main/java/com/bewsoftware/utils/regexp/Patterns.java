@@ -352,9 +352,9 @@ public enum Patterns {
      */
     public final String regex;
 
-    Patterns(String text, int options) {
+    Patterns(String text, int flags) {
         this.regex = text;
-        this.flags = options;
+        this.flags = flags;
     }
 
     /**

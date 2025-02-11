@@ -25,5 +25,7 @@
  * @version 1.0
  */
 module bewsoftware.property {
+    requires bewsoftware.annotations;
+
     exports com.bewsoftware.property;
 }

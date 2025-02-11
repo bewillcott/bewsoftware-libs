@@ -19,8 +19,13 @@
  */
 package com.bewsoftware.utils.string;
 
+import com.bewsoftware.utils.Ref;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bewsoftware.utils.string.Strings.indentLines;
+import static com.bewsoftware.utils.string.Strings.println;
+import static java.lang.String.format;
 
 /**
  * Diff class provides static methods to assist finding the differences between
@@ -31,16 +36,10 @@ import java.util.List;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.4
- * @version 1.0.4
+ * @version 3.0.2
  */
-public final class Diff
+public interface Diff
 {
-
-    /**
-     * Not meant to be instantiated.
-     */
-    private Diff() {
-    }
 
     /**
      * Provide a {@link List} of lines that are different, between the two
@@ -50,8 +49,11 @@ public final class Diff
      * @param mod  The modified text.
      *
      * @return list of modified lines.
+     *
+     * @since 1.0.4
      */
-    public static List<ModifiedLine> lines(final String orig, final String mod) {
+    public static List<ModifiedLine> lines(final String orig, final String mod)
+    {
         List<ModifiedLine> mlines = new ArrayList<>();
         String[] origLines = orig.split("\n");
         String[] modLines = mod.split("\n");
@@ -82,6 +84,57 @@ public final class Diff
     }
 
     /**
+     * Prints the results of the {@link #strings(String, String, Ref, Ref) strings} operation.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @implNote
+     * This method uses each parameter's {@code toString()} method to obtain the required
+     * string to compare.
+     *
+     * @param obj1 to be compared to.
+     * @param obj2 to be compared by.
+     *
+     * @since 3.0.2
+     */
+    public static void printDiff(final Object obj1, final Object obj2)
+    {
+        printDiff(obj1.toString(), obj2.toString());
+    }
+
+    /**
+     * Prints the results of the {@link #strings(String, String, Ref, Ref) strings} operation.
+     * If the two strings have no differences, then nothing is printed.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param text1 to be compared to.
+     * @param text2 to be compared by.
+     *
+     * @since 3.0.2
+     */
+    public static void printDiff(final String text1, final String text2)
+    {
+        final Ref<Integer> index = Ref.val();
+        final Ref<String> diffRef = Ref.val();
+
+        if (strings(text1, text2, index, diffRef))
+        {
+            println("\nprintDiff ============================================");
+
+            index.ifPresent((final Integer idx)
+                    -> println(indentLines("index: %d".formatted(idx), 4)));
+
+            diffRef.ifPresent((final String text)
+                    -> println(indentLines("diff:%n%s".formatted(text), 4)));
+
+            println("======================================================\n");
+        }
+    }
+
+    /**
      * Compare two Strings.
      *
      * @param orig The original line/string.
@@ -93,8 +146,11 @@ public final class Diff
      * <li>'&gt;0' - is the index into {@code orig} that the first difference
      * was found.</li>
      * </ul>
+     *
+     * @since 1.0.4
      */
-    public static int strings(final String orig, final String mod) {
+    public static int strings(final String orig, final String mod)
+    {
         char[] origChars = orig.toCharArray();
         char[] modChars = mod.toCharArray();
         int rtn = origChars.length == modChars.length ? 0 : -1;
@@ -122,10 +178,119 @@ public final class Diff
     }
 
     /**
+     * Compares two text strings, character by character.It returns the zero based
+     * position of the first character that is different between the two strings.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @implNote
+     * This implementation is case-sensitive.
+     *
+     * @param text1   to be compared to.
+     * @param text2   to be compared by.
+     * @param index   On return from this method call, this parameter will contain, either:<br>
+     * - <i>-1</i>, if the strings are of different lengths, or<br>
+     * - <i>the zero based position</i> of the first differing characters, or<br>
+     * - {@link Ref#isEmpty() nothing}, if there are no differences
+     * between the strings.
+     * @param diffRef On return from this method call, this parameter will contain, either:<br>
+     * - <i>the text</i> up to the differing characters, with the differing characters
+     * shown in brackets: (<i>text1</i>)(<i>text2</i>), or<br>
+     * - {@link Ref#isEmpty() nothing}, if there are no differences
+     * between the strings.
+     *
+     * @return {@code true} if the strings are different, {@code false} if not.
+     *
+     * @since 3.0.2
+     */
+    public static boolean strings(
+            final String text1,
+            final String text2,
+            final Ref<Integer> index,
+            final Ref<String> diffRef
+    )
+    {
+        boolean diff = false;
+
+        index.clear();
+        diffRef.clear();
+
+        // Check for various causes of different lengths.
+        // First: nullity.
+        if (text1 == null)
+        {
+            if (text2 == null)
+            {
+                return false;
+            } else
+            {
+                index.val = -1;
+                return true;
+            }
+        } else if (text2 == null)
+        {
+            index.val = -1;
+            return true;
+        }
+
+        // Second: emptiness.
+        if (text1.isEmpty())
+        {
+            if (text2.isEmpty())
+            {
+                return false;
+            } else
+            {
+                index.val = -1;
+                return true;
+            }
+        } else if (text2.isEmpty())
+        {
+            index.val = -1;
+            return true;
+        }
+
+        // Third: lengths.
+        if (text1.length() != text2.length())
+        {
+            index.val = -1;
+            return true;
+        }
+
+        // Now we have two strings to process.
+        for (int i = 0; i < text1.length(); i++)
+        {
+            if (text1.charAt(i) != text2.charAt(i))
+            {
+                index.val = i;
+                diff = true;
+                break;
+            }
+        }
+
+        if (diff)
+        {
+            diffRef.val = format(
+                    "%s (%c)(%c)",
+                    text1.substring(0, index.val - 1),
+                    text1.charAt(index.val),
+                    text2.charAt(index.val)
+            );
+        }
+
+        return diff;
+    }
+
+    /**
      * This is an immutable class that holds the line text and attributes
      * recorded for each pair of lines that are different.
+     *
+     * @since 1.0.4
      */
-    public static class ModifiedLine {
+    @SuppressWarnings("PublicInnerClass")
+    public static final class ModifiedLine
+    {
 
         /**
          * Provide a String filled with spaces.
@@ -134,7 +299,8 @@ public final class Diff
          *
          * @return space filled String.
          */
-        private static String fill(int count) {
+        private static String fill(int count)
+        {
             return " ".repeat(count);
         }
 
@@ -168,7 +334,8 @@ public final class Diff
          * @param position The first character position within the original text that is
          *                 different from the modified version of the text.
          */
-        private ModifiedLine(String orig, String mod, int linenum, int position) {
+        private ModifiedLine(String orig, String mod, int linenum, int position)
+        {
             this.orig = orig;
             this.mod = mod;
             this.linenum = linenum;
@@ -183,13 +350,14 @@ public final class Diff
          * @return Formatted text.
          */
         @Override
-        public String toString() {
+        public String toString()
+        {
             String strLinenum = " [" + linenum + "] ";
             int slLength = strLinenum.length();
 
             return "-" + strLinenum + orig + "\n"
-                   + (position > -1 ? fill(slLength + position) + "^" : "") + "\n"
-                   + "+" + fill(slLength) + mod;
+                    + (position > -1 ? fill(slLength + position) + "^" : "") + "\n"
+                    + "+" + fill(slLength) + mod;
         }
     }
 }

@@ -1,8 +1,8 @@
 /*
- *  File Name:    package-info.java
+ *  File Name:    StringWriterPlus.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2020, 2021 Bradley Willcott
+ *  Copyright (c) 2023 Bradley Willcott
  *
  *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,18 +17,37 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+package com.bewsoftware.utils.io;
+
+import java.io.StringWriter;
 /**
- * These classes are basically just structs.  They are easy to use
- * containers of one or more primitives, and possibly other classes.
- * <p>
- * The primary use of these classes is to pass a class as a parameter
- * that can be used to return one or more values. They can also be
- * used to get primitive values out of lambda expressions.
+ * This StringWriterPlus class extends {@code java.io.StringWriter} by adding
+ * a convenience method: {@linkplain #clear()}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
- * @deprecated Will be removed from a later version. Use
- * @since 1.0.5
- * @version 3.0.2
+ * @since 3.0.1
+ * @version 3.0.1
  */
-package com.bewsoftware.utils.struct;
+public class StringWriterPlus extends StringWriter
+{
+    public StringWriterPlus()
+    {
+        super();
+    }
+
+    public StringWriterPlus(int initialSize)
+    {
+        super(initialSize);
+    }
+
+    /**
+     * Empty out the internal buffer. When this returns, the buffer will be
+     * empty.
+     */
+    public void clear()
+    {
+        getBuffer().setLength(0);
+    }
+}

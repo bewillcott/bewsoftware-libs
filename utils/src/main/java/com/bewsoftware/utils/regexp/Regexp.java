@@ -58,11 +58,11 @@ public final class Regexp
      */
     public static void main(String[] args) throws IOException
     {
-        String filename = "/Markdown Documentation - Basics.html";
+       final String filename = "/Markdown Documentation - Basics.html";
 
         System.out.println(HtmlTagRegex);
-        Pattern p = HtmlTagRegex.getPattern(MULTILINE);
-        URL fileUrl = Regexp.class.getResource(filename);
+       final Pattern p = HtmlTagRegex.getPattern(MULTILINE);
+       final URL fileUrl = Regexp.class.getResource(filename);
 
         if (fileUrl != null)
         {

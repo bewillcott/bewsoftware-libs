@@ -19,6 +19,7 @@
  */
 package com.bewsoftware.utils;
 
+import com.bewsoftware.annotations.jcip.NotThreadSafe;
 import java.util.*;
 
 /**
@@ -31,11 +32,11 @@ import java.util.*;
  * @param <E> type of item stored in this tree.
  *
  * @since 1.0.9
- * @version 3.0.0
+ * @version 3.0.2
  */
+@NotThreadSafe
 public final class AvlTree<E extends Comparable<E>> implements Set<E>
 {
-
     /**
      * No nulls allowed string.
      */
@@ -45,7 +46,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      * A value indicating whether this {@linkplain  AvlTree}{@literal <T>} is
      * balanced.
      */
-    private boolean balanced;
+    private final boolean balanced;
 
     /**
      * The number of elements in this tree.
@@ -265,7 +266,7 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
      *                              list does <b>not</b> permit null
      *                              elements
      */
-    //    @Override
+//    @Override
     public int indexOf(Object o)
     {
         @SuppressWarnings("unchecked")
@@ -732,16 +733,6 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     }
 
     /**
-     * Set the root Node.
-     *
-     * @param root the replacement Node
-     */
-    private void setRoot(Node<E> root)
-    {
-        this.root = root;
-    }
-
-    /**
      * Gets a value indicating whether [index is dirty].
      *
      * @return {@code true} if the internal index is dirty.
@@ -885,6 +876,16 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
         pivot.Left = parent;
 
         return pivot;
+    }
+
+    /**
+     * Set the root Node.
+     *
+     * @param root the replacement Node
+     */
+    private void setRoot(Node<E> root)
+    {
+        this.root = root;
     }
 
     /**
@@ -1036,7 +1037,6 @@ public final class AvlTree<E extends Comparable<E>> implements Set<E>
     @SuppressWarnings("ProtectedField")
     private final class Node<T>
     {
-
         /**
          * List index position of this Node.
          */

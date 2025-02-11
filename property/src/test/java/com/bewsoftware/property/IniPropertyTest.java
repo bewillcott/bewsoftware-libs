@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package test.com.bewsoftware.property;
+package com.bewsoftware.property;
 
-import com.bewsoftware.property.IniProperty;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -42,6 +42,8 @@ public class IniPropertyTest
     @Test
     public void testConstructors()
     {
+        System.out.println("testConstructors");
+
         IniProperty<Integer> propA = new IniProperty<>("one", 1);
         assertNotNull(propA);
         assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
@@ -61,6 +63,7 @@ public class IniPropertyTest
         assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
+        assertTrue(true);
     }
 
 }

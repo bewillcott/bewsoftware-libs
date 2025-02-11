@@ -20,9 +20,6 @@
 
 package com.bewsoftware.utils.string;
 
-import java.util.Formatter;
-import java.util.Objects;
-
 import static java.lang.Character.isWhitespace;
 
 /**
@@ -31,7 +28,7 @@ import static java.lang.Character.isWhitespace;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0.6
- * @version 3.0.0
+ * @version 3.0.2
  */
 public interface Strings
 {
@@ -43,23 +40,26 @@ public interface Strings
      * @param width  of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String centreFill(final int number, final int width)
+    public static String centreFill(final int number, final int width)
     {
-        return centreFill(Integer.toString(number), width);
+        return centreFill("" + number, width);
     }
 
     /**
      * Formats the {@code text} to be centred within a text string of
-     * {@code width}
-     * length.
+     * {@code width} length.
      *
      * @param text  to wrap
      * @param width of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String centreFill(final String text, final int width)
+    public static String centreFill(final String text, final int width)
     {
         return centreFill(text, width, " ");
     }
@@ -73,24 +73,27 @@ public interface Strings
      * @param fill   text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String centreFill(final int number, final int width, final String fill)
+    public static String centreFill(final int number, final int width, final String fill)
     {
-        return centreFill(Integer.toString(number), width, fill);
+        return centreFill("" + number, width, fill);
     }
 
     /**
      * Formats the {@code text} to be centred within a text string of
-     * {@code width}
-     * length.
+     * {@code width} length.
      *
      * @param text  to wrap
      * @param width of required text
      * @param fill  text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String centreFill(final String text, final int width, final String fill)
+    public static String centreFill(final String text, final int width, final String fill)
     {
         String rtn;
         final int length = text.length();
@@ -127,23 +130,62 @@ public interface Strings
      * @return new String
      *
      * @see java.lang.String#repeat(int)
+     *
+     * @since 1.0.6
      */
-    static String fill(final String text, final int count)
+    public static String fill(final String text, final int count)
     {
         return text.repeat(count);
     }
 
     /**
-     * Process a single 'line', either indenting or outdenting the text by the
+     * Format an array. Each element will be indented on a separate line.
+     *
+     * @param <T> Type of elements in the array.
+     * @param arr of {@literal <T>} elements to layout.
+     *
+     * @return a String of the formatted array.
+     *
+     * @since 1.0.6
+     */
+    public static <T> String formatArray(final T[] arr)
+    {
+        MessageBuilder mb = new MessageBuilder();
+
+        mb.appendln('[');
+
+        for (int i = 0; i < arr.length;)
+        {
+            mb.append("    ").append(arr[i++]);
+
+            if (!(i < arr.length))
+            {
+                mb.appendln().appendln(']');
+                break;
+            }
+
+            mb.appendln(',');
+        }
+
+        return mb.toString();
+    }
+
+    /**
+     * Process a single 'line', either indenting or out-denting the text by the
      * number of 'spaces' required.
      *
-     * @param line   to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param line   to process.
+     * @param spaces to indent by.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed line.
+     *
+     * @since 1.0.6
      */
-    static String indentLine(final String line, final int spaces)
+    public static String indentLine(final String line, final int spaces)
     {
         String rtn = "";
 
@@ -182,30 +224,40 @@ public interface Strings
 
     /**
      * Process 'obj.toString()' (containing any number of lines), indenting or
-     * outdenting the lines by the number of 'spaces' required.
+     * out-denting the lines by the number of 'spaces' required.
      *
      * @param obj    to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param spaces to indent by.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed text
+     *
+     * @since 1.0.6
      */
-    static String indentLines(final Object obj, final int spaces)
+    public static String indentLines(final Object obj, final int spaces)
     {
         return indentLines((obj != null ? obj.toString() : "null"), spaces);
     }
 
     /**
      * Process the 'text' string (containing any number of lines), indenting or
-     * outdenting the lines by the number of 'spaces' required.
+     * out-denting the lines by the number of 'spaces' required.
      *
      * @param text   to process
-     * @param spaces required: # {@literal <} 0 outdent, # {@literal >} 0
-     *               indent.
+     * @param spaces to indent by.
+     * <p>
+     * Explanation of numeric ranges:<br>
+     * {@code spaces} {@literal <} 0 outdent,<br>
+     * {@code spaces} {@literal >} 0 indent.
      *
      * @return the processed text
+     *
+     * @since 1.0.6
      */
-    static String indentLines(final String text, final int spaces)
+    public static String indentLines(final String text, final int spaces)
     {
         final MessageBuilder mb = new MessageBuilder();
 
@@ -227,22 +279,62 @@ public interface Strings
                     mb.append(indentLine(strLine, spaces));
                 }
             }
+        } else
+        {
+            mb.append(text);
         }
 
         return mb.toString();
     }
 
     /**
+     * Returns {@code true} if the provided string is either <i>null</i> or
+     * {@linkplain String#isBlank() blank}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided string is either <i>null</i> or
+     * <i>blank</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    public static boolean isBlank(final String str)
+    {
+        return str == null || str.isBlank();
+    }
+
+    /**
+     * Returns {@code true} if the provided string is either <i>null</i> or
+     * {@linkplain String#isEmpty() empty}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided string is either <i>null</i> or
+     * <i>empty</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    public static boolean isEmpty(final String str)
+    {
+        return str == null || str.isEmpty();
+    }
+
+    /**
      * Trim all whitespace characters from the beginning of the text string.
+     *
+     * @deprecated Use {@link String#stripLeading()} instead.
      *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
-     *         or {@code null} if 'text' is {@code null}..
+     *         or <i>null</i> if {@code text} is <i>null</i>.
      *
      * @see Character#isWhitespace(char)
+     *
+     * @since 1.0.6
      */
-    static String lTrim(final String text)
+    @Deprecated(forRemoval = true, since = "3.0.2")
+    public static String lTrim(final String text)
     {
         String rtn = "";
 
@@ -276,8 +368,10 @@ public interface Strings
      * @param width  of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String leftJustify(final int number, final int width)
+    public static String leftJustify(final int number, final int width)
     {
         return Strings.leftJustify(Integer.toString(number), width);
     }
@@ -293,8 +387,10 @@ public interface Strings
      * @param width of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String leftJustify(final String text, final int width)
+    public static String leftJustify(final String text, final int width)
     {
         String rtn = text.trim();
         int length = rtn.length();
@@ -319,8 +415,10 @@ public interface Strings
      * @param fill  text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String leftJustify(final String text, final int width, final String fill)
+    public static String leftJustify(final String text, final int width, final String fill)
     {
         String rtn = text.trim();
         final int length = rtn.length();
@@ -334,16 +432,164 @@ public interface Strings
     }
 
     /**
+     * Returns {@code true} if the provided string is neither <i>null</i>
+     * nor {@linkplain String#isBlank() blank}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided reference is neither <i>null</i>
+     * nor <i>blank</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    public static boolean notBlank(final String str)
+    {
+        return str != null && !str.isBlank();
+    }
+
+    /**
+     * Returns {@code true} if the provided string is neither <i>null</i>
+     * nor {@linkplain String#isEmpty() empty}; {@code false} otherwise.
+     *
+     * @param str a string to be checked.
+     *
+     * @return {@code true} if the provided reference is neither <i>null</i>
+     * nor <i>empty</i>; {@code false} otherwise.
+     *
+     * @since 3.0.2
+     */
+    public static boolean notEmpty(final String str)
+    {
+        return str != null && !str.isEmpty();
+    }
+
+    /**
+     * Print out the {@code text}.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param text to print.
+     *
+     * @since 3.0.2
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static void print(final String text)
+    {
+        System.out.print(text);
+    }
+
+    /**
+     * Print out the {@code text}.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param text to print.
+     *
+     * @since 3.0.2
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static void println(final String text)
+    {
+        System.out.println(text);
+    }
+
+    /**
+     * Print out the {@code obj}.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param obj to print.
+     *
+     * @since 3.0.2
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static void println(final Object obj)
+    {
+        System.out.println(obj);
+    }
+
+    /**
+     * Print out the formatted data.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param format A format string as described in
+     * <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/Formatter.html#syntax">Format
+     * String Syntax</a>.
+     * @param args   Arguments referenced by the format specifiers in the format string.
+     *
+     * @since 3.0.2
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static void println(final String format, final Object... args)
+    {
+        System.out.printf(format + '\n', args);
+    }
+
+    /**
+     * Print a blank line.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @since 3.0.2
+     */
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    public static void println()
+    {
+        System.out.println();
+    }
+
+    /**
+     * Print out the {@code obj}, indenting each line by
+     * the specified number of {@code spaces}.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param obj    to print.
+     * @param spaces to indent by.
+     */
+    public static void printIndented(final Object obj, final int spaces)
+    {
+        printIndented(obj.toString(), spaces);
+    }
+
+    /**
+     * Print out the {@code text}, indenting each line by
+     * the specified number of {@code spaces}.
+     *
+     * @note
+     * This method is primarily of use in Unit Testing.
+     *
+     * @param text   to print.
+     * @param spaces to indent by.
+     */
+    public static void printIndented(final String text, final int spaces)
+    {
+        println(indentLines(text, spaces));
+    }
+
+    /**
      * Trim all whitespace characters from the end of the text string.
+     *
+     * @deprecated Use {@link String#stripTrailing()} instead.
      *
      * @param text to trim
      *
      * @return new String if trimmed, original String if no trimming needed,
-     *         or {@code null} if 'text' is {@code null}..
+     *         or <i>null</i> if {@code text} is <i>null</i>.
      *
      * @see Character#isWhitespace(char)
+     *
+     * @since 1.0.6
      */
-    static String rTrim(final String text)
+    @Deprecated(forRemoval = true, since = "3.0.2")
+    public static String rTrim(final String text)
     {
         String rtn = "";
 
@@ -366,14 +612,8 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>blank</i>.
-     * <dl>
-     * <dt>blank:</dt>
-     * <dd>The string is either <i>empty</i> or contains only white space
-     * code-points.</dd>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isBlank() blank}.
      *
      * @param str The string to check for blankness.
      *
@@ -383,10 +623,15 @@ public interface Strings
      * @throws IllegalArgumentException if {@code str} is <i>blank</i>.
      *
      * @see #requireNonEmpty(java.lang.String)
+     *
+     * @since 1.0.6
      */
-    static String requireNonBlank(String str)
+    public static String requireNonBlank(final String str) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str).isBlank())
+        if (str == null)
+        {
+            throw new NullPointerException();
+        } else if (str.isBlank())
         {
             throw new IllegalArgumentException("isBlank.");
         }
@@ -395,18 +640,11 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>blank</i>.
-     * <dl>
-     * <dt>blank:</dt>
-     * <dd>The string is either <i>empty</i> or contains only white space
-     * code-points.</dd>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isBlank() blank}.
      *
-     * @param str     The string to check for blankness.
-     * @param message Detail message to be used in the event that an exception
-     *                is thrown.
+     * @param str  The string to check for blankness.
+     * @param name of variable/parameter being tested.
      *
      * @return {@code str} if not <i>blank</i>.
      *
@@ -414,23 +652,27 @@ public interface Strings
      * @throws IllegalArgumentException if {@code str} is <i>blank</i>.
      *
      * @see #requireNonEmpty(java.lang.String, java.lang.String)
+     *
+     * @since 1.0.6
      */
-    static String requireNonBlank(String str, String message)
+    public static String requireNonBlank(final String str, final String name) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str, message).isBlank())
+        if (str == null)
         {
-            throw new IllegalArgumentException("isBlank: " + message);
+            throw new NullPointerException("isNull: " + (name == null
+                    ? "" : name));
+        } else if (str.isBlank())
+        {
+            throw new IllegalArgumentException("isBlank: " + (name == null
+                    ? "" : name));
         }
 
         return str;
     }
 
     /**
-     * Checks that the specified string isn't <i>empty</i>.
-     * <dl>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isEmpty() empty}.
      *
      * @param str The string to check for emptiness.
      *
@@ -438,10 +680,15 @@ public interface Strings
      *
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
+     *
+     * @since 1.0.6
      */
-    static String requireNonEmpty(String str)
+    public static String requireNonEmpty(final String str) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str).isEmpty())
+        if (str == null)
+        {
+            throw new NullPointerException();
+        } else if (str.isEmpty())
         {
             throw new IllegalArgumentException("isEmpty.");
         }
@@ -450,26 +697,29 @@ public interface Strings
     }
 
     /**
-     * Checks that the specified string isn't <i>empty</i>.
-     * <dl>
-     * <dt>empty:</dt>
-     * <dd>The string's {@code length} is {@code 0}.</dd>
-     * </dl>
+     * Checks that the specified string isn't
+     * {@linkplain String#isEmpty() empty}.
      *
-     * @param str     The string to check for emptiness.
-     * @param message Detail message to be used in the event that an exception
-     *                is thrown.
+     * @param str  The string to check for emptiness.
+     * @param name of variable/parameter being tested.
      *
      * @return {@code str} if not <i>empty</i>.
      *
      * @throws NullPointerException     if {@code str} is <i>null</i>.
      * @throws IllegalArgumentException if {@code str} is <i>empty</i>.
+     *
+     * @since 1.0.6
      */
-    static String requireNonEmpty(String str, String message)
+    public static String requireNonEmpty(final String str, final String name) throws NullPointerException, IllegalArgumentException
     {
-        if (Objects.requireNonNull(str, message).isEmpty())
+        if (str == null)
         {
-            throw new IllegalArgumentException("isEmpty: " + message);
+            throw new NullPointerException("isNull: " + (name == null
+                    ? "" : name));
+        } else if (str.isEmpty())
+        {
+            throw new IllegalArgumentException("isEmpty: " + (name == null
+                    ? "" : name));
         }
 
         return str;
@@ -483,10 +733,12 @@ public interface Strings
      * @param width  of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String rightJustify(final int number, final int width)
+    public static String rightJustify(final int number, final int width)
     {
-        return rightJustify(Integer.toString(number), width);
+        return rightJustify("" + number, width);
     }
 
     /**
@@ -497,8 +749,10 @@ public interface Strings
      * @param width of required text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String rightJustify(final String text, final int width)
+    public static String rightJustify(final String text, final int width)
     {
         return rightJustify(text, width, " ");
     }
@@ -512,10 +766,12 @@ public interface Strings
      * @param fill   text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String rightJustify(final int number, final int width, final String fill)
+    public static String rightJustify(final int number, final int width, final String fill)
     {
-        return rightJustify(Integer.toString(number), width, fill);
+        return rightJustify("" + number, width, fill);
     }
 
     /**
@@ -527,8 +783,10 @@ public interface Strings
      * @param fill  text
      *
      * @return the formatted text
+     *
+     * @since 1.0.6
      */
-    static String rightJustify(final String text, final int width, final String fill)
+    public static String rightJustify(final String text, final int width, final String fill)
     {
         String rtn;
         final int length = text.length();
@@ -536,12 +794,9 @@ public interface Strings
         // Process only if necessary
         if (length < width)
         {
-            final int preLen = (width - text.length());
+            final int preLen = (width - length);
 
-            rtn = new StringBuilder()
-                    .append(fill.repeat(preLen))
-                    .append(text)
-                    .toString();
+            rtn = fill.repeat(preLen) + text;
 
         } else
         {
@@ -549,23 +804,5 @@ public interface Strings
         }
 
         return rtn;
-    }
-
-    /**
-     * Provide C 'printf'-style formatting of text, only instead of printing it
-     * to the console, the resulting text is return as a String object.
-     *
-     * @param format string
-     * @param args   parameters to be used
-     *
-     * @return a new string containing the formatted text.
-     *
-     * @deprecated Use String.format(String, Object...) instead.
-     * @see String#format(String, Object...)
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    static String sprintf(final String format, Object... args)
-    {
-        return new Formatter().format(format, args).toString();
     }
 }

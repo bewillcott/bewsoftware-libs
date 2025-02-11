@@ -124,15 +124,31 @@ public interface Display extends Closeable, Exceptions
     public void debugLevel(final DisplayDebugLevel level);
 
     /**
+     * Get the display level for this run.
+     *
+     * @return display level currently set.
+     */
+    public DisplayDebugLevel displayLevel();
+
+    /**
      * Flushes all output from the internal buffer (appended by current thread)
      * to the output destination(s).
      *
-     * @throws java.lang.InterruptedException if thread is interrupted during
-     *                                        processing.
-     *
-     * @since 3.0.1
+     * @since 3.0.2
      */
-    public void flush() throws InterruptedException;
+    public void flush();
+
+    /**
+     * Display all following text if the {@link #debugLevel()}
+     * is greater than or equal to the {@code level}.
+     *
+     * @param level The debug level at which to display the following text.
+     *
+     * @return this Display for chaining purposes.
+     *
+     * @since 3.0.2
+     */
+    public Display level(final DisplayDebugLevel level);
 
     /**
      * Adds the text to the internal buffer.
@@ -177,7 +193,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final String text)
     {
-        return append(false, DEFAULT, text);
+        return append(false, displayLevel(), text);
     }
 
     /**
@@ -192,7 +208,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final String format, final Object... args)
     {
-        return append(false, DEFAULT, format, args);
+        return append(false, displayLevel(), format, args);
     }
 
     /**
@@ -209,7 +225,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display append(final Supplier<String> supplier)
     {
-        return append(false, DEFAULT, supplier);
+        return append(false, displayLevel(), supplier);
     }
 
     /**
@@ -342,7 +358,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display appendln(final Supplier<String> supplier)
     {
-        return appendln(DEFAULT, supplier);
+        return appendln(displayLevel(), supplier);
     }
 
     /**
@@ -517,7 +533,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display appendln(final String text)
     {
-        return appendln(DEFAULT, text);
+        return appendln(displayLevel(), text);
     }
 
     /**
@@ -551,7 +567,7 @@ public interface Display extends Closeable, Exceptions
      */
     default Display appendln(String format, Object... args)
     {
-        return appendln(DEFAULT, format, args);
+        return appendln(displayLevel(), format, args);
     }
 
     /**
@@ -612,18 +628,8 @@ public interface Display extends Closeable, Exceptions
      * debug level to the DEFAULt display level.
      *
      * @return {@code true} if it will be, {@code false} otherwise.
-     *
-     * @deprecated Use
-     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}
-     * instead.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
      */
-    @Deprecated(since = "3.0.1", forRemoval = true)
-    default boolean displayOK()
-    {
-        throw new UnsupportedOperationException("Deprecated.");
-    }
+    boolean displayOK();
 
     /**
      * Determine if the current text will be displayed, by comparing the current
@@ -636,22 +642,19 @@ public interface Display extends Closeable, Exceptions
     boolean displayOK(final DisplayDebugLevel level);
 
     /**
-     * Display all following text if the {@link #debugLevel()} is greater than
-     * or equal to the {@code level}.
+     * Display all following text if the {@link #debugLevel()}
+     * is greater than or equal to {@link DisplayDebugLevel#DEFAULT DEFAULT}.
      *
-     * @param level The debug level at which to display the following text.
+     * @implNote
+     * This is a convenience method for: {@link level(DEFAULT)}.
      *
      * @return this Display for chaining purposes.
      *
-     * @deprecated No longer used. Refer to
-     * {@linkplain #displayOK(com.bewsoftware.utils.io.DisplayDebugLevel) displayOK(level)}.
-     *
-     * @throws UnsupportedOperationException as this is deprecated.
+     * @since 3.0.2
      */
-    @Deprecated(since = "3.0.1", forRemoval = true)
-    default Display level(final DisplayDebugLevel level)
+    default Display level()
     {
-        throw new UnsupportedOperationException("Deprecated.");
+        return level(DEFAULT);
     }
 
     /**
@@ -667,7 +670,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final Supplier<String> supplier)
     {
-        print(DEFAULT, supplier);
+        print(displayLevel(), supplier);
     }
 
     /**
@@ -705,7 +708,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final boolean value)
     {
-        print(DEFAULT, value);
+        print(displayLevel(), value);
     }
 
     /**
@@ -738,7 +741,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final int number)
     {
-        print(DEFAULT, number);
+        print(displayLevel(), number);
     }
 
     /**
@@ -771,7 +774,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final Object obj)
     {
-        print(DEFAULT, obj);
+        print(displayLevel(), obj);
     }
 
     /**
@@ -802,7 +805,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final String text)
     {
-        print(DEFAULT, text);
+        print(displayLevel(), text);
     }
 
     /**
@@ -830,7 +833,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void print(final String format, final Object... args)
     {
-        print(DEFAULT, format, args);
+        print(displayLevel(), format, args);
     }
 
     /**
@@ -863,7 +866,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final Supplier<String> supplier)
     {
-        println(DEFAULT, supplier);
+        println(displayLevel(), supplier);
     }
 
     /**
@@ -894,7 +897,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println()
     {
-        println(DEFAULT);
+        println(displayLevel());
     }
 
     /**
@@ -922,7 +925,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final boolean value)
     {
-        println(DEFAULT, value);
+        println(displayLevel(), value);
     }
 
     /**
@@ -956,7 +959,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final int number)
     {
-        println(DEFAULT, number);
+        println(displayLevel(), number);
     }
 
     /**
@@ -991,7 +994,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final Object obj)
     {
-        println(DEFAULT, obj);
+        println(displayLevel(), obj);
     }
 
     /**
@@ -1024,7 +1027,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final String text)
     {
-        println(DEFAULT, text);
+        println(displayLevel(), text);
     }
 
     /**
@@ -1054,7 +1057,7 @@ public interface Display extends Closeable, Exceptions
      */
     default void println(final String format, final Object... args)
     {
-        println(DEFAULT, format, args);
+        println(displayLevel(), format, args);
     }
 
     /**

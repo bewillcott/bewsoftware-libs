@@ -38,6 +38,8 @@ import java.util.function.Consumer;
  * 16 {@link BiConsumer} interface, and modified by me to provide the third
  * parameter.
  *
+ * @deprecated Class moved to: {@linkplain com.bewsoftware.utils.function.TriConsumer}.
+ *
  * @param <T> the type of the first argument to the operation
  * @param <U> the type of the second argument to the operation
  * @param <V> the type of the third argument to the operation
@@ -47,7 +49,6 @@ import java.util.function.Consumer;
  *
  * @since 1.0.9
  * @version 1.0.9
- * @deprecated Class moved to: {@linkplain TriConsumer}.
  */
 @Deprecated(since = "3.0.1", forRemoval = true)
 @FunctionalInterface

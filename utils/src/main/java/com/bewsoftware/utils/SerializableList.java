@@ -1,8 +1,8 @@
 /*
- *  File Name:    StringWriter.java
+ *  File Name:    SerializableList.java
  *  Project Name: bewsoftware-utils
  *
- *  Copyright (c) 2023 Bradley Willcott
+ *  Copyright (c) 2025 Bradley Willcott
  *
  *  bewsoftware-utils is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,35 +18,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.bewsoftware.utils.io;
+package com.bewsoftware.utils;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This StringWriter class extends the {@code java.io.StringWriter} by adding
- * a convenience method: {@linkplain #clear()}.
+ * This interface is to be used when needing to Serialize a List like {@link ArrayList}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+ * @param <E> the type of elements in this list.
  *
- * @since 3.0.0
- * @version 3.0.0
+ * @see SerializableArrayList
+ * @since 3.0.2
+ * @version 3.0.2
  */
-public class StringWriter extends java.io.StringWriter
+public interface SerializableList<E> extends List<E>, Serializable, Cloneable
 {
-    public StringWriter()
-    {
-        super();
-    }
 
-    public StringWriter(int initialSize)
-    {
-        super(initialSize);
-    }
-
-    /**
-     * Empty out the internal buffer. When this returns, the buffer will be
-     * empty.
-     */
-    public void clear()
-    {
-        getBuffer().setLength(0);
-    }
 }
