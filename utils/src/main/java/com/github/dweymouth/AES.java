@@ -34,7 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
  * {@link #encrypt} and {@link #decrypt}, which encrypt and decrypt arbitrary
  * streams of data, respectively.
  *
- * @Note
+ * @note
  * The original source code was downloaded from:
  * <a href="https://gist.github.com/dweymouth/11089238">dweymouth/AES.java</a>
  *

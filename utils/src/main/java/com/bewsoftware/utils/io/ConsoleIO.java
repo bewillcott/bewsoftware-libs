@@ -67,7 +67,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ConsoleIO implements Display, Input
 {
-
     private static final String CLOSED_MSG = "ConsoleIO is closed.";
 
     private static final int FLUSH_ALL = -1;
@@ -100,6 +99,8 @@ public final class ConsoleIO implements Display, Input
     private final boolean blank;
 
     private final AtomicReference<DisplayDebugLevel> debugLevel = new AtomicReference<>(DEFAULT);
+
+    private final ThreadLocal<DisplayDebugLevel> displayLevel = InheritableThreadLocal.withInitial(() -> DEFAULT);
 
     private final AtomicReference<Exception> exception = new AtomicReference<>();// ???
 
@@ -501,20 +502,22 @@ public final class ConsoleIO implements Display, Input
         return debugLevel.get();
     }
 
-    /**
-     * Determine if the current text will be displayed, by comparing the
-     * current
-     * debug level to the supplied display level.
-     *
-     * @param level The display level to compare with.
-     *
-     * @return {@code true} if it will be, {@code false} otherwise.
-     */
     @Override
-    public boolean displayOK(final DisplayDebugLevel level
-    )
+    public DisplayDebugLevel displayLevel()
+    {
+        return displayLevel.get();
+    }
+
+    @Override
+    public boolean displayOK(final DisplayDebugLevel level)
     {
         return debugLevel.get().value >= level.value;
+    }
+
+    @Override
+    public boolean displayOK()
+    {
+        return debugLevel.get().value >= displayLevel.get().value;
     }
 
     @Override
@@ -527,6 +530,19 @@ public final class ConsoleIO implements Display, Input
     public boolean isException()
     {
         return exception.get() != null;
+    }
+
+    @Override
+    public Display level(final DisplayDebugLevel level)
+    {
+        if (level != null)
+        {
+            displayLevel.set(level);
+        } else
+        {
+        }
+
+        return this;
     }
 
     @Override

@@ -41,7 +41,7 @@ import java.util.function.Consumer;
  *     return iRtn.val &gt; 0;  // just something to use up return
  * }</code></pre><hr>
  *
- * @Note
+ * @note
  * This file was copied from one of my personal libraries.
  * <p>
  * Some might think that the class: {@link Optional} would be just as good to perform
@@ -68,7 +68,7 @@ public final class Ref<T>
     /**
      * The object being held.
      *
-     * @Note
+     * @note
      * This field is intentionally accessible publicly, to improve the convenience
      * of its use. As this class is a temporary holder of an object, rather than
      * something more permanent.
@@ -144,7 +144,8 @@ public final class Ref<T>
     }
 
     /**
-     * Check to see if this Ref object has not yet been set to a value.
+     * Check to see if this Ref object has either, not yet been set to a value,
+     * or has subsequently been {@link #clear() cleared}.
      *
      * @return {@code true} if it hasn't been set to a value, {@code false}
      *         otherwise.
