@@ -46,7 +46,7 @@ import static java.lang.String.format;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.0.2
  */
 @ThreadSafe
 public final class MessageBuilderProperty extends SimpleStringProperty
@@ -65,19 +65,19 @@ public final class MessageBuilderProperty extends SimpleStringProperty
         this.mb = new MessageBuilder();
     }
 
-    public MessageBuilderProperty(String initialValue)
+    public MessageBuilderProperty(final String initialValue)
     {
         super(initialValue);
         this.mb = new MessageBuilder().append(initialValue);
     }
 
-    public MessageBuilderProperty(Object bean, String name)
+    public MessageBuilderProperty(final Object bean,final String name)
     {
         super(bean, name);
         this.mb = new MessageBuilder();
     }
 
-    public MessageBuilderProperty(Object bean, String name, String initialValue)
+    public MessageBuilderProperty(final Object bean, final String name,final String initialValue)
     {
         super(bean, name, initialValue);
         this.mb = new MessageBuilder().append(initialValue);
