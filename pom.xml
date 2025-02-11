@@ -73,7 +73,6 @@
         <manual.target>docs</manual.target>
 
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
-        <surefireArgs>--enable-preview</surefireArgs>
 
         <javadoc.skip>true</javadoc.skip>
         <maven.test.skip>true</maven.test.skip>
@@ -116,7 +115,7 @@
         </dependency>
     </dependencies>
 
-    <!-- Last updated: 9/1/2025 -->
+    <!-- Last updated: 11/2/2025 -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -157,7 +156,7 @@
             <dependency>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs</artifactId>
-                <version>4.8.6</version>
+                <version>4.9.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.derby</groupId>
