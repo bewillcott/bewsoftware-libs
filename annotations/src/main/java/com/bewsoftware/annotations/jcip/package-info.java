@@ -22,11 +22,13 @@
  * All of the interfaces in this package were copied out of the Maven plugin:
  * <code><b>net.jcip:jcip-annotations:1.0</b></code>.
  * <p>
- * The original package was: {@code net.jcip.annotations}.
+ * The original package was: {@code net.jcip.annotations}. The reason for the
+ * move, is that the original package is not modular. Thereby preventing
+ * any package dependent upon it from being considered fully modular.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.0.0
- * @version 3.0.0
+ * @version 3.1.0
  */
 package com.bewsoftware.annotations.jcip;
