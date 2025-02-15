@@ -20,6 +20,7 @@ package com.bewsoftware.property;
 
 import org.junit.jupiter.api.Test;
 
+import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -41,6 +42,8 @@ public class MutablePropertyTest
     @Test
     public void testComment()
     {
+        println("MutablePropertyTest.testComment");
+
         MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
         assertNotNull(prop1);
         assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
@@ -50,6 +53,8 @@ public class MutablePropertyTest
         prop1.comment("Now it has something");
         assertEquals("Now it has something", prop1.comment(),
                 "prop1.comment().equals(\"Now it has something\")");
+
+        println("MutablePropertyTest.testComment: Completed");
     }
 
     /**
@@ -58,6 +63,8 @@ public class MutablePropertyTest
     @Test
     public void testConstructors()
     {
+        println("MutablePropertyTest.testConstructors");
+
         MutableProperty<String, Integer> propA = new MutableProperty<>("one", 1);
         assertNotNull(propA);
         assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
@@ -77,6 +84,8 @@ public class MutablePropertyTest
         assertEquals(2L, (long) propC.value(), "propC.value().equals(1)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
+
+        println("MutablePropertyTest.testConstructors: Completed");
     }
 
     /**
@@ -85,6 +94,8 @@ public class MutablePropertyTest
     @Test
     public void testValue()
     {
+        println("MutablePropertyTest.testValue");
+
         MutableProperty<Integer, String> prop1 = new MutableProperty<>(12, "twelve");
         assertNotNull(prop1);
         assertEquals(12L, (long) prop1.key(), "prop1.key().equals(12)");
@@ -93,6 +104,7 @@ public class MutablePropertyTest
         prop1.value("Now it has changed");
         assertEquals("Now it has changed", prop1.value(),
                 "prop1.value().equals(\"Now it has changed\")");
-    }
 
+        println("MutablePropertyTest.testValue: Completed");
+    }
 }

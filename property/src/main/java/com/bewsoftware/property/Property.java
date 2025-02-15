@@ -49,12 +49,13 @@ import java.util.Objects;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
 @Immutable
-public class Property<K extends Comparable<K>, V> implements
+public sealed class Property<K extends Comparable<K>, V> implements
         Serializable,
         Comparable<Property<K, V>>
+        permits IniProperty, MutableProperty
 {
 
     /**

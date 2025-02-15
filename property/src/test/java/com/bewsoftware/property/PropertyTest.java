@@ -21,6 +21,7 @@ package com.bewsoftware.property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -68,10 +69,14 @@ public class PropertyTest
     @Test
     public void testComment()
     {
+        println("PropertyTest.testComment");
+
         assertEquals(comment1, prop1.comment(), "prop1");
         assertEquals(comment2, prop2.comment(), "prop2");
         assertNotEquals(comment2, prop1.comment(), "prop1");
         assertNotEquals(comment1, prop2.comment(), "prop2");
+
+        println("PropertyTest.testComment: Completed");
     }
 
     /**
@@ -80,11 +85,15 @@ public class PropertyTest
     @Test
     public void testCompareTo()
     {
+        println("PropertyTest.testCompareTo");
+
         assertTrue(prop1.compareTo(prop2) == -1, "compareTo: prop1 < prop2");
         assertTrue(prop1.compareTo(prop3) == 0, "compareTo: prop1 == prop3");
 
         assertTrue(prop2.compareTo(prop1) == 1, "compareTo: prop2 < prop1");
         assertTrue(prop2.compareTo(prop4) == 0, "compareTo: prop2 == prop4");
+
+        println("PropertyTest.testCompareTo: Completed");
     }
 
     /**
@@ -93,6 +102,8 @@ public class PropertyTest
     @Test
     public void testConstructors()
     {
+        println("PropertyTest.testConstructors");
+
         Property<Integer, String> propA = new Property<>(prop3);
         assertNotNull(propA, "propA != null");
         assertEquals(prop1, propA, "propA == prop1");
@@ -101,6 +112,8 @@ public class PropertyTest
         assertEquals(propA, propB);
         assertNotEquals(propA.comment(), propB.comment(), "propA.comment() != propB.comment()");
         assertNull(propB.comment(), "propB.comment() == null");
+
+        println("PropertyTest.testConstructors: Completed");
     }
 
     /**
@@ -109,10 +122,14 @@ public class PropertyTest
     @Test
     public void testEquals()
     {
+        println("PropertyTest.testEquals");
+
         assertTrue(prop1.equals(prop3), "equals: prop1 == prop3");
         assertTrue(prop2.equals(prop4), "equals: prop2 == prop4");
         assertFalse(prop1.equals(prop4), "equals: prop1 != prop4");
         assertFalse(prop2.equals(prop3), "equals: prop2 != prop3");
+
+        println("PropertyTest.testEquals: Completed");
     }
 
     /**
@@ -121,10 +138,14 @@ public class PropertyTest
     @Test
     public void testHashCode()
     {
+        println("PropertyTest.testHashCode");
+
         assertTrue(prop1.hashCode() == prop3.hashCode(), "hashCode: prop1 == prop3");
         assertTrue(prop2.hashCode() == prop4.hashCode(), "hashCode: prop2 == prop4");
         assertFalse(prop1.hashCode() == prop4.hashCode(), "hashCode: prop1 != prop4");
         assertFalse(prop2.hashCode() == prop3.hashCode(), "hashCode: prop2 != prop3");
+
+        println("PropertyTest.testHashCode: Completed");
     }
 
     /**
@@ -133,10 +154,14 @@ public class PropertyTest
     @Test
     public void testKey()
     {
+        println("PropertyTest.testKey");
+
         assertEquals(1L, (long) prop1.key(), "prop1");
         assertEquals(2L, (long) prop2.key(), "prop2");
         assertNotEquals(2L, (long) prop1.key(), "prop1");
         assertNotEquals(1L, (long) prop2.key(), "prop2");
+
+        println("PropertyTest.testKey: Completed");
     }
 
     /**
@@ -145,10 +170,13 @@ public class PropertyTest
     @Test
     public void testValue()
     {
+        println("PropertyTest.testValue");
+
         assertEquals(one, prop1.value(), "prop1");
         assertEquals(two, prop2.value(), "prop2");
         assertNotEquals(two, prop1.value(), "prop1");
         assertNotEquals(one, prop2.value(), "prop2");
-    }
 
+        println("PropertyTest.testValue: Completed");
+    }
 }

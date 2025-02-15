@@ -26,6 +26,7 @@
  */
 module bewsoftware.property {
     requires bewsoftware.annotations;
+    requires bewsoftware.utils;
 
     exports com.bewsoftware.property;
 }

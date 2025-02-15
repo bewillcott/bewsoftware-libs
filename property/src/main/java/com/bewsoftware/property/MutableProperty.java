@@ -33,9 +33,9 @@ package com.bewsoftware.property;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
-public class MutableProperty<K extends Comparable<K>, V> extends Property<K, V> {
+public final class MutableProperty<K extends Comparable<K>, V> extends Property<K, V> {
 
     /**
      * @serial serial

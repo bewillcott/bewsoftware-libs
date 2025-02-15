@@ -20,6 +20,7 @@ package com.bewsoftware.property;
 
 import org.junit.jupiter.api.Test;
 
+import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -42,7 +43,7 @@ public class IniPropertyTest
     @Test
     public void testConstructors()
     {
-        System.out.println("testConstructors");
+        println("IniPropertyTest.testConstructors");
 
         IniProperty<Integer> propA = new IniProperty<>("one", 1);
         assertNotNull(propA);
@@ -64,6 +65,7 @@ public class IniPropertyTest
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
         assertTrue(true);
-    }
 
+        println("IniPropertyTest.testConstructors: Completed");
+    }
 }

@@ -34,9 +34,10 @@ package com.bewsoftware.property;
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
-public class IniProperty<V> extends Property<String, V> {
+public sealed class IniProperty<V> extends Property<String, V> permits MutableIniProperty
+{
 
     /**
      * @serial serial
@@ -50,7 +51,8 @@ public class IniProperty<V> extends Property<String, V> {
      * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
      */
-    public <T extends Property<String, V>> IniProperty(T property) {
+    public <T extends Property<String, V>> IniProperty(T property)
+    {
         super(property.key, property.value, property.comment);
     }
 
@@ -60,7 +62,8 @@ public class IniProperty<V> extends Property<String, V> {
      * @param key   The key.
      * @param value The value.
      */
-    public IniProperty(String key, V value) {
+    public IniProperty(String key, V value)
+    {
         super(key, value);
     }
 
@@ -71,7 +74,8 @@ public class IniProperty<V> extends Property<String, V> {
      * @param value   The value.
      * @param comment The comment.
      */
-    public IniProperty(String key, V value, String comment) {
+    public IniProperty(String key, V value, String comment)
+    {
         super(key, value, comment);
     }
 }

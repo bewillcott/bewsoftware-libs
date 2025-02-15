@@ -20,6 +20,7 @@ package com.bewsoftware.property;
 
 import org.junit.jupiter.api.Test;
 
+import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -41,6 +42,8 @@ public class MutableIniPropertyTest
     @Test
     public void testComment()
     {
+        println("MutableIniPropertyTest.testComment");
+
         MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
         assertNotNull(prop1);
         assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
@@ -50,7 +53,9 @@ public class MutableIniPropertyTest
         prop1.comment("Now it has something");
         assertEquals("Now it has something", prop1.comment(),
                 "prop1.comment().equals(\"Now it has something\")");
-    }
+
+        println("MutableIniPropertyTest.testComment: Completed");
+   }
 
     /**
      * Test of constructors, of class MutableIniProperty.
@@ -58,6 +63,8 @@ public class MutableIniPropertyTest
     @Test
     public void testConstructors()
     {
+        println("MutableIniPropertyTest.testConstructors");
+
         MutableIniProperty<Integer> propA = new MutableIniProperty<>("one", 1);
         assertNotNull(propA);
         assertEquals("one", propA.key(), "propA.key().equals(\"one\")");
@@ -77,6 +84,8 @@ public class MutableIniPropertyTest
         assertEquals(2L, (long) propC.value(), "propC.value().equals(2)");
         assertNotNull(propC.comment());
         assertEquals("This is a two", propC.comment(), "propC.comment().equals(\"This is a two\")");
+
+        println("MutableIniPropertyTest.testConstructors: Completed");
     }
 
     /**
@@ -85,6 +94,8 @@ public class MutableIniPropertyTest
     @Test
     public void testValue()
     {
+        println("MutableIniPropertyTest.testValue");
+
         MutableIniProperty< String> prop1 = new MutableIniProperty<>("12", "twelve");
         assertNotNull(prop1);
         assertEquals("12", prop1.key(), "prop1.key().equals(\"12\")");
@@ -93,6 +104,7 @@ public class MutableIniPropertyTest
         prop1.value("Now it has changed");
         assertEquals("Now it has changed", prop1.value(),
                 "prop1.value().equals(\"Now it has changed\")");
-    }
 
+        println("MutableIniPropertyTest.testValue: Completed");
+    }
 }
