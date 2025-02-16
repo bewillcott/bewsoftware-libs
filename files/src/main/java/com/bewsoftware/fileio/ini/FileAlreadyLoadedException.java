@@ -23,10 +23,13 @@ import java.io.IOException;
 /**
  * The name is very self-explanatory.
  *
+ * @note
+ * Use: {@link FileAlreadyLoadedException(String) FileAlreadyLoadedException(message)}.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
 public class FileAlreadyLoadedException extends IOException
 {
@@ -35,7 +38,11 @@ public class FileAlreadyLoadedException extends IOException
 
     /**
      * Constructs a new exception without a detail message.
+     *
+     * @deprecated Should always use:
+     * {@link FileAlreadyLoadedException(String) FileAlreadyLoadedException(message)}.
      */
+    @Deprecated(forRemoval = true, since = "3.1.0")
     public FileAlreadyLoadedException()
     {
         super();
@@ -61,7 +68,11 @@ public class FileAlreadyLoadedException extends IOException
      * @param cause the cause (which is saved for later retrieval by the
      *              Throwable.getCause() method). (A null value is permitted,
      *              and indicates that the cause is nonexistent or unknown.)
+     *
+     * @deprecated Should always use:
+     * {@link FileAlreadyLoadedException(String) FileAlreadyLoadedException(message)}.
      */
+    @Deprecated(forRemoval = true, since = "3.1.0")
     public FileAlreadyLoadedException(final Throwable cause)
     {
         super(cause);
@@ -78,10 +89,13 @@ public class FileAlreadyLoadedException extends IOException
      * @param cause   the cause (which is saved for later retrieval by the
      *                Throwable.getCause() method). (A null value is permitted,
      *                and indicates that the cause is nonexistent or unknown.)
+     *
+     * @deprecated Should always use:
+     * {@link FileAlreadyLoadedException(String) FileAlreadyLoadedException(message)}.
      */
+    @Deprecated(forRemoval = true, since = "3.1.0")
     public FileAlreadyLoadedException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
-
 }

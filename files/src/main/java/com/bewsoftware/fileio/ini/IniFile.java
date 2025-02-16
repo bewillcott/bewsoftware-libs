@@ -18,9 +18,8 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.common.InvalidParameterException;
-import com.bewsoftware.property.IniProperty;
-import com.bewsoftware.property.MutableIniProperty;
+import com.bewsoftware.fileio.property.IniProperty;
+import com.bewsoftware.fileio.property.MutableIniProperty;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -180,8 +179,8 @@ public class IniFile
      *
      * @param path The <b>Path</b> object to use.
      *
-     * @throws NullPointerException      If the path parameter is
-     *                                   {@code null}.
+     * @throws NullPointerException     If the path parameter is
+     *                                  {@code null}.
      * @throws IllegalArgumentException If path.toString().isBlank().
      * @since 3.0.2
      */
@@ -359,7 +358,7 @@ public class IniFile
      * @throws FileAlreadyLoadedException The file cannot be reloaded.
      * @throws IniFileFormatException     The format of the <u>ini</u> file is
      *                                    non-conforming.
-     * @throws IllegalArgumentException  If the {@code comment} is not a
+     * @throws IllegalArgumentException   If the {@code comment} is not a
      *                                    valid <u>ini</u> file format comment.
      * @throws IOException                An I/O error occurs opening the file
      * @since 3.0.2
@@ -371,7 +370,7 @@ public class IniFile
 
         if (fileIsLoaded)
         {
-            throw new FileAlreadyLoadedException();
+            throw new FileAlreadyLoadedException(path.toString());
         }
 
         try (BufferedReader in = Files.newBufferedReader(path))
@@ -388,13 +387,13 @@ public class IniFile
      *
      * @return this instance for chaining.
      *
-     * @throws IOException               if an I/O error occurs opening the
-     *                                   file.
-     * @throws IniFileFormatException    If the format of the supplied ini file
-     *                                   does
-     *                                   not conform to the general standard.
+     * @throws IOException              if an I/O error occurs opening the
+     *                                  file.
+     * @throws IniFileFormatException   If the format of the supplied ini file
+     *                                  does
+     *                                  not conform to the general standard.
      * @throws IllegalArgumentException If the {@code comment} is not a
-     *                                   valid <u>ini</u> file format comment.
+     *                                  valid <u>ini</u> file format comment.
      * @since 3.0.2
      */
     public IniFile mergeFile(final Path file)
@@ -482,11 +481,11 @@ public class IniFile
      *
      * @param reader The ini file to be parsed.
      *
-     * @throws IOException               If an I/O error occurs.
-     * @throws IniFileFormatException    If the format of the supplied ini file
-     *                                   does not conform to the general standard.
+     * @throws IOException              If an I/O error occurs.
+     * @throws IniFileFormatException   If the format of the supplied ini file
+     *                                  does not conform to the general standard.
      * @throws IllegalArgumentException If the comment is not a valid ini file
-     *                                   format comment.
+     *                                  format comment.
      * @since 3.0.2
      */
     private boolean parseINI(final BufferedReader reader)

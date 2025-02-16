@@ -18,8 +18,8 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.property.IniProperty;
-import com.bewsoftware.property.MutableIniProperty;
+import com.bewsoftware.fileio.property.IniProperty;
+import com.bewsoftware.fileio.property.MutableIniProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
  */
 public class IniDocumentImpl implements IniDocument
 {
-
     /**
      * Regex pattern for validating a comment.
      *
