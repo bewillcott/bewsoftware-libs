@@ -1,5 +1,5 @@
 /*
- *  File Name:    SerializableList.java
+ *  File Name:    ObservableList.java
  *  Project Name: bewsoftware-utils
  *
  *  Copyright (c) 2025 Bradley Willcott
@@ -20,20 +20,19 @@
 
 package com.bewsoftware.utils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This interface is to be used when needing to Serialize a List like {@link ArrayList}.
+ * This interface is to be used when you need to provide an observable list
+ * like {@link ArrayList}.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  * @param <E> the type of elements in this list.
  *
- * @see SerializableArrayList
- * @since 3.0.2
- * @version 3.0.2
+ * @since 3.1.0
+ * @version 3.1.0
  */
-public interface SerializableList<E> extends List<E>, Serializable, Cloneable
+@SuppressWarnings("MarkerInterface")
+public interface ObservableList<E extends Observable> extends Observable, SerializableList<E>
 {
 }
