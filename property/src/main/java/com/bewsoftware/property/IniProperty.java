@@ -29,6 +29,7 @@ package com.bewsoftware.property;
  * Moved here from BEWCommons to make it easier to handle version updates.
  * This is a copy of v1.0.21, now reset to v1.0 for this project.
  *
+ * @deprecated Moved to {@code bewsoftware.files/com.bewsoftware.fileio.property.IniProperty}.
  * @param <V> value type.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
@@ -36,6 +37,7 @@ package com.bewsoftware.property;
  * @since 1.0
  * @version 3.1.0
  */
+@Deprecated(forRemoval = true, since = "3.1.0")
 public sealed class IniProperty<V> extends Property<String, V> permits MutableIniProperty
 {
 

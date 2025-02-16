@@ -55,7 +55,7 @@ public class MutableIniPropertyTest
                 "prop1.comment().equals(\"Now it has something\")");
 
         println("MutableIniPropertyTest.testComment: Completed");
-   }
+    }
 
     /**
      * Test of constructors, of class MutableIniProperty.

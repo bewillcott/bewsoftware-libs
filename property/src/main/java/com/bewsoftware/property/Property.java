@@ -43,6 +43,8 @@ import java.util.Objects;
  * It is possible for a sub-class to be a mutator class, having methods that
  * can modify either/or both of the fields: {@code value} and {@code comment}.
  *
+ * @deprecated Moved to {@code bewsoftware.files/com.bewsoftware.fileio.property.Property}.
+ *
  * @param <K> key type.
  * @param <V> value type.
  *
@@ -52,6 +54,7 @@ import java.util.Objects;
  * @version 3.1.0
  */
 @Immutable
+@Deprecated(forRemoval = true, since = "3.1.0")
 public sealed class Property<K extends Comparable<K>, V> implements
         Serializable,
         Comparable<Property<K, V>>

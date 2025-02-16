@@ -18,6 +18,7 @@
  */
 package com.bewsoftware.property;
 
+import com.bewsoftware.property.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

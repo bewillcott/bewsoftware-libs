@@ -27,6 +27,8 @@ package com.bewsoftware.property;
  * Moved here from BEWCommons to make it easier to handle version updates.
  * This is a copy of v1.0.21, now reset to v1.0 for this project.
  *
+ * @deprecated Moved to {@code bewsoftware.files/com.bewsoftware.fileio.property.MutableProperty}.
+ *
  * @param <K> key type.
  * @param <V> value type.
  *
@@ -35,7 +37,9 @@ package com.bewsoftware.property;
  * @since 1.0
  * @version 3.1.0
  */
-public final class MutableProperty<K extends Comparable<K>, V> extends Property<K, V> {
+@Deprecated(forRemoval = true, since = "3.1.0")
+public final class MutableProperty<K extends Comparable<K>, V> extends Property<K, V>
+{
 
     /**
      * @serial serial
@@ -49,7 +53,8 @@ public final class MutableProperty<K extends Comparable<K>, V> extends Property<
      * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
      */
-    public <T extends Property<K, V>> MutableProperty(T property) {
+    public <T extends Property<K, V>> MutableProperty(T property)
+    {
         super(property.key, property.value, property.comment);
     }
 
@@ -59,7 +64,8 @@ public final class MutableProperty<K extends Comparable<K>, V> extends Property<
      * @param key   The key.
      * @param value The value.
      */
-    public MutableProperty(K key, V value) {
+    public MutableProperty(K key, V value)
+    {
         super(key, value);
     }
 
@@ -70,7 +76,8 @@ public final class MutableProperty<K extends Comparable<K>, V> extends Property<
      * @param value   The value.
      * @param comment The comment.
      */
-    public MutableProperty(K key, V value, String comment) {
+    public MutableProperty(K key, V value, String comment)
+    {
         super(key, value, comment);
     }
 
@@ -79,7 +86,8 @@ public final class MutableProperty<K extends Comparable<K>, V> extends Property<
      *
      * @param comment to be set.
      */
-    public void comment(String comment) {
+    public void comment(String comment)
+    {
         this.comment = comment;
     }
 
@@ -88,7 +96,8 @@ public final class MutableProperty<K extends Comparable<K>, V> extends Property<
      *
      * @param value to be set.
      */
-    public void value(V value) {
+    public void value(V value)
+    {
         this.value = value;
     }
 }

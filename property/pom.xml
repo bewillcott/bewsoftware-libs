@@ -26,5 +26,10 @@
             <artifactId>bewsoftware-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bewsoftware-files</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
