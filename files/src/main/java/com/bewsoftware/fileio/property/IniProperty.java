@@ -47,7 +47,8 @@ import java.beans.PropertyChangeSupport;
  * @since 3.1.0
  * @version 3.1.0
  */
-public sealed class IniProperty<V> extends Property<String, V> permits MutableIniProperty
+public sealed class IniProperty<V> extends Property<String, V> 
+        permits MutableIniProperty, XmlProperty
 {
     private static final long serialVersionUID = -1376558228042490223L;
 

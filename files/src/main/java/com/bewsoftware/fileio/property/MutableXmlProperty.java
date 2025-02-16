@@ -1,5 +1,5 @@
 /*
- *  File Name:    MutableIniProperty.java
+ *  File Name:    MutableXmlProperty.java
  *  Project Name: bewsoftware-files
  *
  *  Copyright (c) 2020, 2025 Bradley Willcott
@@ -31,24 +31,22 @@ import java.beans.PropertyChangeSupport;
  * If you intend to use the {@link PropertyChangeSupport} for tracking, then
  * you should use one of these constructors:
  * <ul>
- * <li>{@linkplain #MutableIniProperty(int, Property) MutableIniProperty(id, property)}</li>
- * <li>{@linkplain #MutableIniProperty(int, String, Object) MutableIniProperty(id, key, value)}</li>
- * <li>{@linkplain #MutableIniProperty(int, String, Object, String) MutableIniProperty(id, key, value, comment)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int, Property) MutableXmlProperty(id, property)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int, String, String) MutableXmlProperty(id, key, value)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int, String, String, String) MutableXmlProperty(id, key, value, comment)}</li>
  * </ul>
  * Moved here from BEWSoftware Property Library since it is unlikely to
  * be used, except in conjunction with other classes from this
  * library.
- *
- * @param <V> value type.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.1.0
  * @version 3.1.0
  */
-public final class MutableIniProperty<V> extends IniProperty<V>
+public final class MutableXmlProperty extends XmlProperty
 {
-    private static final long serialVersionUID = 4053168366346430630L;
+    private static final long serialVersionUID = 1130990937634774392L;
 
     /**
      * Create a new instance of {@code MutableIniProperty} as a copy of an existing
@@ -59,7 +57,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, V>> MutableIniProperty(final T property)
+    public <T extends Property<String, String>> MutableXmlProperty(final T property)
     {
         super(property);
     }
@@ -72,7 +70,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final String key, final V value)
+    public MutableXmlProperty(final String key, final String value)
     {
         super(key, value);
     }
@@ -86,7 +84,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final String key, final V value, final String comment)
+    public MutableXmlProperty(final String key, final String value, final String comment)
     {
         super(key, value, comment);
     }
@@ -96,8 +94,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      * instance of {@code Property}, or one of its sub-classes.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Property) }.
+     * you should use this version of the constructor.
      *
      * @param id       The unique id for this Property object.
      * @param property The instance to copy.
@@ -105,7 +102,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, V>> MutableIniProperty(final int id, T property)
+    public <T extends Property<String, String>> MutableXmlProperty(final int id, T property)
     {
         super(id, property);
     }
@@ -114,8 +111,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      * Create a new instance of {@code MutableIniProperty} with a {@code null} comment.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Comparable, Object)}.
+     * you should use this version of the constructor.
      *
      * @param id    The unique id for this Property object.
      * @param key   The key.
@@ -123,7 +119,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final int id, String key, V value)
+    public MutableXmlProperty(final int id, String key, String value)
     {
         super(id, key, value);
     }
@@ -132,8 +128,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      * Create a new instance of {@code MutableIniProperty}.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Comparable, Object, String)}.
+     * you should use this version of the constructor.
      *
      * @param id      The unique id for this Property object.
      * @param key     The key.
@@ -142,7 +137,7 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final int id, String key, V value, String comment)
+    public MutableXmlProperty(final int id, String key, String value, String comment)
     {
         super(id, key, value, comment);
     }
@@ -168,9 +163,9 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public void value(final V value)
+    public void value(final String value)
     {
-        final V oldValue = this.value;
+        final String oldValue = this.value;
         this.value = value;
         pcs.firePropertyChange(PROP_VALUE, oldValue, value);
     }

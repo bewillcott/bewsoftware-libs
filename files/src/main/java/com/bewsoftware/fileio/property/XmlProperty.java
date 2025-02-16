@@ -1,5 +1,5 @@
 /*
- *  File Name:    MutableIniProperty.java
+ *  File Name:    XmlProperty.java
  *  Project Name: bewsoftware-files
  *
  *  Copyright (c) 2020, 2025 Bradley Willcott
@@ -22,63 +22,62 @@ package com.bewsoftware.fileio.property;
 import java.beans.PropertyChangeSupport;
 
 /**
- * This is a mutator sub-class of {@code IniProperty}. As with that class,
- * this one is designed to simplify working with <i>ini</i> files.
+ * This is a more specialized sub-class of {@code Property}, in
+ * that it simplifies working with <i>ini</i> files.
  * <p>
- * It provides mutator methods that can be used to change both:
- * {@code value} and {@code comment}.
+ * Primarily it sets up the {@code <K>} type of
+ * {@code Property<K extends Comparable<K>, V>} as {@link String}, thus
+ * leaving only the {@code <V>} type for the {@code value}, to track.
  * <p>
  * If you intend to use the {@link PropertyChangeSupport} for tracking, then
  * you should use one of these constructors:
  * <ul>
- * <li>{@linkplain #MutableIniProperty(int, Property) MutableIniProperty(id, property)}</li>
- * <li>{@linkplain #MutableIniProperty(int, String, Object) MutableIniProperty(id, key, value)}</li>
- * <li>{@linkplain #MutableIniProperty(int, String, Object, String) MutableIniProperty(id, key, value, comment)}</li>
+ * <li>{@linkplain #XmlProperty(int, Property) XmlProperty(id, property)}</li>
+ * <li>{@linkplain #XmlProperty(int, String, String) XmlProperty(id, key, value)}</li>
+ * <li>{@linkplain #XmlProperty(int, String, String, String) XmlProperty(id, key, value, comment)}</li>
  * </ul>
  * Moved here from BEWSoftware Property Library since it is unlikely to
  * be used, except in conjunction with other classes from this
  * library.
- *
- * @param <V> value type.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 3.1.0
  * @version 3.1.0
  */
-public final class MutableIniProperty<V> extends IniProperty<V>
+public sealed class XmlProperty extends IniProperty<String> permits MutableXmlProperty
 {
-    private static final long serialVersionUID = 4053168366346430630L;
+    private static final long serialVersionUID = 5380468967540265450L;
 
     /**
-     * Create a new instance of {@code MutableIniProperty} as a copy of an existing
+     * Create a new instance of {@code IniProperty} as a copy of an existing
      * instance of {@code Property}, or one of its sub-classes.
      *
-     * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
+     * @param <T>      the type of the class being copied.
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, V>> MutableIniProperty(final T property)
+    public <T extends Property<String, String>> XmlProperty(final T property)
     {
         super(property);
     }
 
     /**
-     * Create a new instance of {@code MutableIniProperty} with a {@code null} comment.
+     * Create a new instance of {@code IniProperty} with a {@code null} comment.
      *
      * @param key   The key.
      * @param value The value.
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final String key, final V value)
+    public XmlProperty(final String key, final String value)
     {
         super(key, value);
     }
 
     /**
-     * Create a new instance of {@code MutableIniProperty}.
+     * Create a new instance of {@code IniProperty}.
      *
      * @param key     The key.
      * @param value   The value.
@@ -86,13 +85,13 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final String key, final V value, final String comment)
+    public XmlProperty(final String key, final String value, final String comment)
     {
         super(key, value, comment);
     }
 
     /**
-     * Create a new instance of {@code MutableIniProperty} as a copy of an existing
+     * Create a new instance of {@code IniProperty} as a copy of an existing
      * instance of {@code Property}, or one of its sub-classes.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
@@ -105,13 +104,13 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, V>> MutableIniProperty(final int id, T property)
+    public <T extends Property<String, String>> XmlProperty(final int id, final T property)
     {
         super(id, property);
     }
 
     /**
-     * Create a new instance of {@code MutableIniProperty} with a {@code null} comment.
+     * Create a new instance of {@code IniProperty} with a {@code null} comment.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor, instead of
@@ -123,13 +122,13 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final int id, String key, V value)
+    public XmlProperty(final int id, final String key, final String value)
     {
         super(id, key, value);
     }
 
     /**
-     * Create a new instance of {@code MutableIniProperty}.
+     * Create a new instance of {@code IniProperty}.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor, instead of
@@ -142,36 +141,8 @@ public final class MutableIniProperty<V> extends IniProperty<V>
      *
      * @since 3.1.0
      */
-    public MutableIniProperty(final int id, String key, V value, String comment)
+    public XmlProperty(final int id, final String key, final String value, final String comment)
     {
         super(id, key, value, comment);
-    }
-
-    /**
-     * Set the field: {@code comment}.
-     *
-     * @param comment to be set.
-     *
-     * @since 3.1.0
-     */
-    public void comment(final String comment)
-    {
-        final String oldValue = this.comment;
-        this.comment = comment;
-        pcs.firePropertyChange(PROP_COMMENT, oldValue, comment);
-    }
-
-    /**
-     * Set the field: {@code value}.
-     *
-     * @param value to be set.
-     *
-     * @since 3.1.0
-     */
-    public void value(final V value)
-    {
-        final V oldValue = this.value;
-        this.value = value;
-        pcs.firePropertyChange(PROP_VALUE, oldValue, value);
     }
 }
