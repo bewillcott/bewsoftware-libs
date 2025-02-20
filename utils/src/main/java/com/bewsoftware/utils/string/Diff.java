@@ -161,11 +161,11 @@ public interface Diff
             {
                 if (origChars[i] != modChars[i])
                 {
-                    rtn = i;
+                    rtn = i + 1;
                 }
             } else
             {
-                rtn = i;
+                rtn = i + 1;
             }
 
             if (rtn > 0)
@@ -263,7 +263,7 @@ public interface Diff
         {
             if (text1.charAt(i) != text2.charAt(i))
             {
-                index.val = i;
+                index.val = i + 1;
                 diff = true;
                 break;
             }
@@ -288,22 +288,8 @@ public interface Diff
      *
      * @since 1.0.4
      */
-    @SuppressWarnings("PublicInnerClass")
-    public static final class ModifiedLine
+    public final class ModifiedLine
     {
-
-        /**
-         * Provide a String filled with spaces.
-         *
-         * @param count The number of spaces required.
-         *
-         * @return space filled String.
-         */
-        private static String fill(int count)
-        {
-            return " ".repeat(count);
-        }
-
         /**
          * The line number within the original text file.
          */
@@ -334,12 +320,24 @@ public interface Diff
          * @param position The first character position within the original text that is
          *                 different from the modified version of the text.
          */
-        private ModifiedLine(String orig, String mod, int linenum, int position)
+        ModifiedLine(String orig, String mod, int linenum, int position)
         {
             this.orig = orig;
             this.mod = mod;
             this.linenum = linenum;
-            this.position = position;
+            this.position = position == -1 ? 0 : position;
+        }
+
+        /**
+         * Provide a String filled with spaces.
+         *
+         * @param count The number of spaces required.
+         *
+         * @return space filled String.
+         */
+        private static String fill(int count)
+        {
+            return " ".repeat(count);
         }
 
         /**
@@ -352,12 +350,12 @@ public interface Diff
         @Override
         public String toString()
         {
-            String strLinenum = " [" + linenum + "] ";
+            String strLinenum = "- [" + linenum + "] ";
             int slLength = strLinenum.length();
 
-            return "-" + strLinenum + orig + "\n"
-                    + (position > -1 ? fill(slLength + position) + "^" : "") + "\n"
-                    + "+" + fill(slLength) + mod;
+            return strLinenum + "\"" + orig + "\"\n"
+                    + "+" + fill(slLength - 1) + "\"" + mod + "\"\n"
+                    + fill(slLength + position) + "^[" + position + "]";
         }
     }
 }
