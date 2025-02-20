@@ -79,19 +79,30 @@ public class XmlFile
             xmlDoc = new XmlDocumentImpl();
         }
     }
-//    public static void main(final String[] args)
-//    {
-//        final Ref<Integer> idCounter = Ref.val(0);
-//        final IntSupplier idSupplier = () -> idCounter.val++;
-//
-//        final Tag root = Tag.get(null, idSupplier, "/");
-//        final Tag fred = Tag.get(root, idSupplier, "fred");
-//        final Tag smith = Tag.get(fred, idSupplier, "smith");
-//        final Tag mary = Tag.get(root, idSupplier, "mary");
-//        final Tag taylor = Tag.get(mary, idSupplier, "taylor");
-//
-//        System.out.println("taylor.getXPath().getAbsolutePath(): " + taylor.getXPath().getAbsolutePath());
-//    }
+
+    /**
+     * Returns path to source <u>xml</u> file.
+     *
+     * @return path to source <u>xml</u> file.
+     *
+     * @since 3.1.0
+     */
+    public Path getFilePath()
+    {
+        return xmlFilePath;
+    }
+
+    /**
+     * Returns the internal xml document.
+     *
+     * @return the internal xml document.
+     *
+     * @since 3.1.0
+     */
+    public XmlDocument getXmlDocument()
+    {
+        return xmlDoc;
+    }
 
     /**
      * Returns <i>true</i> if the file has been loaded, <i>false</i> otherwise.
@@ -202,7 +213,8 @@ public class XmlFile
         final Tag root = xmlDoc.getRootTag();
         String tail = processFirstLine(root, xmlLines.getFirst());
 
-        if("".equals(tail)){
+        if ("".equals(tail))
+        {
             xmlLines.removeFirst();
         }
 

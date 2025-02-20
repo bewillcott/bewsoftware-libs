@@ -62,11 +62,25 @@ public class Tag implements Observable
 
     private transient final IntSupplier idSupplier;
 
+    /**
+     * Index of last returned Tag from the {@link searchArray}.
+     *
+     * @since 3.1.0
+     */
+    private int lastReturnedIndex = -1;
+
     private String name;
 
     private final Tag parent;
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+    /**
+     * The array of tags found during the last call to {@link #getChild(String) getChild(name)}.
+     *
+     * @since 3.1.0
+     */
+    private Tag[] searchArray = null;
 
     private String text;
 
@@ -167,6 +181,37 @@ public class Tag implements Observable
     }
 
     /**
+     * Returns the first child tag with the specified {@code name}.
+     *
+     * @param name to search for.
+     *
+     * @return either the first child tag with the specified {@code name},
+     *         or <i>null</i> if none found.
+     *
+     * @since 3.1.0
+     */
+    public Tag getChild(final String name)
+    {
+        Tag rtn = null;
+
+        searchArray = children.stream()
+                .filter((final Tag t) -> t.getName().equals(name))
+                .toArray(Tag[]::new);
+
+        if (searchArray.length > 0)
+        {
+            lastReturnedIndex = 0;
+            rtn = searchArray[lastReturnedIndex];
+        } else
+        {
+            lastReturnedIndex = -1;
+            searchArray = null;
+        }
+
+        return rtn;
+    }
+
+    /**
      * Get the value of children
      *
      * @return the value of children
@@ -227,6 +272,19 @@ public class Tag implements Observable
     }
 
     /**
+     * Returns {@code true} if the search results have not all been returned
+     * via {@link #nextChild()}, {@code false} otherwise.
+     *
+     * @return if a child tag is available for {@link #nextChild()}.
+     *
+     * @since 3.1.0
+     */
+    public boolean hasChild()
+    {
+        return lastReturnedIndex >= 0 && lastReturnedIndex < searchArray.length - 1;
+    }
+
+    /**
      * Has the parent been set?
      *
      * @return {@code true} if set, {@code false} otherwise.
@@ -236,6 +294,19 @@ public class Tag implements Observable
     public boolean hasParent()
     {
         return parent != null;
+    }
+
+    /**
+     * Returns the next available child tag, from the search results
+     * of the last call to {@link #getChild(String) getChild(name)}.
+     *
+     * @return the next available child tag, or <i>null</i> if none found.
+     *
+     * @since 3.1.0
+     */
+    public Tag nextChild()
+    {
+        return hasChild() ? searchArray[++lastReturnedIndex] : null;
     }
 
     /**
@@ -340,7 +411,10 @@ public class Tag implements Observable
 
         if (!children.isEmpty())
         {
-            mb.appendln();
+            if (!root)
+            {
+                mb.appendln();
+            }
 
             children.forEach((final Tag t) ->
             {

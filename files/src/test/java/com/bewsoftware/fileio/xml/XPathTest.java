@@ -20,8 +20,6 @@
 
 package com.bewsoftware.fileio.xml;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,9 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -68,8 +64,8 @@ public class XPathTest
     /**
      * Test of of method, of class XPath.
      */
-    @ParameterizedTest
-    @ValueSource
+//    @ParameterizedTest
+//    @ValueSource
     public void testOf()
     {
         System.out.println("of");

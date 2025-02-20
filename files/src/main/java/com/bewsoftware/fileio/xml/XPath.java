@@ -48,9 +48,9 @@ public class XPath
     private final Tag relativeTag;
 
     private XPath(
+            final Tag relativeTag,
             final String relativePath,
             final String[] pathTokens,
-            final Tag relativeTag,
             final String absolutePath
     )
     {
@@ -63,70 +63,87 @@ public class XPath
     /**
      * Create an instance of XPath.
      *
-     * @param relativeTag  The tag that this xpath is relative to.
-     * @param relativePath of this XPath.
+     * @param relativeTag The tag that this xpath is relative to.
+     * @param xpath       of this XPath.
      *
      * @return new XPath.
      *
      * @since 3.1.0
      */
-    public static XPath of(final Tag relativeTag, final String relativePath)
+    public static XPath of(final Tag relativeTag, final String xpath)
     {
-        requireNonNull(relativePath, "relativePath");
+        XPath rtn = null;
+
+        requireNonNull(xpath, "relativePath");
 
         if (relativeTag == null)
         {
             // Generate the rootTag's XPath.
-            if ("/".equals(relativePath))
+            if ("/".equals(xpath))
             {
-                return new XPath(relativePath, new String[]
+                rtn = new XPath(relativeTag, xpath, new String[]
                 {
                     ""
-                }, relativeTag, "/");
+                }, "/");
             } else
             {
                 throw new NullPointerException("relativeTag");
             }
         } else
         {
-            final String[] pathTokens = relativePath.split("/");
+            final String[] pathTokens = xpath.split("/");
 
-            if (relativePath.startsWith("/"))
-            { // Relative to rootTag.
+            // Is absolute XPath?
+            if (xpath.startsWith("/"))
+            {
                 if (!"/".equals(relativeTag.getName()))
                 {
-                    throw new IllegalArgumentException(format("relativePath: '%s' is an absolute xpath.", relativePath));
+                    final String msg = format(
+                            "'xpath' is absolute path (%s), yet 'relativeTag' is not root tag (%s).",
+                            xpath, relativeTag
+                    );
+
+                    throw new IllegalArgumentException(msg);
+                } else
+                {
+                    // Remove first array element -> "".
+                    final String[] tokens = new String[pathTokens.length - 1];
+
+                    for (int i = 1; i < pathTokens.length; i++)
+                    {
+                        tokens[i - 1] = pathTokens[i];
+                    }
+
+                    rtn = new XPath(relativeTag, xpath, tokens, xpath);
                 }
-            }
-
-            // Generate absolute path.
-            final Deque<Tag> stack = new ArrayDeque<>();
-            Tag tag = relativeTag;
-
-            while (tag != null)
+            } else
             {
-                stack.push(tag);
-                tag = tag.getParent();
+                // Generate absolute path.
+                final Deque<Tag> stack = new ArrayDeque<>();
+                Tag tag = relativeTag;
+
+                while (tag != null)
+                {
+                    stack.push(tag);
+                    tag = tag.getParent();
+                }
+
+                stack.pop(); // the root off.
+                final MessageBuilder mb = new MessageBuilder();
+
+                while (!stack.isEmpty())
+                {
+                    tag = stack.pop();
+                    mb.append('/').append(tag.getName());
+                }
+
+                mb.append('/').append(xpath);
+
+                rtn = new XPath(relativeTag, xpath, pathTokens, mb.toString());
             }
-
-            stack.pop(); // the root off.
-            final MessageBuilder mb = new MessageBuilder();
-
-//            if (stack.isEmpty())
-//            {
-//                mb.append('/');
-//            }
-
-            while (!stack.isEmpty())
-            {
-                tag = stack.pop();
-                mb.append('/').append(tag.getName());
-            }
-
-            mb.append('/').append(relativePath);
-
-            return new XPath(relativePath, pathTokens, relativeTag, mb.toString());
         }
+
+        return rtn;
     }
 
     /**
