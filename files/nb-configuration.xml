@@ -17,6 +17,17 @@
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
     </properties>
     <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>attribs</word>
+        <word>ctag</word>
+        <word>dtd</word>
+        <word>etag</word>
         <word>ini</word>
+        <word>sattribs</word>
+        <word>skey</word>
+        <word>svalue</word>
+        <word>tage</word>
+        <word>xml</word>
+        <word>xpath</word>
+        <word>xsd</word>
     </spellchecker-wordlist>
 </project-shared-configuration>

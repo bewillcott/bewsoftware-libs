@@ -20,6 +20,8 @@
 
 package com.bewsoftware.fileio.xml;
 
+import com.bewsoftware.fileio.property.XmlProperty;
+
 /**
  * XmlDocument interface description.
  *
@@ -42,13 +44,54 @@ public interface XmlDocument
     /**
      * Returns the tag
      *
-     * @param expression The XPath expression.
      * @param context    The context the XPath expression will be evaluated in.
+     * @param expression The XPath expression.
      *
      * @return
      *
      * @since 3.1.0
      */
-    public Tag getTag(String expression, Tag context);
+    public Tag getTag(Tag context, String expression);
+
+    /**
+     * Create a new XmlProperty.
+     *
+     * @param key   Property label.
+     * @param value Property setting.
+     *
+     * @return new XmlProperty.
+     *
+     * @since 3.1.0
+     */
+    public XmlProperty newProperty(final String key, final String value);
+
+    /**
+     * Create named tag.
+     * <p>
+     * The new Tag is added to the parent's children.
+     *
+     * @param parent of this tag. Can be <i>null</i>.
+     * @param name   of tag.
+     * @param xml    the <u>xml</u> text.
+     *
+     * @return a new Tag instance.
+     *
+     * @since 3.1.0
+     */
+    public SpecialTag newSpecialTag(final Tag parent, final String name, final String xml);
+
+    /**
+     * Create named tag.
+     * <p>
+     * The new Tag is added to the parent's children.
+     *
+     * @param parent of this tag. Can be <i>null</i>.
+     * @param name   of tag.
+     *
+     * @return a new Tag instance.
+     *
+     * @since 3.1.0
+     */
+    public Tag newTag(final Tag parent, final String name);
 
 }

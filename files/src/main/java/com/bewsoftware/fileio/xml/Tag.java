@@ -20,16 +20,21 @@
 
 package com.bewsoftware.fileio.xml;
 
-import com.bewsoftware.fileio.property.IniProperty;
 import com.bewsoftware.fileio.property.XmlProperty;
 import com.bewsoftware.utils.Observable;
 import com.bewsoftware.utils.ObservableArrayList;
 import com.bewsoftware.utils.ObservableList;
+import com.bewsoftware.utils.string.MessageBuilder;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
+
+import static com.bewsoftware.fileio.xml.XPath.of;
+import static com.bewsoftware.utils.string.Strings.indentLines;
+import static com.bewsoftware.utils.string.Strings.notEmpty;
+import static com.bewsoftware.utils.string.Strings.requireNonBlank;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Tag class description.
@@ -59,28 +64,64 @@ public class Tag implements Observable
 
     private String name;
 
+    private final Tag parent;
+
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private String text;
 
+    private final XPath xp;
+
     /**
      * Create named tag.
      *
+     * @param parent     of this tag. Can be <i>null</i>.
      * @param idSupplier <i>id</i> number supplier.
      * @param name       of tag.
      *
      * @since 3.1.0
      */
-    public Tag(final IntSupplier idSupplier, final String name)
+    protected Tag(final Tag parent, final IntSupplier idSupplier, final String name)
     {
-        this.idSupplier = idSupplier;
-        this.name = name;
+        this.parent = parent;
+        this.idSupplier = requireNonNull(idSupplier);
+        this.name = requireNonBlank(name);
 
         id = this.idSupplier.getAsInt();
+        xp = of(parent, name);
+
         attributes = new ObservableArrayList<>(this.idSupplier.getAsInt());
         attributes.addPropertyChangeListener(pcs::firePropertyChange);
+
         children = new ObservableArrayList<>(this.idSupplier.getAsInt());
         children.addPropertyChangeListener(pcs::firePropertyChange);
+    }
+
+    /**
+     * Create named tag.
+     * <p>
+     * The new Tag is added to the parent's children.
+     *
+     * @param parent     of this tag. Can be <i>null</i>.
+     * @param idSupplier <i>id</i> number supplier.
+     * @param name       of tag.
+     *
+     * @return a new Tag instance.
+     *
+     * @since 3.1.0
+     */
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public static Tag get(final Tag parent, final IntSupplier idSupplier, final String name
+    )
+    {
+        final Tag tag = new Tag(parent, idSupplier, name);
+
+        if (parent != null)
+        {
+            parent.children.add(tag);
+        }
+
+        return tag;
     }
 
     /**
@@ -91,7 +132,8 @@ public class Tag implements Observable
      * @since 3.1.0
      */
     @Override
-    public void addPropertyChangeListener(final PropertyChangeListener listener)
+    public void addPropertyChangeListener(final PropertyChangeListener listener
+    )
     {
         pcs.addPropertyChangeListener(listener);
     }
@@ -105,7 +147,8 @@ public class Tag implements Observable
      * @since 3.1.0
      */
     @Override
-    public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener)
+    public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener
+    )
     {
         pcs.addPropertyChangeListener(propertyName, listener);
     }
@@ -117,9 +160,10 @@ public class Tag implements Observable
      *
      * @since 3.1.0
      */
-    public List<IniProperty<String>> getAttributes()
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+    public List<XmlProperty> getAttributes()
     {
-        return Collections.unmodifiableList(attributes);
+        return attributes;
     }
 
     /**
@@ -129,9 +173,10 @@ public class Tag implements Observable
      *
      * @since 3.1.0
      */
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<Tag> getChildren()
     {
-        return Collections.unmodifiableList(children);
+        return children;
     }
 
     @Override
@@ -153,6 +198,18 @@ public class Tag implements Observable
     }
 
     /**
+     * Returns the parent tag, if set, <i>null</i> otherwise.
+     *
+     * @return the parent tag, if set, <i>null</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public Tag getParent()
+    {
+        return parent;
+    }
+
+    /**
      * Get the value of text
      *
      * @return the value of text
@@ -162,6 +219,23 @@ public class Tag implements Observable
     public String getText()
     {
         return text;
+    }
+
+    public XPath getXPath()
+    {
+        return xp;
+    }
+
+    /**
+     * Has the parent been set?
+     *
+     * @return {@code true} if set, {@code false} otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean hasParent()
+    {
+        return parent != null;
     }
 
     /**
@@ -219,4 +293,66 @@ public class Tag implements Observable
         pcs.firePropertyChange(PROP_TEXT, oldText, text);
     }
 
+    @Override
+    public String toString()
+    {
+        final int spaces;
+        boolean root = false;
+
+        if ("/".equals(name))
+        {
+            root = true;
+            spaces = 0;
+
+        } else
+        {
+            spaces = 4;
+        }
+
+        final MessageBuilder mb = new MessageBuilder();
+
+        if (!root)
+        {
+            mb.append('<').append(name);
+
+            attributes.forEach((final XmlProperty p) ->
+            {
+                mb.append(' ')
+                        .append(p.key())
+                        .append("=\"")
+                        .append(p.value())
+                        .append('\"');
+            });
+
+            mb.append('>');
+
+            if (notEmpty(text))
+            {
+                if (children.isEmpty())
+                {
+                    mb.append(text);
+                } else
+                {
+                    mb.appendln(indentLines(text, spaces));
+                }
+            }
+        }
+
+        if (!children.isEmpty())
+        {
+            mb.appendln();
+
+            children.forEach((final Tag t) ->
+            {
+                mb.appendln(indentLines(t, spaces));
+            });
+        }
+
+        if (!root)
+        {
+            mb.append("</").append(name).append('>');
+        }
+
+        return mb.toString();
+    }
 }

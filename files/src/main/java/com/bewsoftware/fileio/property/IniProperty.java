@@ -98,8 +98,7 @@ public sealed class IniProperty<V> extends Property<String, V>
      * instance of {@code Property}, or one of its sub-classes.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Property) }.
+     * you should use this version of the constructor.
      *
      * @param id       The unique id for this Property object.
      * @param property The instance to copy.
@@ -116,8 +115,7 @@ public sealed class IniProperty<V> extends Property<String, V>
      * Create a new instance of {@code IniProperty} with a {@code null} comment.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Comparable, Object)}.
+     * you should use this version of the constructor.
      *
      * @param id    The unique id for this Property object.
      * @param key   The key.
@@ -134,8 +132,7 @@ public sealed class IniProperty<V> extends Property<String, V>
      * Create a new instance of {@code IniProperty}.
      * <p>
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
-     * you should use this version of the constructor, instead of
-     * {@link #MutableProperty(Comparable, Object, String)}.
+     * you should use this version of the constructor.
      *
      * @param id      The unique id for this Property object.
      * @param key     The key.
