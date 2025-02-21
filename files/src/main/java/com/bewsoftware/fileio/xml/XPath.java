@@ -29,7 +29,9 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
- * XPath class description.
+ * This class stores information about an <u>xpath</u>, including the <i>relative
+ * {@link Tag}</i> that the <i>relative path</i> is built from to produce the
+ * <i>absolute path</i>.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *

@@ -23,7 +23,8 @@ package com.bewsoftware.fileio.xml;
 import com.bewsoftware.fileio.property.XmlProperty;
 
 /**
- * XmlDocument interface description.
+ * This interface provides methods to access and modify the in-memory contents
+ * of an <u>xml</u> file.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *

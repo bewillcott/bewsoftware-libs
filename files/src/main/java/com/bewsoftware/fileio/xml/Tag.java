@@ -37,7 +37,8 @@ import static com.bewsoftware.utils.string.Strings.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Tag class description.
+ * This class contains information about a single xml tag, and links
+ * to it child tags.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *

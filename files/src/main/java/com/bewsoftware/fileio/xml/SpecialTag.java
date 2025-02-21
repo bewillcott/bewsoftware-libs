@@ -26,6 +26,24 @@ import java.util.function.IntSupplier;
 
 import static com.bewsoftware.fileio.xml.XmlDocumentImpl.COMMENT_NAME;
 
+/**
+ * This is a special version of the {@link Tag} class.
+ * <p>
+ * It is used to store either the first line of an <u>xml</u> file:
+ * "{@code <?xml version="1.0" encoding="UTF-8"?>}",
+ * or any comment tags: "{@code <!-- This is a comment -->}".
+ * <br>
+ * <dl class="notes">
+ * <dt><b>Parameters:</b></dt>
+ * <dd><code>group</code> - The tag being checked.</dd>
+ * <dd><code>text</code> - The tag being checked.</dd>
+ * </dl>
+ *
+ * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+ *
+ * @since 3.1.0
+ * @version 3.1.0
+ */
 public class SpecialTag extends Tag
 {
     private static final String COMMENT_CLOSING = " -->";

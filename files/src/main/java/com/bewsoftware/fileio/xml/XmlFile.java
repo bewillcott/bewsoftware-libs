@@ -43,6 +43,45 @@ import static java.lang.String.format;
  * for any <i>dtd</i> or <i>xsd</i> that is associated with it. This class
  * expects a single <i>tag</i> per line. Both the opening and closing <i>tags</i>
  * may be on the same line though. No other validation checking is done beyond this.
+ * <p>
+ * To use this xml package in your project (processing "books.xml", for example),
+ * the process would be similar to the
+ * following:
+ * <ol>
+ * <li>Get a {@link Path} to the <u>xml</u> file:<br>
+ * {@snippet :
+ * final Path xmlFilePath = Path.of("books.xml");}</li>
+ * <li>Create a new {@code XmlFile} instance:<br>
+ * {@snippet :
+ * final XmlFile xmlFile = new XmlFile(xmlFilePath);}</Li>
+ * <li>Load the <u>xml</u> file and obtain the root tag:<br>
+ * {@snippet :
+ * final Tag root = xmlFile.loadFile().getXmlDocument().getRootTag();}</Li>
+ * <li>To process all of the books in this example:
+ * <ol>
+ * <li>Get the 'group' tag (a Tag that has multiple child Tags):<br>
+ * {@snippet :
+ * Tag group = Tags.getTag(root, "/catalog/books/book");}</Li>
+ * <li>Then process the 'books':<br>
+ * {@snippet :
+ * while (group != null)
+ * {
+ *     final Tag tag = Tags.getTag(group, "title");
+ *     System.out.println(String.format("%s: '%s'", tag.getName(), tag.getText()));
+ *     // do something with it...
+ *
+ *     group = Tags.nextTag(group);
+ * }
+ * }</li>
+ * </ol>
+ * </Li>
+ * <li>To </Li>
+ * <li></Li>
+ * <li></Li>
+ * <li></Li>
+ * <li></Li>
+ * <li></Li>
+ * </ol>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -285,8 +324,6 @@ public class XmlFile
      *
      * @param parent   tag this new tag will be linked to.
      * @param xmlLines A list of <u>xml</u> text lines.
-     *
-     * @return any <i>tail</i> left-over.
      *
      * @since 3.1.0
      */
