@@ -20,6 +20,24 @@
 
 package com.bewsoftware.fileio.xml;
 
+import com.bewsoftware.utils.Ternary;
+import com.bewsoftware.utils.function.TriFunction;
+import com.bewsoftware.utils.string.MessageBuilder;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static com.bewsoftware.utils.Ternary.False;
+import static com.bewsoftware.utils.Ternary.Null;
+import static com.bewsoftware.utils.Ternary.True;
+import static com.bewsoftware.utils.string.Strings.notEmpty;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 /**
  * Contains the test expected result strings for {@link XmlFileTest}.
  *
@@ -229,7 +247,7 @@ public interface XmlFileTestStrings
             + "    author: 'Robert Johnson'\n";
 
     static final String TEST_POM
-//            = "[test_pom.xml]\n"
+            //            = "[test_pom.xml]\n"
             = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
             + "    <modelVersion>4.0.0</modelVersion>\n"
@@ -276,4 +294,145 @@ public interface XmlFileTestStrings
             + "        </dependency>\n"
             + "    </dependencies>\n"
             + "</project>\n";
+
+    /**
+     * This function is used to find out if the {@code group} tag is the tag being searched for.
+     * <p>
+     * Internally this method accesses the {@code compareTag} , which should be a child tag of the {@code group} tag,
+     * and then compares its {@code text} value with the {@code compareText} string.
+     * <br>
+     * <dl class="notes">
+     * <dt><b>Parameters:</b></dt>
+     * <dd><code>group</code> - The tag being checked.</dd>
+     * <dd><code>compareTag</code> - The name of the child tag to do the test on.</dd>
+     * <dd><code>compareText</code> - The <i>text</i> to test the {@code compareTag} with.</dd>
+     * <dt><b>Returns:</b></dt>
+     * <dd><i>True</i> if the comparison is successful,</dd>
+     * <dd><i>False</i> if not, and</dd>
+     * <dd><i>Null</i> if {@code compareTag} was not found.</dd>
+     * </dl>
+     *
+     * @since 3.1.0
+     */
+    static final TriFunction<Tag, String, String, Ternary> isTheTag
+            = (final Tag group, final String compareTag, final String compareText) ->
+    {
+        Ternary rtn = Null;
+        final Tag tag = Tags.getTag(group, compareTag);
+
+        if (tag != null)
+        {
+            rtn = tag.getText().equals(compareText) ? True : False;
+        }
+
+        return rtn;
+    };
+
+    /**
+     * This function is used with the <i>test_pom.xml</i> file.
+     * <p>
+     * It supplies the previously processed text string to compare with.
+     * The reason for this, is that I wanted to keep is simple.
+     *
+     * @since 3.1.0
+     */
+    static final Function<Path, String> readString = (final Path xmlPath) -> TEST_POM;
+
+    /**
+     * This function is used with the files other than the <i>test_pom.xml</i> file.
+     * <p>
+     * The source file is read-in and supplied as a text string to compare
+     * with the test results.
+     *
+     * @since 3.1.0
+     */
+    static final Function<Path, String> readXmlFile = (final Path xmlPath) ->
+    {
+        final MessageBuilder mb = new MessageBuilder();
+
+        try (BufferedReader in = Files.newBufferedReader(xmlPath))
+        {
+            String line;
+
+            while ((line = in.readLine()) != null)
+            {
+                final String sLine = line.trim();
+
+                if (notEmpty(sLine))
+                {
+                    mb.appendln(line);
+                }
+            }
+        } catch (IOException ignored)
+        {
+            mb.appendln(ignored);
+        }
+
+        return mb.toString();
+    };
+
+    /**
+     * Provides the testing arguments for:
+     * {@link XmlFileTest#testLoadFile(String, Function) testLoadFile(filename, expResult)}
+     *
+     * @return a stream of arguments.
+     *
+     * @since 3.1.0
+     */
+    static Stream<Arguments> testLoadFile()
+    {
+        return Stream.of(
+                arguments("cd_catalog.xml", readXmlFile),
+                arguments("company.xml", readXmlFile),
+                arguments("plant_catalog.xml", readXmlFile),
+                arguments("sample-xml-files-sample-4.xml", readXmlFile),
+                arguments("sample-xml-files-sample-5.xml", readXmlFile),
+                arguments("sample-xml-files-sample-6.xml", readXmlFile),
+                arguments("test_pom.xml", readString)
+        );
+    }
+
+    /**
+     * Provides the testing arguments for:
+     * {@link XmlFileTest#testXPath(String, String, String, String)
+     * testXPath(filename, xpath, valueTag, expResult)}.
+     *
+     * @return a stream of arguments.
+     *
+     * @since 3.1.0
+     */
+    static Stream<Arguments> testXPath()
+    {
+        return Stream.of(
+                arguments("cd_catalog.xml", "/CATALOG/CD", "TITLE", CATALOG_TITLES),
+                arguments("company.xml", "/company/employees/employee", "name", COMPANY_EMP_NAMES),
+                arguments("plant_catalog.xml", "/CATALOG/PLANT", "COMMON", PLANTS),
+                arguments("sample-xml-files-sample-4.xml", "/root/book", "author", SAMPLE4),
+                arguments("sample-xml-files-sample-5.xml", "/root/book", "author", SAMPLE5),
+                arguments("sample-xml-files-sample-6.xml", "/root/book", "author", SAMPLE6),
+                arguments("test_pom.xml", "/project/dependencies/dependency", "artifactId", POM_ARTIFACTIDS)
+        );
+    }
+
+    /**
+     * Provides the testing arguments for:
+     * {@link XmlFileTest#testXPathFind(String, String, BiPredicate, String, String, String)
+     * testXPathFind(filename, xpath, comparator, searchText, valueTag, expResult)}.
+     *
+     * @return a stream of arguments.
+     *
+     * @since 3.1.0
+     */
+    static Stream<Arguments> testXPathFind()
+    {
+        return Stream.of(
+                arguments("cd_catalog.xml", "/CATALOG/CD", isTheTag, "TITLE", "Saiyara", "ARTIST", "Atif Aslam"),
+                arguments("company.xml", "/company/employees/employee", isTheTag, "name", "Jane Warner", "position", "Software Engineer"),
+                arguments("plant_catalog.xml", "/CATALOG/PLANT", isTheTag, "COMMON", "Dutchman's-Breeches", "PRICE", "$6.44"),
+                arguments("sample-xml-files-sample-4.xml", "/root/person", isTheTag, "name", "Jane Smith", "email", "jane.smith@example.com"),
+                arguments("sample-xml-files-sample-5.xml", "/root/person", isTheTag, "email", "john.doe@example.com", "name", "John Doe"),
+                arguments("sample-xml-files-sample-6.xml", "/root/book", isTheTag, "author", "Robert Johnson", "title", "The Adventure Begins"),
+                arguments("test_pom.xml", "/project/dependencies/dependency", isTheTag, "groupId", "org.junit.jupiter", "artifactId", "junit-jupiter-api")
+        );
+    }
 }

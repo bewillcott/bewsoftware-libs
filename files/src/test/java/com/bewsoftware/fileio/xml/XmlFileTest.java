@@ -20,27 +20,23 @@
 
 package com.bewsoftware.fileio.xml;
 
+import com.bewsoftware.utils.Ternary;
+import com.bewsoftware.utils.function.TriFunction;
 import com.bewsoftware.utils.string.MessageBuilder;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static com.bewsoftware.utils.string.Strings.notEmpty;
 import static com.bewsoftware.utils.string.Strings.print;
 import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  *
@@ -48,52 +44,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  */
 public class XmlFileTest implements XmlFileTestStrings
 {
-    /**
-     * This function is used with the <i>test_pom.xml</i> file.
-     * <p>
-     * It supplies the previously processed text string to compare with.
-     * The reason for this, is that I wanted to keep is simple.
-     *
-     * @since 3.1.0
-     */
-    private static final Function<Path, String> readString = (final Path xmlPath) ->
-    {
-        return TEST_POM;
-    };
-
-    /**
-     * This function is used with the files other than the <i>test_pom.xml</i> file.
-     * <p>
-     * The source file is read-in and supplied as a text string to compare
-     * with the test results.
-     *
-     * @since 3.1.0
-     */
-    private static final Function<Path, String> readXmlFile = (final Path xmlPath) ->
-    {
-        final MessageBuilder mb = new MessageBuilder();
-
-        try (BufferedReader in = Files.newBufferedReader(xmlPath))
-        {
-            String line;
-
-            while ((line = in.readLine()) != null)
-            {
-                final String sLine = line.trim();
-
-                if (notEmpty(sLine))
-                {
-                    mb.appendln(line);
-                }
-            }
-        } catch (IOException ignored)
-        {
-            mb.appendln(ignored);
-        }
-
-        return mb.toString();
-    };
-
     public XmlFileTest()
     {
     }
@@ -106,49 +56,6 @@ public class XmlFileTest implements XmlFileTestStrings
     @AfterAll
     public static void tearDownClass()
     {
-    }
-
-    /**
-     * Provides the testing arguments for:
-     * {@link #testLoadFile(String, Function) testLoadFile(filename, expResult)}
-     *
-     * @return a stream of arguments.
-     *
-     * @since 3.1.0
-     */
-    static Stream<Arguments> testLoadFile()
-    {
-        return Stream.of(
-                arguments("cd_catalog.xml", readXmlFile),
-                arguments("company.xml", readXmlFile),
-                arguments("plant_catalog.xml", readXmlFile),
-                arguments("sample-xml-files-sample-4.xml", readXmlFile),
-                arguments("sample-xml-files-sample-5.xml", readXmlFile),
-                arguments("sample-xml-files-sample-6.xml", readXmlFile),
-                arguments("test_pom.xml", readString)
-        );
-    }
-
-    /**
-     * Provides the testing arguments for:
-     * {@link #testXPath(String, String, String, String)
-     * testXPath(filename, xpath, valueTag, expResult)}.
-     *
-     * @return a stream of arguments.
-     *
-     * @since 3.1.0
-     */
-    static Stream<Arguments> testXPath()
-    {
-        return Stream.of(
-                arguments("cd_catalog.xml", "/CATALOG/CD", "TITLE", CATALOG_TITLES),
-                arguments("company.xml", "/company/employees/employee", "name", COMPANY_EMP_NAMES),
-                arguments("plant_catalog.xml", "/CATALOG/PLANT", "COMMON", PLANTS),
-                arguments("sample-xml-files-sample-4.xml", "/root/book", "author", SAMPLE4),
-                arguments("sample-xml-files-sample-5.xml", "/root/book", "author", SAMPLE5),
-                arguments("sample-xml-files-sample-6.xml", "/root/book", "author", SAMPLE6),
-                arguments("test_pom.xml", "/project/dependencies/dependency", "artifactId", POM_ARTIFACTIDS)
-        );
     }
 
     @BeforeEach
@@ -237,10 +144,93 @@ public class XmlFileTest implements XmlFileTestStrings
             mb.appendln(group.getName());
             final Tag tag = Tags.getTag(group, valueTag);
             mb.appendln("    %s: '%s'", tag.getName(), tag.getText());
-
             group = Tags.nextTag(group);
         }
 
         assertEquals(expResult, mb.toString());
+    }
+
+    /**
+     * Test XPath to find a specific group tag and get
+     * the text of a child tag.
+     *
+     * @param filename    The name of the <u>xml</u> file to load.
+     * @param xpath       to search for.
+     * @param comparator  Used to decide whether or not the supplied Tag
+     *                    is the one you are looking for.<br>
+     * <ul>
+     * <li>Tag: ({@code group}) The tag found using {@code xpath}.</li>
+     * <li>String: The {@code compareTag}.</li>
+     * <li>String: The {@code compareText}.</li>
+     * </ul>
+     * @param compareTag  The name of the child tag to do the test on.
+     * @param compareText The text value you wish compare.
+     * @param valueTag    The name of the {@code Tag} whose {@code text}
+     *                    is to be retrieved.
+     * @param expResult   The expected results.
+     *
+     * @see Tag
+     * @see Tags
+     *
+     * @throws XmlFileFormatException
+     * @throws IOException
+     *
+     * @since 3.1.0
+     */
+    @ParameterizedTest
+    @MethodSource
+    public void testXPathFind(
+            final String filename,
+            final String xpath,
+            final TriFunction<Tag, String, String, Ternary> comparator,
+            final String compareTag,
+            final String compareText,
+            final String valueTag,
+            final String expResult
+    ) throws XmlFileFormatException, IOException
+    {
+        print("testXPathFind: ");
+
+        final MessageBuilder mb = new MessageBuilder();
+        final Path xmlFilePath = Path.of(getClass().getResource(filename).getPath());
+
+        println(xmlFilePath.getFileName());
+
+        final XmlFile xmlFile = new XmlFile(xmlFilePath);
+        final Tag root = xmlFile.loadFile().getXmlDocument().getRootTag();
+
+        Tag group = Tags.getTag(root, xpath);
+        String result = "";
+        int seqNum = 0;
+
+        search:
+        while (group != null)
+        {
+            seqNum++;
+
+            switch (comparator.apply(group, compareTag, compareText))
+            {
+                case True ->
+                {
+                    final Tag tag = Tags.getTag(group, valueTag);
+                    result = tag.getText();
+                    println("%s[%d] - %s: %s", group.getName(), seqNum, valueTag, result);
+                    break search;
+                }
+
+                case False ->
+                {
+                }
+
+                case Null ->
+                {
+                    println("'%s' is not a child tag of '%s'[%d]", compareTag, group.getName(), seqNum);
+                }
+            }
+
+            group = Tags.nextTag(group);
+        }
+
+        assertEquals(expResult, result);
     }
 }
