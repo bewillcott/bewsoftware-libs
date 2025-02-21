@@ -27,7 +27,7 @@
  * @version 3.1.0
  */
 module bewsoftware.testing {
-    requires org.junit.jupiter.api;
+    requires transitive org.junit.jupiter.api;
 
     exports com.bewsoftware.testing;
 }
