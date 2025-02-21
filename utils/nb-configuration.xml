@@ -26,6 +26,7 @@
         <word>enum's</word>
         <word>println</word>
         <word>runtime's</word>
+        <word>tri</word>
         <word>whitespace</word>
     </spellchecker-wordlist>
 </project-shared-configuration>
