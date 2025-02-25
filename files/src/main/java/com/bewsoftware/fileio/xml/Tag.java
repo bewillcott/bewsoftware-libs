@@ -20,19 +20,27 @@
 
 package com.bewsoftware.fileio.xml;
 
-import com.bewsoftware.fileio.property.IniProperty;
+import com.bewsoftware.fileio.property.MutableXmlProperty;
 import com.bewsoftware.fileio.property.XmlProperty;
 import com.bewsoftware.utils.Observable;
 import com.bewsoftware.utils.ObservableArrayList;
 import com.bewsoftware.utils.ObservableList;
+import com.bewsoftware.utils.string.MessageBuilder;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
 
+import static com.bewsoftware.fileio.xml.XPath.of;
+import static com.bewsoftware.utils.string.Strings.indentLines;
+import static com.bewsoftware.utils.string.Strings.notEmpty;
+import static com.bewsoftware.utils.string.Strings.requireNonBlank;
+import static java.util.Objects.requireNonNull;
+
 /**
- * Tag class description.
+ * This class contains information about a single xml tag, and links
+ * to it child tags.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -47,7 +55,13 @@ public class Tag implements Observable
 
     public static final String PROP_NAME = "name";
 
+    public static final String PROP_SHORTTAG = "shortTag";
+
     public static final String PROP_TEXT = "text";
+
+    public static final String PROP_TEXTISONSEPARATELINE = "textIsOnSeparateLine";
+
+    private static final int INDENT = 4;
 
     private final ObservableList<XmlProperty> attributes;
 
@@ -57,30 +71,108 @@ public class Tag implements Observable
 
     private transient final IntSupplier idSupplier;
 
+    /**
+     * Index of last returned Tag from the {@link searchArray}.
+     *
+     * @since 3.1.0
+     */
+    private int lastReturnedIndex = -1;
+
     private String name;
+
+    private final Tag parent;
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+    /**
+     * The array of tags found during the last call to {@link #getChild(String) getChild(name)}.
+     *
+     * @since 3.1.0
+     */
+    private Tag[] searchArray = null;
+
+    private boolean shortTag;
+
     private String text;
+
+    private boolean textIsOnSeparateLine = false;
+
+    private final XPath xp;
 
     /**
      * Create named tag.
      *
+     * @param parent     of this tag. Can be <i>null</i>.
      * @param idSupplier <i>id</i> number supplier.
      * @param name       of tag.
      *
      * @since 3.1.0
      */
-    public Tag(final IntSupplier idSupplier, final String name)
+    protected Tag(final Tag parent, final IntSupplier idSupplier, final String name)
     {
-        this.idSupplier = idSupplier;
-        this.name = name;
+        this.parent = parent;
+        this.idSupplier = requireNonNull(idSupplier);
+        this.name = requireNonBlank(name);
 
         id = this.idSupplier.getAsInt();
+        xp = of(parent, name);
+
         attributes = new ObservableArrayList<>(this.idSupplier.getAsInt());
         attributes.addPropertyChangeListener(pcs::firePropertyChange);
+
         children = new ObservableArrayList<>(this.idSupplier.getAsInt());
         children.addPropertyChangeListener(pcs::firePropertyChange);
+    }
+
+    /**
+     * Create named tag.
+     * <p>
+     * The new Tag is added to the parent's children.
+     *
+     * @param parent     of this tag. Can be <i>null</i>.
+     * @param idSupplier <i>id</i> number supplier.
+     * @param name       of tag.
+     *
+     * @return a new Tag instance.
+     *
+     * @since 3.1.0
+     */
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+    public static Tag get(final Tag parent, final IntSupplier idSupplier, final String name
+    )
+    {
+        final Tag tag = new Tag(parent, idSupplier, name);
+
+        if (parent != null)
+        {
+            parent.children.add(tag);
+        }
+
+        return tag;
+    }
+
+    /**
+     * Add the new attribute.
+     *
+     * @param attrib new attribute to add.
+     *
+     * @return <i>true</i> if successful, <i>false</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean addAttribute(final XmlProperty attrib)
+    {
+        if (!attributes.isEmpty())
+        {
+            if (attributes.getLast().isEol())
+            {
+                int lead = attributes.getFirst().getLeadSpaces();
+                lead += name.length() + 1;
+                ((MutableXmlProperty) attrib).setLeadSpaces(lead);
+            }
+        }
+
+        return attributes.add(attrib);
     }
 
     /**
@@ -91,7 +183,8 @@ public class Tag implements Observable
      * @since 3.1.0
      */
     @Override
-    public void addPropertyChangeListener(final PropertyChangeListener listener)
+    public void addPropertyChangeListener(final PropertyChangeListener listener
+    )
     {
         pcs.addPropertyChangeListener(listener);
     }
@@ -105,7 +198,8 @@ public class Tag implements Observable
      * @since 3.1.0
      */
     @Override
-    public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener)
+    public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener
+    )
     {
         pcs.addPropertyChangeListener(propertyName, listener);
     }
@@ -113,13 +207,45 @@ public class Tag implements Observable
     /**
      * Get the value of attributes
      *
-     * @return the value of attributes
+     * @return the attributes wrapped in an unmodifiable list.
      *
      * @since 3.1.0
      */
-    public List<IniProperty<String>> getAttributes()
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+    public List<XmlProperty> getAttributes()
     {
         return Collections.unmodifiableList(attributes);
+    }
+
+    /**
+     * Returns the first child tag with the specified {@code name}.
+     *
+     * @param name to search for.
+     *
+     * @return either the first child tag with the specified {@code name},
+     *         or <i>null</i> if none found.
+     *
+     * @since 3.1.0
+     */
+    public Tag getChild(final String name)
+    {
+        Tag rtn = null;
+
+        searchArray = children.stream()
+                .filter((final Tag t) -> t.getName().equals(name))
+                .toArray(Tag[]::new);
+
+        if (searchArray.length > 0)
+        {
+            lastReturnedIndex = 0;
+            rtn = searchArray[lastReturnedIndex];
+        } else
+        {
+            lastReturnedIndex = -1;
+            searchArray = null;
+        }
+
+        return rtn;
     }
 
     /**
@@ -129,9 +255,10 @@ public class Tag implements Observable
      *
      * @since 3.1.0
      */
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<Tag> getChildren()
     {
-        return Collections.unmodifiableList(children);
+        return children;
     }
 
     @Override
@@ -153,6 +280,18 @@ public class Tag implements Observable
     }
 
     /**
+     * Returns the parent tag, if set, <i>null</i> otherwise.
+     *
+     * @return the parent tag, if set, <i>null</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public Tag getParent()
+    {
+        return parent;
+    }
+
+    /**
      * Get the value of text
      *
      * @return the value of text
@@ -162,6 +301,59 @@ public class Tag implements Observable
     public String getText()
     {
         return text;
+    }
+
+    public XPath getXPath()
+    {
+        return xp;
+    }
+
+    /**
+     * Returns {@code true} if the search results have not all been returned
+     * via {@link #nextChild()}, {@code false} otherwise.
+     *
+     * @return if a child tag is available for {@link #nextChild()}.
+     *
+     * @since 3.1.0
+     */
+    public boolean hasChild()
+    {
+        return lastReturnedIndex >= 0 && lastReturnedIndex < searchArray.length - 1;
+    }
+
+    /**
+     * Has the parent been set?
+     *
+     * @return {@code true} if set, {@code false} otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean hasParent()
+    {
+        return parent != null;
+    }
+
+    /**
+     * Get the value of shortTag
+     *
+     * @return the value of shortTag
+     */
+    public boolean isShortTag()
+    {
+        return shortTag;
+    }
+
+    /**
+     * Returns the next available child tag, from the search results
+     * of the last call to {@link #getChild(String) getChild(name)}.
+     *
+     * @return the next available child tag, or <i>null</i> if none found.
+     *
+     * @since 3.1.0
+     */
+    public Tag nextChild()
+    {
+        return hasChild() ? searchArray[++lastReturnedIndex] : null;
     }
 
     /**
@@ -206,6 +398,18 @@ public class Tag implements Observable
     }
 
     /**
+     * Set the value of shortTag
+     *
+     * @param state new value of shortTag
+     */
+    public void setShortTag(final boolean state)
+    {
+        boolean oldShortTag = this.shortTag;
+        this.shortTag = state;
+        pcs.firePropertyChange(PROP_SHORTTAG, oldShortTag, state);
+    }
+
+    /**
      * Set the value of text
      *
      * @param text new value of text
@@ -215,8 +419,109 @@ public class Tag implements Observable
     public void setText(final String text)
     {
         String oldText = this.text;
-        this.text = text;
+        this.text = text.replaceAll("\n\s+", "\n");
         pcs.firePropertyChange(PROP_TEXT, oldText, text);
     }
 
+    /**
+     * Set the state: Was the text on a separate line in the original source file?
+     *
+     * @param textIsOnSeparateLine state
+     *
+     * @since 3.1.0
+     */
+    public void setTextIsOnSeparateLine(final boolean textIsOnSeparateLine)
+    {
+        boolean oldValue = this.textIsOnSeparateLine;
+        this.textIsOnSeparateLine = textIsOnSeparateLine;
+        pcs.firePropertyChange(PROP_TEXTISONSEPARATELINE, oldValue, textIsOnSeparateLine);
+    }
+
+    /**
+     * Was the text on a separate line in the original source file?
+     *
+     * @return <i>true</i> if it was, <i>false</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean textIsOnSeparateLine()
+    {
+        return textIsOnSeparateLine;
+    }
+
+    @Override
+    public String toString()
+    {
+        final int spaces;
+        boolean root = false;
+
+        if ("/".equals(name))
+        {
+            root = true;
+            spaces = 0;
+
+        } else
+        {
+            spaces = INDENT;
+        }
+
+        final MessageBuilder mb = new MessageBuilder();
+
+        if (!root)
+        {
+            mb.append('<').append(name);
+
+            attributes.forEach((final XmlProperty p) ->
+            {
+                mb.append(" ".repeat(p.getLeadSpaces()))
+                        .append(p.key())
+                        .append("=\"")
+                        .append(p.value())
+                        .append('\"');
+
+                if (p.isEol())
+                {
+                    mb.appendln();
+                }
+            });
+
+            if (isShortTag())
+            {
+                mb.append('/');
+            }
+
+            mb.append('>');
+
+            if (notEmpty(text))
+            {
+                if (textIsOnSeparateLine)
+                {
+                    mb.appendln().appendln(indentLines(text, spaces));
+                } else
+                {
+                    mb.append(text.replace("\n", "\n    "));
+                }
+            }
+        }
+
+        if (!children.isEmpty())
+        {
+            if (!root)
+            {
+                mb.appendln();
+            }
+
+            children.forEach((final Tag t) ->
+            {
+                mb.appendln(indentLines(t, spaces));
+            });
+        }
+
+        if (!root && !isShortTag())
+        {
+            mb.append("</").append(name).append('>');
+        }
+
+        return mb.toString();
+    }
 }

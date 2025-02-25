@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This interface provides methods to access and modify the in-memory contents
+ * of an <u>ini</u> file.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0

@@ -203,9 +203,9 @@ public class IniFile
     /**
      * Default constructor.
      *
-     * @since 1.0
+     * @since 3.1.0
      */
-    public IniFile()
+    private IniFile()
     {
         iniDoc = new IniDocumentImpl();
         path = null;
@@ -340,6 +340,8 @@ public class IniFile
     }
 
     /**
+     * Returns <i>true</i> if the file has been loaded, <i>false</i> otherwise.
+     *
      * @return <i>true</i> if the file has been loaded, <i>false</i> otherwise.
      *
      * @since 1.0

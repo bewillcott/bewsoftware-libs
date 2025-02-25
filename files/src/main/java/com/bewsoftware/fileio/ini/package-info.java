@@ -1,15 +1,15 @@
 /*
- *  File Name:    module-info.java
- *  Project Name: bewsoftware-testing
+ *  File Name:    package-info.java
+ *  Project Name: bewsoftware-files
  * 
  *  Copyright (c) 2025 Bradley Willcott
  * 
- *  bewsoftware-testing is free software: you can redistribute it and/or modify
+ *  bewsoftware-files is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  * 
- *  bewsoftware-testing is distributed in the hope that it will be useful,
+ *  bewsoftware-files is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -19,15 +19,12 @@
  */
 
 /**
- * BEWSoftwareTestingLibrary module description.
- *
- * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
- *
- * @since 3.1.0
- * @version 3.1.0
- */
-module bewsoftware.testing {
-    requires transitive org.junit.jupiter.api;
-
-    exports com.bewsoftware.testing;
-}
+* The classes in this package are related to accessing the contents
+* of, and writing to, <u>ini</u> files.
+*
+* @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+*
+ * @since 1.0
+ * @version 1.0.12
+*/
+package com.bewsoftware.fileio.ini;

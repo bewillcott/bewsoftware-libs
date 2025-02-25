@@ -52,8 +52,9 @@ public final class MutableXmlProperty extends XmlProperty
      * Create a new instance of {@code MutableIniProperty} as a copy of an existing
      * instance of {@code Property}, or one of its sub-classes.
      *
-     * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
+     *
+     * @param <T>      the type of the class being copied.
      *
      * @since 3.1.0
      */
@@ -96,15 +97,24 @@ public final class MutableXmlProperty extends XmlProperty
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id       The unique id for this Property object.
-     * @param property The instance to copy.
-     * @param <T>      the type of the class being copied.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param property   The instance to copy.
+     * @param eol        Was the property eol terminated?
+     *
+     * @param <T>        the type of the class being copied.
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, String>> MutableXmlProperty(final int id, T property)
+    public <T extends Property<String, String>> MutableXmlProperty(
+            final int id,
+            final int leadSpaces,
+            final T property,
+            final boolean eol
+    )
     {
-        super(id, property);
+        super(id, leadSpaces, property, eol);
     }
 
     /**
@@ -113,15 +123,24 @@ public final class MutableXmlProperty extends XmlProperty
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id    The unique id for this Property object.
-     * @param key   The key.
-     * @param value The value.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param key        The key.
+     * @param value      The value.
+     * @param eol        Was the property eol terminated?
      *
      * @since 3.1.0
      */
-    public MutableXmlProperty(final int id, String key, String value)
+    public MutableXmlProperty(
+            final int id,
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final boolean eol
+    )
     {
-        super(id, key, value);
+        super(id, leadSpaces, key, value, eol);
     }
 
     /**
@@ -130,16 +149,26 @@ public final class MutableXmlProperty extends XmlProperty
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id      The unique id for this Property object.
-     * @param key     The key.
-     * @param value   The value.
-     * @param comment The comment.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param key        The key.
+     * @param value      The value.
+     * @param comment    The comment.
+     * @param eol        Was the property eol terminated?
      *
      * @since 3.1.0
      */
-    public MutableXmlProperty(final int id, String key, String value, String comment)
+    public MutableXmlProperty(
+            final int id,
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final String comment,
+            final boolean eol
+    )
     {
-        super(id, key, value, comment);
+        super(id, leadSpaces, key, value, comment, eol);
     }
 
     /**
@@ -154,6 +183,30 @@ public final class MutableXmlProperty extends XmlProperty
         final String oldValue = this.comment;
         this.comment = comment;
         pcs.firePropertyChange(PROP_COMMENT, oldValue, comment);
+    }
+
+    /**
+     * Set state: Was the property terminated ('\n') in the original source file?
+     *
+     * @param eol Was the property terminated ('\n')?
+     *
+     * @since 3.1.0
+     */
+    public void setEol(final boolean eol)
+    {
+        this.eol = eol;
+    }
+
+    /**
+     * Set the number of spaces in front of the property.
+     *
+     * @param leadSpaces The number of spaces in front of the property.
+     *
+     * @since 3.1.0
+     */
+    public void setLeadSpaces(final int leadSpaces)
+    {
+        this.leadSpaces = leadSpaces;
     }
 
     /**
