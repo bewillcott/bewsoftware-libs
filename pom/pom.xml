@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.bewsoftware</groupId>
         <artifactId>bewsoftware-libs</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -901,7 +901,6 @@
                     <reportSet><!-- by default, id = "default" -->
                         <reports><!-- select non-aggregate reports -->
                             <report>javadoc</report>
-                            <report>test-javadoc</report>
                         </reports>
                     </reportSet>
                 </reportSets>

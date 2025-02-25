@@ -31,9 +31,12 @@ import java.beans.PropertyChangeSupport;
  * If you intend to use the {@link PropertyChangeSupport} for tracking, then
  * you should use one of these constructors:
  * <ul>
- * <li>{@linkplain #MutableXmlProperty(int, Property) MutableXmlProperty(id, property)}</li>
- * <li>{@linkplain #MutableXmlProperty(int, String, String) MutableXmlProperty(id, key, value)}</li>
- * <li>{@linkplain #MutableXmlProperty(int, String, String, String) MutableXmlProperty(id, key, value, comment)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int, int, Property, boolean)  
+ * MutableXmlProperty(id, leadSpaces, property, eol)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int, int, String, String, boolean)
+ * MutableXmlProperty(id, leadSpaces, key, value, eol)}</li>
+ * <li>{@linkplain #MutableXmlProperty(int,int, String, String, String, boolean)
+ * MutableXmlProperty(id, leadSpaces, key, value, comment, eol)}</li>
  * </ul>
  * Moved here from BEWSoftware Property Library since it is unlikely to
  * be used, except in conjunction with other classes from this
