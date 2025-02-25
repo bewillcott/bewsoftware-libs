@@ -13,7 +13,9 @@
     </parent>
 
     <artifactId>bewsoftware-files</artifactId>
-    <packaging>jar</packaging>
+    <packaging>
+        jar
+    </packaging>
 
     <name>BEWSoftware Files Library</name>
     <description>This library contains classes related to working with files,

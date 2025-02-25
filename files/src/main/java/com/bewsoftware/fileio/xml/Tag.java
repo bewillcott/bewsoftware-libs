@@ -20,6 +20,7 @@
 
 package com.bewsoftware.fileio.xml;
 
+import com.bewsoftware.fileio.property.MutableXmlProperty;
 import com.bewsoftware.fileio.property.XmlProperty;
 import com.bewsoftware.utils.Observable;
 import com.bewsoftware.utils.ObservableArrayList;
@@ -27,6 +28,7 @@ import com.bewsoftware.utils.ObservableList;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
 
@@ -53,7 +55,13 @@ public class Tag implements Observable
 
     public static final String PROP_NAME = "name";
 
+    public static final String PROP_SHORTTAG = "shortTag";
+
     public static final String PROP_TEXT = "text";
+
+    public static final String PROP_TEXTISONSEPARATELINE = "textIsOnSeparateLine";
+
+    private static final int INDENT = 4;
 
     private final ObservableList<XmlProperty> attributes;
 
@@ -83,7 +91,11 @@ public class Tag implements Observable
      */
     private Tag[] searchArray = null;
 
+    private boolean shortTag;
+
     private String text;
+
+    private boolean textIsOnSeparateLine = false;
 
     private final XPath xp;
 
@@ -140,6 +152,30 @@ public class Tag implements Observable
     }
 
     /**
+     * Add the new attribute.
+     *
+     * @param attrib new attribute to add.
+     *
+     * @return <i>true</i> if successful, <i>false</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean addAttribute(final XmlProperty attrib)
+    {
+        if (!attributes.isEmpty())
+        {
+            if (attributes.getLast().isEol())
+            {
+                int lead = attributes.getFirst().getLeadSpaces();
+                lead += name.length() + 1;
+                ((MutableXmlProperty) attrib).setLeadSpaces(lead);
+            }
+        }
+
+        return attributes.add(attrib);
+    }
+
+    /**
      * Add a PropertyChangeListener for all properties.
      *
      * @param listener The PropertyChangeListener to be added.
@@ -171,14 +207,14 @@ public class Tag implements Observable
     /**
      * Get the value of attributes
      *
-     * @return the value of attributes
+     * @return the attributes wrapped in an unmodifiable list.
      *
      * @since 3.1.0
      */
     @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<XmlProperty> getAttributes()
     {
-        return attributes;
+        return Collections.unmodifiableList(attributes);
     }
 
     /**
@@ -298,6 +334,16 @@ public class Tag implements Observable
     }
 
     /**
+     * Get the value of shortTag
+     *
+     * @return the value of shortTag
+     */
+    public boolean isShortTag()
+    {
+        return shortTag;
+    }
+
+    /**
      * Returns the next available child tag, from the search results
      * of the last call to {@link #getChild(String) getChild(name)}.
      *
@@ -352,6 +398,18 @@ public class Tag implements Observable
     }
 
     /**
+     * Set the value of shortTag
+     *
+     * @param state new value of shortTag
+     */
+    public void setShortTag(final boolean state)
+    {
+        boolean oldShortTag = this.shortTag;
+        this.shortTag = state;
+        pcs.firePropertyChange(PROP_SHORTTAG, oldShortTag, state);
+    }
+
+    /**
      * Set the value of text
      *
      * @param text new value of text
@@ -361,8 +419,34 @@ public class Tag implements Observable
     public void setText(final String text)
     {
         String oldText = this.text;
-        this.text = text;
+        this.text = text.replaceAll("\n\s+", "\n");
         pcs.firePropertyChange(PROP_TEXT, oldText, text);
+    }
+
+    /**
+     * Set the state: Was the text on a separate line in the original source file?
+     *
+     * @param textIsOnSeparateLine state
+     *
+     * @since 3.1.0
+     */
+    public void setTextIsOnSeparateLine(final boolean textIsOnSeparateLine)
+    {
+        boolean oldValue = this.textIsOnSeparateLine;
+        this.textIsOnSeparateLine = textIsOnSeparateLine;
+        pcs.firePropertyChange(PROP_TEXTISONSEPARATELINE, oldValue, textIsOnSeparateLine);
+    }
+
+    /**
+     * Was the text on a separate line in the original source file?
+     *
+     * @return <i>true</i> if it was, <i>false</i> otherwise.
+     *
+     * @since 3.1.0
+     */
+    public boolean textIsOnSeparateLine()
+    {
+        return textIsOnSeparateLine;
     }
 
     @Override
@@ -378,7 +462,7 @@ public class Tag implements Observable
 
         } else
         {
-            spaces = 4;
+            spaces = INDENT;
         }
 
         final MessageBuilder mb = new MessageBuilder();
@@ -389,23 +473,33 @@ public class Tag implements Observable
 
             attributes.forEach((final XmlProperty p) ->
             {
-                mb.append(' ')
+                mb.append(" ".repeat(p.getLeadSpaces()))
                         .append(p.key())
                         .append("=\"")
                         .append(p.value())
                         .append('\"');
+
+                if (p.isEol())
+                {
+                    mb.appendln();
+                }
             });
+
+            if (isShortTag())
+            {
+                mb.append('/');
+            }
 
             mb.append('>');
 
             if (notEmpty(text))
             {
-                if (children.isEmpty())
+                if (textIsOnSeparateLine)
                 {
-                    mb.append(text);
+                    mb.appendln().appendln(indentLines(text, spaces));
                 } else
                 {
-                    mb.appendln(indentLines(text, spaces));
+                    mb.append(text.replace("\n", "\n    "));
                 }
             }
         }
@@ -423,7 +517,7 @@ public class Tag implements Observable
             });
         }
 
-        if (!root)
+        if (!root && !isShortTag())
         {
             mb.append("</").append(name).append('>');
         }

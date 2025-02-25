@@ -32,9 +32,9 @@ import java.beans.PropertyChangeSupport;
  * If you intend to use the {@link PropertyChangeSupport} for tracking, then
  * you should use one of these constructors:
  * <ul>
- * <li>{@linkplain #XmlProperty(int, Property) XmlProperty(id, property)}</li>
- * <li>{@linkplain #XmlProperty(int, String, String) XmlProperty(id, key, value)}</li>
- * <li>{@linkplain #XmlProperty(int, String, String, String) XmlProperty(id, key, value, comment)}</li>
+ * <li>{@linkplain #XmlProperty(int, int, Property, boolean) (int, Property) XmlProperty(id, leadSpaces, property, eol)}</li>
+ * <li>{@linkplain #XmlProperty(int, int, String, String, boolean) (int, leadSpaces, String, String, eol) XmlProperty(id, key, value)}</li>
+ * <li>{@linkplain #XmlProperty(int, int, String, String, String, boolean)  XmlProperty(id, leadSpaces, key, value, comment, eol)}</li>
  * </ul>
  * Moved here from BEWSoftware Property Library since it is unlikely to
  * be used, except in conjunction with other classes from this
@@ -45,15 +45,24 @@ import java.beans.PropertyChangeSupport;
  * @since 3.1.0
  * @version 3.1.0
  */
+@SuppressWarnings("ProtectedField")
 public sealed class XmlProperty extends IniProperty<String> permits MutableXmlProperty
 {
     private static final long serialVersionUID = 5380468967540265450L;
+
+    /**
+     * Was the property eol terminated?
+     */
+    protected boolean eol = false;
+
+    protected int leadSpaces = 0;
 
     /**
      * Create a new instance of {@code IniProperty} as a copy of an existing
      * instance of {@code Property}, or one of its sub-classes.
      *
      * @param property The instance to copy.
+     *
      * @param <T>      the type of the class being copied.
      *
      * @since 3.1.0
@@ -97,15 +106,26 @@ public sealed class XmlProperty extends IniProperty<String> permits MutableXmlPr
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id       The unique id for this Property object.
-     * @param property The instance to copy.
-     * @param <T>      the type of the class being copied.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param property   The instance to copy.
+     * @param eol        Was the property eol terminated?
+     *
+     * @param <T>        the type of the class being copied.
      *
      * @since 3.1.0
      */
-    public <T extends Property<String, String>> XmlProperty(final int id, final T property)
+    public <T extends Property<String, String>> XmlProperty(
+            final int id,
+            final int leadSpaces,
+            final T property,
+            final boolean eol
+    )
     {
         super(id, property);
+        this.leadSpaces = leadSpaces;
+        this.eol = eol;
     }
 
     /**
@@ -114,15 +134,26 @@ public sealed class XmlProperty extends IniProperty<String> permits MutableXmlPr
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id    The unique id for this Property object.
-     * @param key   The key.
-     * @param value The value.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param key        The key.
+     * @param value      The value.
+     * @param eol        Was the property eol terminated?
      *
      * @since 3.1.0
      */
-    public XmlProperty(final int id, final String key, final String value)
+    public XmlProperty(
+            final int id,
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final boolean eol
+    )
     {
         super(id, key, value);
+        this.leadSpaces = leadSpaces;
+        this.eol = eol;
     }
 
     /**
@@ -131,15 +162,51 @@ public sealed class XmlProperty extends IniProperty<String> permits MutableXmlPr
      * If you intend to use the {@link PropertyChangeSupport} for tracking, then
      * you should use this version of the constructor.
      *
-     * @param id      The unique id for this Property object.
-     * @param key     The key.
-     * @param value   The value.
-     * @param comment The comment.
+     * @param id         The unique id for this Property object.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param key        The key.
+     * @param value      The value.
+     * @param comment    The comment.
+     * @param eol        Was the property eol terminated?
      *
      * @since 3.1.0
      */
-    public XmlProperty(final int id, final String key, final String value, final String comment)
+    public XmlProperty(
+            final int id,
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final String comment,
+            final boolean eol
+    )
     {
         super(id, key, value, comment);
+        this.leadSpaces = leadSpaces;
+        this.eol = eol;
+    }
+
+    /**
+     * Get the number of spaces before this property, in the source file.
+     *
+     * @return the number of spaces before this property.
+     *
+     * @since 3.1.0
+     */
+    public int getLeadSpaces()
+    {
+        return leadSpaces;
+    }
+
+    /**
+     * Was the property eol terminated in the original source file?
+     *
+     * @return <i>true</i> if it was, <i>false</i> otherwise..
+     *
+     * @since 3.1.0
+     */
+    public boolean isEol()
+    {
+        return eol;
     }
 }

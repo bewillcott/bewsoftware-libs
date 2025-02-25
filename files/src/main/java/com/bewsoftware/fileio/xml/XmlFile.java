@@ -25,6 +25,7 @@ import com.bewsoftware.fileio.property.XmlProperty;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,9 +33,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import static com.bewsoftware.fileio.xml.XmlDocumentImpl.*;
+import static com.bewsoftware.utils.Clazz.getCallingClass;
 import static com.bewsoftware.utils.string.Strings.notBlank;
 import static com.bewsoftware.utils.string.Strings.notEmpty;
+import static com.bewsoftware.utils.string.Strings.println;
+import static com.bewsoftware.utils.string.Strings.requireNonBlank;
 import static java.lang.String.format;
+import static java.nio.file.Path.of;
 
 /**
  * This class provides access to the <i>tags</i> within an <b>xml</b> file.
@@ -92,43 +97,114 @@ public class XmlFile
 {
     private boolean fileIsLoaded;
 
+    private final String filename;
+
+    private final Path location;
+
     private final XmlDocument xmlDoc;
 
-    private final Path xmlFilePath;
-
     /**
-     * This constructor uses the <b>Path</b> object passed in the <i>path</i>
-     * parameter.
+     * Instantiates a new XmlFile.
      *
-     * @param xmlFilePath The <b>Path</b> object to use.
+     * @param filename of the <u>xml</u> to load.
      *
      * @throws NullPointerException If the path parameter is
      *                              {@code null}.
      *
      * @since 3.1.0
      */
-    public XmlFile(final Path xmlFilePath)
+    public XmlFile(final String filename)
     {
-        if (xmlFilePath == null)
+        this.location = null;
+        this.filename = requireNonBlank(filename);
+        xmlDoc = new XmlDocumentImpl();
+    }
+
+    /**
+     * Instantiates a new XmlFile.
+     *
+     * @param location Either the directory or the Jar file,
+     *                 where the xml file is located.
+     * @param filename of the <u>xml</u> to load.
+     *
+     * @throws NullPointerException If the path parameter is
+     *                              {@code null}.
+     *
+     * @since 3.1.0
+     */
+    public XmlFile(final Path location, final String filename)
+    {
+        this.location = location == null ? of("") : location;
+        this.filename = requireNonBlank(filename);
+        xmlDoc = new XmlDocumentImpl();
+    }
+
+    private static void readXmlFile(final BufferedReader in, final List<String> xmlLines) throws IOException
+
+    {
+        MessageBuilder mb = new MessageBuilder();
+        boolean tagOpen = false;
+        String line;
+
+        while ((line = in.readLine()) != null)
         {
-            throw new NullPointerException("path is null");
-        } else
-        {
-            this.xmlFilePath = xmlFilePath;
-            xmlDoc = new XmlDocumentImpl();
+            final String tLine = line.trim();
+
+            if (tagOpen)// < ...
+            {
+                if (notBlank(tLine))
+                {
+                    mb.appendln(line);
+
+                    if (tLine.endsWith(">")) // ... >
+                    {
+                        tagOpen = false;
+                        xmlLines.add(mb.toString());
+                        mb.clear();
+                    }
+                }
+            } else if (notBlank(tLine))
+            {
+                if (tLine.startsWith("<"))
+                {
+                    if (tLine.endsWith(">"))
+                    {
+                        xmlLines.add(tLine);
+                    } else
+                    {
+                        mb.appendln(tLine);
+                        tagOpen = true;
+                    }
+                } else
+                {
+                    xmlLines.add(tLine);
+                }
+            }
         }
     }
 
     /**
-     * Returns path to source <u>xml</u> file.
+     * Returns the filename of the xml file.
      *
-     * @return path to source <u>xml</u> file.
+     * @return the filename of the xml file.
      *
      * @since 3.1.0
      */
-    public Path getFilePath()
+    public String getFilename()
     {
-        return xmlFilePath;
+        return filename;
+    }
+
+    /**
+     * Returns the location of the xml file.
+     *
+     * @return the location of the xml file.
+     *
+     * @since 3.1.0
+     */
+    public Path getLocation()
+    {
+        return location;
     }
 
     /**
@@ -161,63 +237,54 @@ public class XmlFile
      *
      * @return this instance for chaining.
      *
-     * @throws FileAlreadyLoadedException The file cannot be reloaded.
-     * @throws XmlFileFormatException     The format of the <u>xml</u> file is
-     *                                    non-conforming.
-     * @throws IOException                An I/O error occurs opening the file.
+     * @throws java.lang.ClassNotFoundException Should never happen.
+     * @throws FileAlreadyLoadedException       The file cannot be reloaded.
+     * @throws IOException                      An I/O error occurs opening the file.
+     * @throws XmlFileFormatException           The format of the <u>xml</u> file is
+     *                                          non-conforming.
      *
      * @since 3.1.0
      */
     public XmlFile loadFile()
-            throws FileAlreadyLoadedException, XmlFileFormatException,
-            IOException
+            throws ClassNotFoundException, FileAlreadyLoadedException, IOException, XmlFileFormatException
     {
-        MessageBuilder mb = new MessageBuilder();
 
         if (fileIsLoaded)
         {
-            throw new FileAlreadyLoadedException(xmlFilePath.toString());
+            throw new FileAlreadyLoadedException(filename);
         }
 
         final List<String> xmlLines = new ArrayList<>();
-        boolean tagOpen = false;
 
-        try (BufferedReader in = Files.newBufferedReader(xmlFilePath))
+        if (location != null)
         {
-            String line;
-
-            while ((line = in.readLine()) != null)
+            if (location.toFile().isFile())
             {
-                final String sLine = line.trim();
-
-                if (tagOpen)// < ...
+                try (BufferedReader in
+                        = new BufferedReader(
+                                new InputStreamReader(
+                                        getCallingClass().getClassLoader()
+                                                .getResourceAsStream(filename))))
                 {
-                    if (notBlank(sLine))
-                    {
-                        mb.appendln(sLine);
-
-                        if (sLine.endsWith(">")) // ... >
-                        {
-                            tagOpen = false;
-                            final String tLine = mb.toString().trim();
-                            xmlLines.add(tLine);
-                            mb.clear();
-                        }
-                    }
-                } else if (notBlank(sLine))
-                {
-                    if (sLine.startsWith("<"))
-                    {
-                        if (sLine.endsWith(">"))
-                        {
-                            xmlLines.add(sLine);
-                        } else
-                        {
-                            mb.appendln(sLine);
-                            tagOpen = true;
-                        }
-                    }
+                    readXmlFile(in, xmlLines);
                 }
+            } else
+            {
+                println("location: %s", location.toFile().getAbsolutePath());
+                println("filename: %s", filename);
+
+                try (BufferedReader in = Files.newBufferedReader(of(location.toFile().getAbsolutePath(), filename)))
+                {
+                    readXmlFile(in, xmlLines);
+                }
+            }
+        } else
+        {
+            println("filename: %s", filename);
+
+            try (BufferedReader in = Files.newBufferedReader(of( filename)))
+            {
+                readXmlFile(in, xmlLines);
             }
         }
 
@@ -231,8 +298,10 @@ public class XmlFile
     {
         final MessageBuilder mb = new MessageBuilder();
 
-        mb.append("XmlFile (").append(xmlFilePath).appendln(')')
-                .appendln("========================================================")
+        final String title = "XmlFile (%s)".formatted(of(location.toString(), filename));
+
+        mb.append(title)
+                .appendln("=".repeat(title.length()))
                 .appendln(xmlDoc);
 
         return mb.toString();
@@ -279,10 +348,20 @@ public class XmlFile
 
         while (matcher.find())
         {
+            final String leadString = matcher.group("lead");
             final String keyString = matcher.group("key");
             final String valueString = matcher.group("value");
-            final XmlProperty prop = xmlDoc.newProperty(keyString, valueString);
-            tag.getAttributes().add(prop);
+            final String eolString = matcher.group("eol");
+
+            final XmlProperty prop
+                    = xmlDoc.newProperty(
+                            leadString.length(),
+                            keyString,
+                            valueString,
+                            notEmpty(eolString)
+                    );
+
+            tag.addAttribute(prop);
         }
     }
 
@@ -368,6 +447,7 @@ public class XmlFile
                 final String tagString = matcher.group("tag");
                 final String attribsString = matcher.group("attribs");
                 final String guts = matcher.group("guts");
+                final String stagString = matcher.group("stag");
                 final String tageString = matcher.group("tage");
                 final String tage2String = matcher.group("tage2");
 
@@ -380,15 +460,22 @@ public class XmlFile
                         processAttribs(tag, attribsString);
                     }
 
-                    if (notEmpty(guts))
+                    if (!notEmpty(stagString))
                     {
-                        processTag(tag, null, guts);
+                        if (notEmpty(guts))
+                        {
+                            processTag(tag, null, guts);
+                        }
+
+                        if (tageString == null)
+                        {
+                            processTag(tag, xmlLines);
+                        }
+                    } else
+                    {
+                        tag.setShortTag(true);
                     }
 
-                    if (tageString == null)
-                    {
-                        processTag(tag, xmlLines);
-                    }
                 } else if (notEmpty(tage2String))
                 {
                     if (parent.getName().equals(tage2String))
@@ -396,16 +483,18 @@ public class XmlFile
                         tagDone = true;
                     } else
                     {
-                        throw new XmlFileFormatException(xmlFilePath.toString(),
-                                format("Expected: '%s', got: '%s", parent.getName(), tage2String));
+                        throw new XmlFileFormatException(filename,
+                                format("Expected: '%s', got: '%s'", parent.getName(), tage2String));
                     }
                 }
             } else
             {
                 parent.setText(xml);
+                parent.setTextIsOnSeparateLine(xmlLines != null);
             }
         }
 
         return tagDone;
     }
+
 }

@@ -22,6 +22,8 @@ package com.bewsoftware.fileio.xml;
 
 import com.bewsoftware.utils.Ternary;
 import com.bewsoftware.utils.function.TriFunction;
+import com.bewsoftware.utils.string.Diff;
+import com.bewsoftware.utils.string.Diff.ModifiedLine;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,8 +35,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static com.bewsoftware.fileio.xml.XmlFileTestStrings.saveXml;
 import static com.bewsoftware.utils.string.Strings.print;
 import static com.bewsoftware.utils.string.Strings.println;
+import static java.nio.file.Path.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -76,25 +80,38 @@ public class XmlFileTest implements XmlFileTestStrings
      *
      * @throws XmlFileFormatException
      * @throws java.io.IOException
+     * @throws java.lang.ClassNotFoundException
      *
      * @since 3.1.0
      */
     @ParameterizedTest
     @MethodSource
-    public void testLoadFile(final String filename, final Function<Path, String> expResult) throws XmlFileFormatException, IOException
+    public void testLoadFile(final String filename, final Function<Path, String> expResult)
+            throws XmlFileFormatException, IOException, ClassNotFoundException
     {
-        print("testLoadFile: ");
+        println("testLoadFile: ");
 
         final Path xmlFilePath = Path.of(getClass().getResource(filename).getPath());
 
-        println(xmlFilePath.getFileName());
+        println("Load from: %s", xmlFilePath);
 
-        final XmlFile xmlFile = new XmlFile(xmlFilePath);
+        final XmlFile xmlFile = new XmlFile(xmlFilePath.toString());
         xmlFile.loadFile();
         assertTrue(xmlFile.isLoaded());
 
         final String er = expResult.apply(xmlFilePath);
         final String result = xmlFile.getXmlDocument().getRootTag().toString();
+
+        Diff.lines(er, result).forEach((ModifiedLine line) ->
+        {
+            println(line);
+        });
+
+        final String fileNAme = xmlFilePath.toString();
+        final String fileName = fileNAme.substring(0, fileNAme.lastIndexOf('.')) + "[1].xml";
+        saveXml(er, fileName);
+        final String fileName2 = fileNAme.substring(0, fileNAme.lastIndexOf('.')) + "[2].xml";
+        saveXml(result, fileName2);
 
         assertEquals(er, result);
 
@@ -112,6 +129,7 @@ public class XmlFileTest implements XmlFileTestStrings
      *
      * @throws XmlFileFormatException
      * @throws IOException
+     * @throws java.lang.ClassNotFoundException
      *
      * @since 3.1.0
      */
@@ -122,7 +140,7 @@ public class XmlFileTest implements XmlFileTestStrings
             final String xpath,
             final String valueTag,
             final String expResult
-    ) throws XmlFileFormatException, IOException
+    ) throws XmlFileFormatException, IOException, ClassNotFoundException
     {
         print("testXPath: ");
 
@@ -131,10 +149,10 @@ public class XmlFileTest implements XmlFileTestStrings
 
         println(xmlFilePath.getFileName());
 
-        final XmlFile xmlFile = new XmlFile(xmlFilePath);
+        final XmlFile xmlFile = new XmlFile(xmlFilePath.toString());
         final Tag root = xmlFile.loadFile().getXmlDocument().getRootTag();
         mb.append("[")
-                .append(xmlFile.getFilePath().getFileName())
+                .append(of(xmlFile.getFilename()).getFileName())
                 .appendln("]");
 
         Tag group = Tags.getTag(root, xpath);
@@ -169,6 +187,8 @@ public class XmlFileTest implements XmlFileTestStrings
      *                    is to be retrieved.
      * @param expResult   The expected results.
      *
+     * @throws java.lang.ClassNotFoundException
+     *
      * @see Tag
      * @see Tags
      *
@@ -187,7 +207,7 @@ public class XmlFileTest implements XmlFileTestStrings
             final String compareText,
             final String valueTag,
             final String expResult
-    ) throws XmlFileFormatException, IOException
+    ) throws XmlFileFormatException, IOException, ClassNotFoundException
     {
         print("testXPathFind: ");
 
@@ -196,7 +216,7 @@ public class XmlFileTest implements XmlFileTestStrings
 
         println(xmlFilePath.getFileName());
 
-        final XmlFile xmlFile = new XmlFile(xmlFilePath);
+        final XmlFile xmlFile = new XmlFile(xmlFilePath.toString());
         final Tag root = xmlFile.loadFile().getXmlDocument().getRootTag();
 
         Tag group = Tags.getTag(root, xpath);

@@ -20,6 +20,7 @@
 
 package com.bewsoftware.fileio.xml;
 
+import com.bewsoftware.fileio.property.MutableXmlProperty;
 import com.bewsoftware.fileio.property.XmlProperty;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -119,9 +120,9 @@ public class XmlDocumentImpl implements XmlDocument
         // SpecialTag
         "(?s)(?<xml><\\?(?<tag>[\\p{Alpha}][\\p{Alnum}]*)(?<attribs>.*?)\\?>)",
         // Tag
-        "(?s)<(?<tag>[\\p{Alpha}][\\p{Alnum}]*)(?<attribs>.*?)?>((?<guts>.*?)</(?<tage>\\k<tag>)>)?|</(?<tage2>[\\p{Alpha}][\\p{Alnum}]*)>",
+        "(?s)<(?<tag>[\\p{Alpha}][.\\p{Alnum}]*)(?<attribs>.*?)?(?<stag>/)?>((?<guts>.*?)</(?<tage>\\k<tag>)>)?|</(?<tage2>[\\p{Alpha}][.\\p{Alnum}]*)>",
         // Attribute
-        "(?<key>[\\w:]+)=\"(?<value>.*?)\"",
+        "(?<lead>\\s*)(?<key>[\\w:]+)=\"(?<value>.*?)\"([ ]*(?<eol>\\n))?",
         // Comment
         "(?s)(?<xml><!--\\s*(?<ctext>\\S.*\\S)\\s*-->)",
         // Tail
@@ -129,8 +130,8 @@ public class XmlDocumentImpl implements XmlDocument
     };
 
     // (?s)(?<xml><\?(?<stag>[\p{Alpha}][\p{Alnum}]*)(?<sattribs>.*?)\?>)(?<tail>.*)
-    // (?s)<(?<tag>[\p{Alpha}][\p{Alnum}]*)(?<attribs>.*?)?>((?<guts>.*?)</(?<tage>\k<tag>)>)?|</(?<tage2>[\p{Alpha}][\p{Alnum}]*)>
-    // (?<key>[\w:]+)="(?<value>.*?)"
+    // (?s)<(?<tag>[\p{Alpha}][.\p{Alnum}]*)(?<attribs>.*?)?(?<stag>/)>((?<guts>.*?)</(?<tage>\k<tag>)>)?|</(?<tage2>[\p{Alpha}][.\p{Alnum}]*)>
+    // (?<lead>\s*)(?<key>[\w:]+)=\"(?<value>.*?)\"([ ]*(?<eol>\n))?
     private final AtomicInteger idCounter = new AtomicInteger(0);
 
     private final IntSupplier idSupplier = () -> idCounter.incrementAndGet();
@@ -169,9 +170,14 @@ public class XmlDocumentImpl implements XmlDocument
     }
 
     @Override
-    public XmlProperty newProperty(final String key, final String value)
+    public XmlProperty newProperty(
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final boolean eol
+    )
     {
-        return new XmlProperty(idSupplier.getAsInt(), key, value);
+        return new MutableXmlProperty(idSupplier.getAsInt(),leadSpaces, key, value, eol);
     }
 
     @Override

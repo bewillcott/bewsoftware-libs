@@ -57,14 +57,22 @@ public interface XmlDocument
     /**
      * Create a new XmlProperty.
      *
-     * @param key   Property label.
-     * @param value Property setting.
+     * @param leadSpaces The number of spaces before this property, in the
+     *                   source file.
+     * @param key        Property label.
+     * @param value      Property setting.
+     * @param eol        Was the property eol terminated?
      *
      * @return new XmlProperty.
      *
      * @since 3.1.0
      */
-    public XmlProperty newProperty(final String key, final String value);
+    public XmlProperty newProperty(
+            final int leadSpaces,
+            final String key,
+            final String value,
+            final boolean eol
+    );
 
     /**
      * Create named tag.

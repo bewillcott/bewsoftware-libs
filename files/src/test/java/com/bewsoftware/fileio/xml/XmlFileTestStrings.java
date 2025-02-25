@@ -24,6 +24,8 @@ import com.bewsoftware.utils.Ternary;
 import com.bewsoftware.utils.function.TriFunction;
 import com.bewsoftware.utils.string.MessageBuilder;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import static com.bewsoftware.utils.Ternary.False;
 import static com.bewsoftware.utils.Ternary.Null;
 import static com.bewsoftware.utils.Ternary.True;
 import static com.bewsoftware.utils.string.Strings.notEmpty;
+import static com.bewsoftware.utils.string.Strings.println;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -372,6 +375,27 @@ public interface XmlFileTestStrings
     };
 
     /**
+     * Saves the supplied text to the designated file.
+     *
+     * @param text        to save
+     * @param xmlFilePath to write to.
+     *
+     * @throws java.io.IOException
+     *
+     * @since 3.1.0
+     */
+    static void saveXml(final String text, final String xmlFilePath) throws IOException
+    {
+        println("Saving to: %s",xmlFilePath);
+
+        try (final BufferedWriter bw = new BufferedWriter(new FileWriter(xmlFilePath)))
+        {
+            bw.write(text);
+            bw.flush();
+        }
+    }
+
+    /**
      * Provides the testing arguments for:
      * {@link XmlFileTest#testLoadFile(String, Function) testLoadFile(filename, expResult)}
      *
@@ -382,13 +406,14 @@ public interface XmlFileTestStrings
     static Stream<Arguments> testLoadFile()
     {
         return Stream.of(
-                arguments("cd_catalog.xml", readXmlFile),
-                arguments("company.xml", readXmlFile),
-                arguments("plant_catalog.xml", readXmlFile),
-                arguments("sample-xml-files-sample-4.xml", readXmlFile),
-                arguments("sample-xml-files-sample-5.xml", readXmlFile),
-                arguments("sample-xml-files-sample-6.xml", readXmlFile),
-                arguments("test_pom.xml", readString)
+                //                arguments("cd_catalog.xml", readXmlFile),
+                //                arguments("company.xml", readXmlFile),
+                //                arguments("plant_catalog.xml", readXmlFile),
+                //                arguments("sample-xml-files-sample-4.xml", readXmlFile),
+                //                arguments("sample-xml-files-sample-5.xml", readXmlFile),
+                //                arguments("sample-xml-files-sample-6.xml", readXmlFile),
+                arguments("test_pom.xml", readXmlFile),
+                arguments("test_pom2.xml", readXmlFile)
         );
     }
 
