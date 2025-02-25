@@ -27,11 +27,11 @@ import java.util.function.Consumer;
 
 /**
  * Represents an operation that accepts three input arguments and returns no
- * result. This is the three-arity specialization of {@link Consumer}. Unlike
+ * result. This is the tri-arity specialization of {@link Consumer}. Unlike
  * most other functional interfaces, {@code TriConsumer} is expected
  * to operate via side-effects.
  * <p>
- * This is a {@link FunctionalInterface functional interface}
+ * This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #accept(Object, Object, Object)}.
  *
  * @apiNote
@@ -43,11 +43,12 @@ import java.util.function.Consumer;
  * @param <U> the type of the second argument to the operation
  * @param <V> the type of the third argument to the operation
  *
- * @see Consumer
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
+ * @see Consumer
+ *
  * @since 1.0.9
- * @version 3.0.2
+ * @version 3.1.0
  */
 @FunctionalInterface
 public interface TriConsumer<T, U, V> extends Serializable
@@ -59,6 +60,8 @@ public interface TriConsumer<T, U, V> extends Serializable
      * @param t the first input argument
      * @param u the second input argument
      * @param v the third input argument
+     *
+     * @since 1.0.9
      */
     void accept(T t, U u, V v);
 
@@ -75,6 +78,8 @@ public interface TriConsumer<T, U, V> extends Serializable
      *         operation followed by the {@code after} operation
      *
      * @throws NullPointerException if {@code after} is null
+     *
+     * @since 1.0.9
      */
     default TriConsumer<T, U, V> andThen(TriConsumer<? super T, ? super U, ? super V> after)
     {

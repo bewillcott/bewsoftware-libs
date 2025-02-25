@@ -22,10 +22,12 @@
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
+@Deprecated(forRemoval = true, since = "3.1.0")
 module bewsoftware.property {
     requires bewsoftware.annotations;
+    requires bewsoftware.utils;
 
     exports com.bewsoftware.property;
 }

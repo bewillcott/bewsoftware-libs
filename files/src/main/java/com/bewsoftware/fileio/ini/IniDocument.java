@@ -18,12 +18,15 @@
  */
 package com.bewsoftware.fileio.ini;
 
-import com.bewsoftware.property.IniProperty;
-import com.bewsoftware.property.MutableIniProperty;
+import com.bewsoftware.fileio.property.IniProperty;
+import com.bewsoftware.fileio.property.MutableIniProperty;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This interface provides methods to access and modify the in-memory contents
+ * of an <u>ini</u> file.
+ *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
@@ -344,10 +347,8 @@ public interface IniDocument
      * }.
      * <p>
      * The reason being, {@code indexOf} puts the parameter on the left side of
-     * the
-     * {@code equals()} call. I have developed the {@link MutableIniProperty}
-     * class to test
-     * equality against a String:
+     * the {@code equals()} call. I have developed the {@link MutableIniProperty}
+     * class to test equality against a String:
      * <pre><code>
      *
      *    MutableIniProperty&lt;ArrayList&lt;String&gt;&gt; mp = new MutableIniProperty&lt;&gt;();
@@ -363,6 +364,10 @@ public interface IniDocument
      */
     int indexOfSection(final String section);
 
+    /**
+     *
+     * @return
+     */
     Iterable<MutableIniProperty<List<MutableIniProperty<String>>>> iterable();
 
     /**

@@ -36,5 +36,4 @@ import java.util.List;
  */
 public interface SerializableList<E> extends List<E>, Serializable, Cloneable
 {
-
 }

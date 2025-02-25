@@ -22,8 +22,8 @@
  * Functional interfaces provide target types for lambda expressions and method references.
  * <p>
  * For more information, refer to:
- * <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/package-summary.html">
- * Package java.util.function</a>
+ * <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/function/package-summary.html">
+ * java.util.function</a>
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *

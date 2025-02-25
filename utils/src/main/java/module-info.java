@@ -25,7 +25,7 @@
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 3.0.2
+ * @version 3.1.0
  */
 module bewsoftware.utils {
     requires transitive java.desktop;

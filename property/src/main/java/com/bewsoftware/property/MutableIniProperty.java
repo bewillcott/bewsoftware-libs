@@ -28,14 +28,18 @@ package com.bewsoftware.property;
  * Moved here from BEWCommons to make it easier to handle version updates.
  * This is a copy of v1.0.21, now reset to v1.0 for this project.
  *
+ * @deprecated Moved to {@code bewsoftware.files/com.bewsoftware.fileio.property.MutableIniProperty}.
+ *
  * @param <V> value type.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
- * @version 1.0
+ * @version 3.1.0
  */
-public class MutableIniProperty<V> extends IniProperty<V> {
+@Deprecated(forRemoval = true, since = "3.1.0")
+public final class MutableIniProperty<V> extends IniProperty<V>
+{
 
     /**
      * @serial serial
@@ -49,7 +53,8 @@ public class MutableIniProperty<V> extends IniProperty<V> {
      * @param <T>      the type of the class being copied.
      * @param property The instance to copy.
      */
-    public <T extends Property<String, V>> MutableIniProperty(T property) {
+    public <T extends Property<String, V>> MutableIniProperty(T property)
+    {
         super(property.key, property.value, property.comment);
     }
 
@@ -59,7 +64,8 @@ public class MutableIniProperty<V> extends IniProperty<V> {
      * @param key   The key.
      * @param value The value.
      */
-    public MutableIniProperty(String key, V value) {
+    public MutableIniProperty(String key, V value)
+    {
         super(key, value);
     }
 
@@ -70,7 +76,8 @@ public class MutableIniProperty<V> extends IniProperty<V> {
      * @param value   The value.
      * @param comment The comment.
      */
-    public MutableIniProperty(String key, V value, String comment) {
+    public MutableIniProperty(String key, V value, String comment)
+    {
         super(key, value, comment);
     }
 
@@ -79,7 +86,8 @@ public class MutableIniProperty<V> extends IniProperty<V> {
      *
      * @param comment to be set.
      */
-    public void comment(String comment) {
+    public void comment(String comment)
+    {
         this.comment = comment;
     }
 
@@ -88,7 +96,8 @@ public class MutableIniProperty<V> extends IniProperty<V> {
      *
      * @param value to be set.
      */
-    public void value(V value) {
+    public void value(V value)
+    {
         this.value = value;
     }
 }
